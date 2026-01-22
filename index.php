@@ -450,46 +450,6 @@ if ($modal_active) {
 <script>
     
     // Add this code block inside your existing document.addEventListener('DOMContentLoaded', ...) function
-
-    // Modal functionality
-    const messageModal = document.getElementById('messageModal');
-    const closeModalButton = document.getElementById('closeModal');
-
-    // Function to show the modal
-    const showModal = () => {
-        if (!messageModal) return;
-        messageModal.classList.remove('hidden', 'opacity-0');
-        messageModal.classList.add('flex', 'opacity-100');
-        // Prevent background scrolling
-        document.body.style.overflow = 'hidden'; 
-    };
-
-    // Function to hide the modal
-    const hideModal = () => {
-        if (!messageModal) return;
-        messageModal.classList.remove('flex', 'opacity-100');
-        messageModal.classList.add('hidden', 'opacity-0');
-        // Re-enable background scrolling
-        document.body.style.overflow = 'auto'; 
-    };
-
-    // Show the modal after a short delay to ensure the page is fully rendered
-    setTimeout(showModal, 1000);
-
-    // Event listener to close the modal
-    if (closeModalButton) {
-        closeModalButton.addEventListener('click', hideModal);
-    }
-
-    // Event listener to close the modal if the user clicks outside the modal content
-    if (messageModal) {
-        messageModal.addEventListener('click', (event) => {
-            // Check if the click occurred on the modal backdrop itself, not its children
-            if (event.target === messageModal) {
-                hideModal();
-            }
-        });
-    }
     // Initialize Swipers after DOM is fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // Testimonials Swiper
