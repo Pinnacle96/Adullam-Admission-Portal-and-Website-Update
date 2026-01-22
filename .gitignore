@@ -1,0 +1,15 @@
+/vendor
+/node_modules
+/dashboard/uploads
+/uploads
+*.sql
+*.log
+*.zip
+.env
+/june2025
+/google-api-client/vendor
+/google-api-client/*.zip
+.DS_Store
+Thumbs.db
+/dashboard/letters/admission_letters/*.pdf
+/dashboard/logs

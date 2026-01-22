@@ -1,0 +1,66 @@
+[10-Jun-2025 19:12:30 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' (using password: YES) in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/index.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[10-Jun-2025 19:24:10 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' (using password: YES) in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/index.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[10-Jun-2025 19:24:18 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' to database 'adullamn_cams' in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/index.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[10-Jun-2025 19:24:31 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' to database 'adullamn_cams' in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/index.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[10-Jun-2025 19:24:34 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' to database 'adullamn_cams' in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/biv.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[10-Jun-2025 19:24:35 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'adullamn_adullamn'@'localhost' to database 'adullamn_cams' in /home1/adullamn/public_html/includes/dbconnection.php:2
+Stack trace:
+#0 /home1/adullamn/public_html/includes/dbconnection.php(2): mysqli_connect('localhost', 'adullamn_adulla...', 'Rq;u54Y77#QFxx', 'adullamn_cams')
+#1 /home1/adullamn/public_html/includes/header.php(2): include('/home1/adullamn...')
+#2 /home1/adullamn/public_html/index.php(1): include('/home1/adullamn...')
+#3 {main}
+  thrown in /home1/adullamn/public_html/includes/dbconnection.php on line 2
+[13-Jun-2025 16:11:54 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: file "/home1/adullamn/public_html/client_secret_....json" does not exist in /home1/adullamn/public_html/google-api-client/src/Client.php:1034
+Stack trace:
+#0 /home1/adullamn/public_html/google_auth.php(5): Google\Client->setAuthConfig()
+#1 {main}
+  thrown in /home1/adullamn/public_html/google-api-client/src/Client.php on line 1034
+[13-Jun-2025 17:12:02 Africa/Lagos] PHP Warning:  ZipArchive::close(): Renaming temporary file failed: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 65
+[13-Jun-2025 17:12:02 Africa/Lagos] PHP Warning:  file_get_contents(/home1/adullamn/public_html/backups/db_2025-06-13_17-04-36.sql): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 75
+[13-Jun-2025 17:12:02 Africa/Lagos] PHP Warning:  mime_content_type(/home1/adullamn/public_html/backups/db_2025-06-13_17-04-36.sql): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 76
+[13-Jun-2025 17:12:03 Africa/Lagos] PHP Warning:  file_get_contents(/home1/adullamn/public_html/backups/site_2025-06-13_17-04-36.zip): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 75
+[13-Jun-2025 17:12:03 Africa/Lagos] PHP Warning:  mime_content_type(/home1/adullamn/public_html/backups/site_2025-06-13_17-04-36.zip): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 76
+[13-Jun-2025 17:13:08 Africa/Lagos] PHP Warning:  ZipArchive::close(): Renaming temporary file failed: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 65
+[13-Jun-2025 17:13:08 Africa/Lagos] PHP Warning:  file_get_contents(/home1/adullamn/public_html/backups/db_2025-06-13_17-06-48.sql): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 75
+[13-Jun-2025 17:13:08 Africa/Lagos] PHP Warning:  mime_content_type(/home1/adullamn/public_html/backups/db_2025-06-13_17-06-48.sql): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 76
+[13-Jun-2025 17:13:09 Africa/Lagos] PHP Warning:  file_get_contents(/home1/adullamn/public_html/backups/site_2025-06-13_17-06-48.zip): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 75
+[13-Jun-2025 17:13:09 Africa/Lagos] PHP Warning:  mime_content_type(/home1/adullamn/public_html/backups/site_2025-06-13_17-06-48.zip): Failed to open stream: No such file or directory in /home1/adullamn/public_html/backup_to_drive.php on line 76
+[13-Jun-2025 16:13:21 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: file "/home1/adullamn/public_html/client_secret_....json" does not exist in /home1/adullamn/public_html/google-api-client/src/Client.php:1034
+Stack trace:
+#0 /home1/adullamn/public_html/google_auth.php(8): Google\Client->setAuthConfig()
+#1 {main}
+  thrown in /home1/adullamn/public_html/google-api-client/src/Client.php on line 1034
+[13-Jun-2025 17:27:08 Africa/Lagos] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 724319328 bytes) in /home1/adullamn/public_html/backup_to_drive.php on line 78
+[13-Jun-2025 17:49:52 Africa/Lagos] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 724319328 bytes) in /home1/adullamn/public_html/backup_upload.php on line 49
+[13-Jun-2025 17:53:12 Africa/Lagos] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 724319328 bytes) in /home1/adullamn/public_html/backup_upload.php on line 53
+[13-Jun-2025 17:54:44 Africa/Lagos] PHP Fatal error:  Allowed memory size of 1073741824 bytes exhausted (tried to allocate 965748180 bytes) in /home1/adullamn/public_html/google-api-client/src/Http/MediaFileUpload.php on line 250

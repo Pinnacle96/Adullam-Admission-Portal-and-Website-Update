@@ -1,0 +1,15 @@
+php_value memory_limit 1024M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+Options -MultiViews
+RewriteEngine On
+
+# Handle the case where the request is for a directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Check if the request + .php exists as a file
+RewriteCond %{REQUEST_FILENAME}.php -f
+
+# Rewrite the request to the .php file
+RewriteRule ^(.*)$ $1.php [L]
