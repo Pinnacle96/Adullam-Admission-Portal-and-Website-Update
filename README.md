@@ -52,15 +52,16 @@ adullam/
 ├── dashboard/              # ⚡ CORE APPLICATION LOGIC
 │   ├── components/         # Reusable UI parts (Sidebar, Navbar)
 │   ├── letters/            # Generated admission letters
-│   ├── uploads/            # User uploaded documents
+│   ├── uploads/            # User uploaded documents (Ignored by Git)
 │   ├── admin_dashboard.php # Main Admin Controller
 │   ├── application_form.php# Multistep Student Application
 │   ├── dashboard.php       # Student Dashboard Home
 │   └── ...                 # Various action scripts & controllers
 ├── db/                     # Database SQL dumps
 ├── fees/                   # Fee structure PDFs
-├── google-api-client/      # Google Drive API Integration
+├── google-api-client/      # Google Drive API Integration (Ignored by Git)
 ├── includes/               # Global helper functions and headers
+├── vendor/                 # Composer Dependencies (Ignored by Git)
 ├── db.php                  # Database connection configuration
 └── index.php               # Landing page / Entry point
 ```
@@ -72,14 +73,30 @@ adullam/
 ### Prerequisites
 *   A local server environment like **WAMP**, **XAMPP**, or **MAMP**.
 *   **PHP 7.4** or higher.
+*   **Composer** (for installing dependencies).
 *   **MySQL** database.
 
 ### Steps
 1.  **Clone/Download**: Place the project folder in your server's root directory (e.g., `c:\wamp64\www\adullam`).
-2.  **Database Setup**:
+2.  **Restore Dependencies**:
+    Since the `vendor` folder is ignored by version control to keep the repository light, you must install dependencies manually.
+    ```bash
+    cd c:\wamp64\www\adullam
+    composer install
+    ```
+    *If you do not have Composer installed, download it from [getcomposer.org](https://getcomposer.org/).*
+
+3.  **Restore Upload Folders**:
+    Ensure the following directories exist and have write permissions:
+    *   `dashboard/uploads/`
+    *   `dashboard/letters/admission_letters/`
+    *   `dashboard/logs/`
+
+4.  **Database Setup**:
     *   Create a new MySQL database named `adullam`.
     *   Import the SQL file from `db/u499616432_adullamn_cams.sql` (or the latest `.sql` file available).
-3.  **Configuration**:
+
+5.  **Configuration**:
     *   Open `db.php` (and `dashboard/db.php` if separate) and update the database credentials:
         ```php
         $host = 'localhost';
@@ -88,7 +105,8 @@ adullam/
         $pass = ''; // Your DB password
         ```
     *   Configure SMTP settings in `dashboard/mailer.php` for email functionality.
-4.  **Run**:
+
+6.  **Run**:
     *   Start your server.
     *   Navigate to `http://localhost/adullam` in your browser.
 
@@ -98,38 +116,12 @@ adullam/
 
 ### For Applicants
 1.  **Register**: Create an account via the registration page.
-2.  **Login**: Access the student dashboard.
-3.  **Apply**: Click "Start Application" to begin the 7-step process.
-    *   *Note: Progress is saved automatically.*
-4.  **Submit**: Review your details and submit. The application enters **Read-Only Mode** upon submission.
-5.  **Wait**: Check the dashboard for status updates.
+2.  **Dashboard**: Access the student dashboard to start a new application.
+3.  **Apply**: Complete the 7-step application form.
+4.  **Track**: Monitor admission status and upload proof of payment if admitted.
 
 ### For Admins
-1.  **Login**: Access the admin panel (typically `/dashboard/admin_login.php` or verified admin account).
-2.  **Review**: Navigate to "Pending Applications" to review submissions.
-3.  **Action**: Use the "Admit" or "Reject" buttons to process applications.
-4.  **Manage**: Use the sidebar to access Hostel, Tuition, and Settings management.
-
----
-
-## 🤝 Contribution
-1.  Fork the repository.
-2.  Create a feature branch (`git checkout -b feature/NewFeature`).
-3.  Commit your changes (`git commit -m 'Add some NewFeature'`).
-4.  Push to the branch (`git push origin feature/NewFeature`).
-5.  Open a Pull Request.
-
----
-
-## 📄 License
-This project is proprietary software developed for **RCN Theological Seminary**. Unauthorized copying, distribution, or modification is strictly prohibited.
-
-## 👨‍� Credits & Support
-
-This project is proudly developed by **Pinnacle Tech Hub**.
-
-**Lead Developer:**
-**Noah Abayomi**
-*CEO, Pinnacle Tech Hub*
-
-📞 **Contact**: +234 703 207 8859 (Call & WhatsApp)
+1.  **Login**: Access the admin panel (typically `/dashboard/login.php` or `/admin`).
+2.  **Review**: Go to "Manage Applications" to review pending submissions.
+3.  **Action**: Approve or Reject applications.
+4.  **Manage**: Use the sidebar to manage payments, hostels, and system settings.
