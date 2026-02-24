@@ -38,18 +38,30 @@ function sendMail($toEmail, $toName, $subject, $body)
 
     try {
         // 🔐 SMTP settings
+        // $mail->isSMTP();
+        // $mail->Host       = 'smtp.gmail.com';
+        // $mail->SMTPAuth   = true;
+        // $mail->Username   = 'rcntsonline@gmail.com';
+        // $mail->Password   = 'cciy mzlr ehtl kjiw'; // ⚠️ Move this to a secure config/env file
+        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        // $mail->Port       = 465;
+
+        // // Recipients
+        // $mail->setFrom('rcntsonline@gmail.com', 'RCNTS ADULLAM');
+        // $mail->addAddress($toEmail, $toName);
+
+
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'rcntsonline@gmail.com';
-        $mail->Password   = 'cciy mzlr ehtl kjiw'; // ⚠️ Move this to a secure config/env file
+        $mail->Username   = 'adullamadmissions@gmail.com';
+        $mail->Password   = 'lbwo hnjp ylnj hruh'; // ⚠️ Move this to a secure config/env file
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port       = 465;
 
         // Recipients
-        $mail->setFrom('rcntsonline@gmail.com', 'RCNTS ADULLAM');
+        $mail->setFrom('adullamadmissions@gmail.com', 'RCNTS ADULLAM');
         $mail->addAddress($toEmail, $toName);
-
         // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
