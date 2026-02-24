@@ -2,6 +2,7 @@
 session_start();
 require 'db.php';
 require 'mailer.php';
+require_once 'utils/send_admission_email_new.php';
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['superadmin','admin'])) {
     die('Unauthorized access.');
@@ -141,6 +142,8 @@ $body = "
 
 sendMail($email, $name, $subject, $body);
 
+            // ✅ Automatically generate and send a new admission letter with updated info
+            sendAdmissionEmail($uid, $pdo);
         }
 
         $success = true;
