@@ -32,25 +32,12 @@ function logMailerEvent($message, $type = "INFO") {
     file_put_contents($logFile, $entry, FILE_APPEND);
 }
 
-function sendMail($toEmail, $toName, $subject, $body)
+function sendMail($toEmail, $toName, $subject, $body, $attachmentPath = null, $attachmentName = null, $fromEmail = 'adullamadmissions@gmail.com', $fromName = 'RCNTS ADULLAM')
 {
     $mail = new PHPMailer(true);
 
     try {
         // 🔐 SMTP settings
-        // $mail->isSMTP();
-        // $mail->Host       = 'smtp.gmail.com';
-        // $mail->SMTPAuth   = true;
-        // $mail->Username   = 'rcntsonline@gmail.com';
-        // $mail->Password   = 'cciy mzlr ehtl kjiw'; // ⚠️ Move this to a secure config/env file
-        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        // $mail->Port       = 465;
-
-        // // Recipients
-        // $mail->setFrom('rcntsonline@gmail.com', 'RCNTS ADULLAM');
-        // $mail->addAddress($toEmail, $toName);
-
-
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
@@ -60,8 +47,14 @@ function sendMail($toEmail, $toName, $subject, $body)
         $mail->Port       = 465;
 
         // Recipients
-        $mail->setFrom('adullamadmissions@gmail.com', 'RCNTS ADULLAM');
+        $mail->setFrom($fromEmail, $fromName);
         $mail->addAddress($toEmail, $toName);
+
+        // Attachments
+        if ($attachmentPath && file_exists($attachmentPath)) {
+            $mail->addAttachment($attachmentPath, $attachmentName);
+        }
+
         // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
