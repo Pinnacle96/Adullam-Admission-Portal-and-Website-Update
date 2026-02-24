@@ -20,7 +20,11 @@ $offset = ($page - 1) * $limit;
 
 $search  = trim($_GET['search'] ?? '');
 $program = trim($_GET['program'] ?? '');
+$cohort  = trim($_GET['cohort'] ?? '');
 $status  = trim($_GET['status'] ?? ''); // Queue status: pending, sent, failed
+
+// Fetch all distinct cohorts for filter
+$cohorts = $pdo->query("SELECT DISTINCT cohort FROM applications WHERE cohort IS NOT NULL ORDER BY cohort DESC")->fetchAll(PDO::FETCH_COLUMN);
 
 // Build Query
 $where = ["d.mode_of_study = 'online'"]; // Crucial: Only online students
@@ -38,6 +42,11 @@ if ($program) {
     $params[] = $program;
 }
 
+if ($cohort) {
+    $where[] = "a.cohort = ?";
+    $params[] = $cohort;
+}
+
 if ($status) {
     $where[] = "oq.status = ?";
     $params[] = $status;
@@ -51,6 +60,7 @@ $countStmt = $pdo->prepare("
     FROM onboarding_queue oq
     JOIN users u ON oq.user_id = u.id
     JOIN application_details d ON oq.user_id = d.user_id
+    LEFT JOIN applications a ON oq.user_id = a.user_id
     WHERE $whereSQL
 ");
 $countStmt->execute($params);
@@ -59,10 +69,11 @@ $totalPages = ceil($totalRecords / $limit);
 
 // Fetch Records
 $sql = "
-    SELECT oq.*, u.first_name, u.last_name, u.email, d.program, d.ma_focus
+    SELECT oq.*, u.first_name, u.last_name, u.email, d.program, d.ma_focus, a.cohort
     FROM onboarding_queue oq
     JOIN users u ON oq.user_id = u.id
     JOIN application_details d ON oq.user_id = d.user_id
+    LEFT JOIN applications a ON oq.user_id = a.user_id
     WHERE $whereSQL
     ORDER BY oq.created_at DESC
     LIMIT $limit OFFSET $offset
@@ -94,8 +105,14 @@ $students = $stmt->fetchAll();
                 </div>
             </div>
 
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <input name="search" value="<?= htmlspecialchars($search) ?>" type="text" placeholder="Search name or email" class="px-4 py-2 border rounded-lg">
+                <select name="cohort" class="px-4 py-2 border rounded-lg">
+                    <option value="">All Cohorts</option>
+                    <?php foreach ($cohorts as $c): ?>
+                        <option value="<?= htmlspecialchars($c) ?>" <?= $cohort === $c ? 'selected' : '' ?>><?= htmlspecialchars($c) ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <select name="program" class="px-4 py-2 border rounded-lg">
                     <option value="">All Programs</option>
                     <option value="MA" <?= $program === 'MA' ? 'selected' : '' ?>>MA</option>
@@ -120,6 +137,7 @@ $students = $stmt->fetchAll();
                             <tr>
                                 <th class="p-4 w-10"><input type="checkbox" id="selectAll" class="rounded"></th>
                                 <th class="p-4">Student Name</th>
+                                <th class="p-4">Cohort</th>
                                 <th class="p-4">Program</th>
                                 <th class="p-4">Email</th>
                                 <th class="p-4">Status</th>
@@ -132,6 +150,7 @@ $students = $stmt->fetchAll();
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-4"><input type="checkbox" value="<?= $s['id'] ?>" class="student-checkbox rounded"></td>
                                 <td class="p-4 font-medium"><?= htmlspecialchars($s['first_name'] . ' ' . $s['last_name']) ?></td>
+                                <td class="p-4 text-xs text-gray-600 font-bold"><?= htmlspecialchars($s['cohort'] ?? 'N/A') ?></td>
                                 <td class="p-4 uppercase"><?= htmlspecialchars($s['program']) ?></td>
                                 <td class="p-4 text-gray-500"><?= htmlspecialchars($s['email']) ?></td>
                                 <td class="p-4">
@@ -149,6 +168,24 @@ $students = $stmt->fetchAll();
                     </table>
                 </div>
             </div>
+
+            <!-- Pagination -->
+            <?php if ($totalPages > 1): ?>
+            <div class="mt-6 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-sm text-gray-600">
+                    Showing <span class="font-bold"><?= $offset + 1 ?></span> to <span class="font-bold"><?= min($offset + $limit, $totalRecords) ?></span> of <span class="font-bold"><?= $totalRecords ?></span> students
+                </p>
+                <div class="flex gap-2">
+                    <?php if ($page > 1): ?>
+                        <a href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>&cohort=<?= urlencode($cohort) ?>&program=<?= urlencode($program) ?>&status=<?= urlencode($status) ?>" class="px-4 py-2 border rounded-lg hover:bg-gray-50">Previous</a>
+                    <?php endif; ?>
+                    
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>&cohort=<?= urlencode($cohort) ?>&program=<?= urlencode($program) ?>&status=<?= urlencode($status) ?>" class="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold">Next</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
         </main>
     </div>
 
