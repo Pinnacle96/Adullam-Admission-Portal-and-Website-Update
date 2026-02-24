@@ -11,6 +11,18 @@ define('PROJECT_ROOT', dirname(__DIR__));
 require_once PROJECT_ROOT . '/dashboard/db.php';
 require_once PROJECT_ROOT . '/dashboard/mailer.php';
 
+// Logging Function
+function logOnboarding($message) {
+    $logDir = PROJECT_ROOT . '/dashboard/logs';
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
+    }
+    $logFile = $logDir . '/onboarding_cron.log';
+    $timestamp = date('Y-m-d H:i:s');
+    file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
+    echo $message . "\n";
+}
+
 // Fetch up to 20 pending emails to process per run to avoid timeout
 $stmt = $pdo->prepare("SELECT oq.*, u.first_name, u.last_name, u.email, d.program 
                        FROM onboarding_queue oq
@@ -22,8 +34,11 @@ $stmt->execute();
 $queue = $stmt->fetchAll();
 
 if (empty($queue)) {
-    exit("No pending onboarding emails found.\n");
+    logOnboarding("No pending onboarding emails found.");
+    exit;
 }
+
+logOnboarding("Processing " . count($queue) . " pending emails...");
 
 // WhatsApp Group Links Map
 $groupLinks = [
@@ -107,9 +122,10 @@ foreach ($queue as $item) {
 
     if ($success) {
         $pdo->prepare("UPDATE onboarding_queue SET status = 'sent', updated_at = NOW() WHERE id = ?")->execute([$queueId]);
-        echo "✅ Sent to {$email}\n";
+        logOnboarding("✅ Sent to {$email}");
     } else {
         $pdo->prepare("UPDATE onboarding_queue SET status = 'failed', attempts = attempts + 1, updated_at = NOW() WHERE id = ?")->execute([$queueId]);
-        echo "❌ Failed for {$email}\n";
+        logOnboarding("❌ Failed for {$email}");
     }
 }
+logOnboarding("Batch processing completed.");
