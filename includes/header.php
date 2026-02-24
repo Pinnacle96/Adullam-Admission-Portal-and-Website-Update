@@ -231,7 +231,7 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
 
                 <!-- APPLY BUTTON (Desktop) -->
                 <div class="hidden lg:flex items-center">
-                    <a href="dashboard/applicant_login" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition shadow-md">
+                    <a href="requirements" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition shadow-md">
                         Apply Now
                     </a>
                 </div>
@@ -282,7 +282,7 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                         <svg id="mobile-portal-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div id="mobile-portal-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
-                        <a href="dashboard/applicant_login" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Login / Apply</a>
+                        <a href="requirements" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Login / Apply</a>
                         <a href="admission_status" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Check Admission Status</a>
                         <a href="dashboard/register_hostel_returning" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Hostel Registration</a>
                         <a href="june2025/dashboard/applicant_login" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Returning Student Portal</a>
@@ -291,7 +291,7 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
 
                 <!-- Mobile CTA -->
                 <div class="pt-4 mt-4 border-t border-gray-100">
-                    <a href="dashboard/applicant_login" class="block w-full text-center bg-purple-700 text-white px-4 py-3 rounded-lg font-bold hover:bg-purple-800 transition shadow-md">
+                    <a href="requirements" class="block w-full text-center bg-purple-700 text-white px-4 py-3 rounded-lg font-bold hover:bg-purple-800 transition shadow-md">
                         Apply Now
                     </a>
                 </div>

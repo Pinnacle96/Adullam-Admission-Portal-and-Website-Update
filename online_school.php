@@ -14,7 +14,7 @@
             <div class="relative max-w-7xl mx-auto px-6 text-center text-white">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6 animate-fadeInUp">Adullam Online School</h1>
                 <p class="text-lg md:text-xl font-light max-w-3xl mx-auto mb-8 animate-fadeInUp animation-delay-200">Discover a new way to learn theology with our flexible and engaging online programs designed for your busy life.</p>
-                <a href="#apply" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Explore Programs</a>
+                <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Explore Programs</a>
             </div>
         </section>
 
@@ -27,7 +27,7 @@
                         <p class="text-lg text-gray-700 leading-relaxed mb-6">
                             At Adullam Online School, we understand the importance of balancing academic pursuits with other responsibilities. Our online programs offer a unique blend of <strong class="text-purple-700">flexibility and engaging content</strong>, making it possible for individuals with family or work commitments to further their education without sacrificing their existing obligations.
                         </p>
-                        <a href="dashboard" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105">Apply Now</a>
+                        <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105">Apply Now</a>
                     </div>
                     <div class="order-1 lg:order-2">
                         <div class="image-container shadow-lg transform hover:scale-105 transition-transform duration-300">
@@ -88,7 +88,7 @@
                     <h2 class="text-3xl md:text-4xl font-bold text-purple-700 mb-6 animate-fadeInUp">Ready to Start Your Journey?</h2>
                     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                         <a href="contact" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105" aria-label="Contact Us for More Information">Contact Us</a>
-                        <a href="dashboard" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="Apply Now for Adullam Online School">Apply Now</a>
+                        <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="Apply Now for Adullam Online School">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -96,7 +96,7 @@
 
         <!-- Sticky Apply Now Button -->
         <div class="fixed bottom-6 right-6 z-50">
-            <a href="dashboard" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="Apply Now for Adullam Online School">
+            <a href="requirements" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="Apply Now for Adullam Online School">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Apply Now
             </a>

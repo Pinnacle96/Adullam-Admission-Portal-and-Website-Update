@@ -32,7 +32,9 @@ function saveFile($file, $field) {
     
     $maxFileSize = 5 * 1024 * 1024;
     if ($file['size'] > $maxFileSize) {
-        return ['success' => false, 'message' => "File size for $field exceeds 5MB limit."];
+        $readableLimit = "5MB";
+        $actualSize = round($file['size'] / (1024 * 1024), 2) . "MB";
+        return ['success' => false, 'message' => "The uploaded document for $field ($actualSize) is larger than the allowed size of $readableLimit."];
     }
     
     $targetDir = "uploads/documents/";

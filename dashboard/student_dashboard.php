@@ -55,56 +55,9 @@ $currentLevel = $_SESSION['current_level'] ?? 1;
         </div>
 
         <?php if (!$hasApp): ?>
-            <!-- Show modal if application not started -->
+            <!-- Redirect directly to form if application not started -->
             <script>
-                window.addEventListener('DOMContentLoaded', () => {
-                    Swal.fire({
-                        title: '📘 Application Requirements',
-                        width: window.innerWidth < 600 ? '90%' : '800px',
-                        html: `
-        <div class="text-left text-sm text-gray-800 max-h-96 overflow-y-auto px-2">
-          <h3 class="font-semibold text-purple-700 mb-1">🎓 UNDERGRADUATE PROGRAMMES</h3>
-          <h4>The following are the requirements for undergraduate admissions:</h4>
-          <ul class="list-disc ml-5 space-y-1">
-            <li>A recent passport photograph</li>
-            <li>💵 ₦15,000 (Local Students) or $30 (International Students)non-refundable application fee proof of payment (<a href="Account Details New.pdf" target="_blank" class="text-purple-600 underline">Download account details</a>)</li>
-            <li><strong>Academic Credentials</strong>
-              <ul class="list-disc ml-5 mt-1">
-                <li><strong>Certificate</strong> – SSCE (or its equivalent) with 5 credits including English</li>
-                <li><strong>Diploma</strong> – SSCE (or its equivalent) with 5 credits including English</li>
-                <li><strong>B.Div</strong> – SSCE (or its equivalent) with 5 credits including English </li>
-              </ul>
-            </li>
-            <li>📱 Phone numbers and email of two referees</li>
-            <li>📜 One recommendation letter from a clergy (<a href="clergy_template.pdf" target="_blank" class="text-purple-600 underline">Download Template</a>)</li>
-            <li>🌍 International students applying for the on-campus program option must secure an STR Visa from the Nigerian Embassy and prepare to pay for a resident card upon arrival (Contact ‪+2348022164432‬ for more details)
-</li>
-          </ul>
-
-          <h3 class="font-semibold text-purple-700 mt-4 mb-1">🎓 POSTGRADUATE PROGRAMMES</h3>
-           <h4>The following are the requirements for post-graduate admissions:</h4>
-          <ul class="list-disc ml-5 space-y-1">
-            <li>A recent passport photograph</li>
-            <li>💵 ₦25,000 (Local Students) or $40 (International Students)
- non-refundable application fee proof of payment (<a href="Account Details New.pdf" target="_blank" class="text-purple-600 underline">Download account details</a>)</li>
-            <li><strong>Academic Credentials</strong>
-              <ul class="list-disc ml-5 mt-1">
-                <li><strong>PGDT</strong> – Bachelor’s degree or HND in any field</li>
-                <li><strong>MA</strong> – BA or PGD official transcript from a recognized Theological Seminary.</li>
-              </ul>
-            </li>
-            <li>📱 Phone numbers and email of two referees</li>
-            <li>📜 One recommendation letter from a clergy (<a href="clergy_template.pdf" target="_blank" class="text-purple-600 underline">Download Template</a>)</li>
-            <li>🌍 International students applying for the on-campus program option must secure an STR Visa from the Nigerian Embassy and prepare to pay for a resident card upon arrival (Contact ‪+2348022164432‬ for more details).</li>
-          </ul>
-        </div>
-      `,
-                        confirmButtonText: 'Begin Application',
-                        confirmButtonColor: '#6B21A8'
-                    }).then(() => {
-                        window.location.href = 'form_level1';
-                    });
-                });
+                window.location.href = 'form_level1';
             </script>
         <?php else: ?>
             <!-- Auto resume if already started -->

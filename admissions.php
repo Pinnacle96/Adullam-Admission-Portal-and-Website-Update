@@ -14,7 +14,7 @@
             <div class="relative max-w-7xl mx-auto px-6 text-center text-white">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6 animate-fadeInUp">Admissions at Adullam</h1>
                 <p class="text-lg md:text-xl font-light max-w-3xl mx-auto mb-8 animate-fadeInUp animation-delay-200">Discover your path to theological education. We offer programs for various academic backgrounds with flexible admission windows.</p>
-                <a href="#apply" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Start Your Journey</a>
+                <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Start Your Journey</a>
             </div>
         </section>
 
@@ -33,7 +33,7 @@
                          <p class="text-lg text-gray-700 leading-relaxed">
                         We are currently accepting applications for January, 2026 Session!
                          </p>
-                        <a href="dashboard" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105 mt-6">Apply Now</a>
+                        <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105 mt-6">Apply Now</a>
                     </div>
                     <div class="order-1 lg:order-2">
                         <div class="image-container shadow-lg transform hover:scale-105 transition-transform duration-300">
@@ -94,7 +94,7 @@
                 <!-- Call to Action -->
                 <div class="mt-20 text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-purple-700 mb-6 animate-fadeInUp">Ready to Take the Next Step?</h2>
-                    <a href="dashboard" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="Apply Now for Adullam Seminary Programs">Apply Now</a>
+                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="Apply Now for Adullam Seminary Programs">Apply Now</a>
                 </div>
             </div>
         </section>

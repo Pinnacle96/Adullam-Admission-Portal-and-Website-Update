@@ -10,7 +10,7 @@
             <div class="relative max-w-7xl mx-auto px-6 text-center text-white">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6 animate-fadeInUp">Our Story: Who We Are</h1>
                 <p class="text-lg md:text-xl font-light max-w-3xl mx-auto mb-8 animate-fadeInUp animation-delay-200">Discover our mission, vision, and core values as we raise a new generation of transformational leaders.</p>
-                <a href="admissions" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Learn About Us</a>
+                <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Learn About Us</a>
             </div>
         </section>
 
@@ -25,7 +25,7 @@
                     <p class="text-lg text-gray-700 leading-relaxed">
                         Our journey is one of faith, diligence, and a relentless pursuit of truth. We believe in preparing students not just for ministry, but for a life of purpose, equipped with the knowledge and spiritual conviction to make a lasting difference in the world.
                     </p>
-                    <a href="admission.php" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105 mt-6">Explore Our Programs</a>
+                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105 mt-6">Explore Our Programs</a>
                 </div>
                 <div class="order-1 lg:order-2">
                     <div class="image-container shadow-lg transform hover:scale-105 transition-transform duration-300">
@@ -91,13 +91,13 @@
             <div class="max-w-4xl mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-purple-800 mb-4 animate-fadeInUp">Ready to Join Us?</h2>
                 <p class="text-lg text-gray-600 mb-8 animate-fadeInUp animation-delay-200">If you feel an urgent call to position yourself for life, ministry, and destiny, we invite you to explore our programs and become part of our community.</p>
-                <a href="admission.php" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="View Admissions Information for Adullam Seminary">View Admissions Information</a>
+                <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105" aria-label="View Admissions Information for Adullam Seminary">View Admissions Information</a>
             </div>
         </section>
 
         <!-- Sticky CTA Button -->
         <div class="fixed bottom-6 right-6 z-50">
-            <a href="admissions" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="View Admissions Information for Adullam Seminary">
+            <a href="requirements" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="View Admissions Information for Adullam Seminary">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Explore Programs
             </a>

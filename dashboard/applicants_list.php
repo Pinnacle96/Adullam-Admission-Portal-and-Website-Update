@@ -200,6 +200,20 @@ $(document).ready(function () {
         fetchApplicants(page);
     });
 });
+
+function deleteApplication(id) {
+    if (confirm('Are you sure you want to permanently delete this application? This will also remove all uploaded documents.')) {
+        $.post('delete_application_admin.php', { id: id }, function(response) {
+            const res = JSON.parse(response);
+            if (res.success) {
+                alert(res.message);
+                fetchApplicants(); // Refresh list
+            } else {
+                alert('Error: ' + res.message);
+            }
+        });
+    }
+}
 </script>
 
 </body>

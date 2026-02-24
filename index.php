@@ -180,7 +180,7 @@ if ($modal_active) {
                 <p class="text-lg md:text-xl font-light max-w-2xl mx-auto mb-8">
                     An institution committed to raising Christ-like leaders with deep biblical roots and spiritual fire.
                 </p>
-                <a href="#programs" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition transform hover:scale-105">
+                <a href="requirements" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition transform hover:scale-105">
                     Explore Our Programs
                 </a>
             </div>
@@ -192,7 +192,7 @@ if ($modal_active) {
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-2">Contending for the Truth</h2>
             <p class="text-lg md:text-xl font-light mb-8">In a world of falsehood, it begins with a proper education.</p>
-            <a href="dashboard" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-full shadow-xl hover:bg-gray-200 transition transform hover:scale-105">
+            <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-full shadow-xl hover:bg-gray-200 transition transform hover:scale-105">
                 Apply Now
             </a>
         </div>
