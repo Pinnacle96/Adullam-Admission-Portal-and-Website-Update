@@ -10,8 +10,8 @@
 //local
 $host = 'localhost';        // Change to your DB host
 $db   = 'u499616432_adullamn_cams';       // Change to your DB name
-$user = 'root';             // Change to your DB user
-$pass = '';                 // Change to your DB password
+$user = 'u499616432_adullamn';             // Change to your DB user
+$pass = 'Rq;u54Y77#QFxx';                 // Change to your DB password
 $charset = 'utf8mb4';
 
 // PDO Setup
