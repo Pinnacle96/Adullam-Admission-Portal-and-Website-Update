@@ -105,15 +105,15 @@ $students = $stmt->fetchAll();
                 </div>
             </div>
 
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <form id="filterForm" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <input name="search" value="<?= htmlspecialchars($search) ?>" type="text" placeholder="Search name or email" class="px-4 py-2 border rounded-lg">
-                <select name="cohort" class="px-4 py-2 border rounded-lg">
+                <select name="cohort" class="px-4 py-2 border rounded-lg" onchange="this.form.submit()">
                     <option value="">All Cohorts</option>
                     <?php foreach ($cohorts as $c): ?>
                         <option value="<?= htmlspecialchars($c) ?>" <?= $cohort === $c ? 'selected' : '' ?>><?= htmlspecialchars($c) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <select name="program" class="px-4 py-2 border rounded-lg">
+                <select name="program" class="px-4 py-2 border rounded-lg" onchange="this.form.submit()">
                     <option value="">All Programs</option>
                     <option value="MA" <?= $program === 'MA' ? 'selected' : '' ?>>MA</option>
                     <option value="PGDT" <?= $program === 'PGDT' ? 'selected' : '' ?>>PGDT</option>
@@ -121,7 +121,7 @@ $students = $stmt->fetchAll();
                     <option value="Diploma" <?= $program === 'Diploma' ? 'selected' : '' ?>>Diploma</option>
                     <option value="Certificate" <?= $program === 'Certificate' ? 'selected' : '' ?>>Certificate</option>
                 </select>
-                <select name="status" class="px-4 py-2 border rounded-lg">
+                <select name="status" class="px-4 py-2 border rounded-lg" onchange="this.form.submit()">
                     <option value="">All Status</option>
                     <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Pending</option>
                     <option value="sent" <?= $status === 'sent' ? 'selected' : '' ?>>Sent</option>
@@ -190,6 +190,22 @@ $students = $stmt->fetchAll();
     </div>
 
     <script>
+        // Auto-submit form on filter change
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', debounce(() => {
+                document.getElementById('filterForm').submit();
+            }, 500));
+        }
+
         document.getElementById('selectAll')?.addEventListener('change', function() {
             document.querySelectorAll('.student-checkbox').forEach(cb => cb.checked = this.checked);
         });
