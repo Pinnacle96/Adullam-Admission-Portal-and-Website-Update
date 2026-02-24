@@ -25,28 +25,26 @@ function logBroadcast($message) {
 
 // Ensure the table structure is ready
 try {
-    $pdo->exec("CREATE TABLE IF NOT EXISTS email_queue (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        to_email VARCHAR(255) NOT NULL,
-        to_name VARCHAR(255),
-        subject VARCHAR(255),
-        body TEXT,
-        from_email VARCHAR(255),
-        from_name VARCHAR(255),
-        status ENUM('pending', 'sent', 'failed') DEFAULT 'pending',
-        attempts INT DEFAULT 0,
-        last_error TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )");
+    // Add 'attempts' if missing
+    $check = $pdo->query("SHOW COLUMNS FROM email_queue LIKE 'attempts'");
+    if (!$check->fetch()) {
+        $pdo->exec("ALTER TABLE email_queue ADD COLUMN attempts INT DEFAULT 0");
+    }
     
-    // Check and add columns if they were missing from an existing table
-    $pdo->exec("ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS status ENUM('pending', 'sent', 'failed') DEFAULT 'pending'");
-    $pdo->exec("ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS attempts INT DEFAULT 0");
-    $pdo->exec("ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS last_error TEXT");
-    $pdo->exec("ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+    // Add 'last_error' if missing (it has error_message, let's keep it consistent)
+    $check = $pdo->query("SHOW COLUMNS FROM email_queue LIKE 'last_error'");
+    if (!$check->fetch()) {
+        $pdo->exec("ALTER TABLE email_queue ADD COLUMN last_error TEXT");
+    }
+
+    // Ensure status column exists and has correct enum
+    $check = $pdo->query("SHOW COLUMNS FROM email_queue LIKE 'status'");
+    if (!$check->fetch()) {
+        $pdo->exec("ALTER TABLE email_queue ADD COLUMN status ENUM('pending', 'sent', 'failed') DEFAULT 'pending'");
+    }
+
 } catch (Exception $e) {
-    // Log if something went wrong but continue
+    logBroadcast("Schema Update Error: " . $e->getMessage());
 }
 
 // Fetch up to 30 pending emails to process per run
@@ -74,10 +72,12 @@ foreach ($queue as $item) {
     $success = sendMail($toEmail, $toName, $subject, $body, null, null, $fromEmail, $fromName);
 
     if ($success) {
-        $pdo->prepare("UPDATE email_queue SET status = 'sent', updated_at = NOW() WHERE id = ?")->execute([$queueId]);
+        // Use 'sent_at' if it exists
+        $pdo->prepare("UPDATE email_queue SET status = 'sent', sent_at = NOW() WHERE id = ?")->execute([$queueId]);
         logBroadcast("✅ Sent to {$toEmail}");
     } else {
-        $pdo->prepare("UPDATE email_queue SET status = 'failed', attempts = attempts + 1, updated_at = NOW() WHERE id = ?")->execute([$queueId]);
+        // Use 'error_message' if it exists, otherwise last_error
+        $pdo->prepare("UPDATE email_queue SET status = 'failed', attempts = attempts + 1, error_message = 'Failed to send' WHERE id = ?")->execute([$queueId]);
         logBroadcast("❌ Failed for {$toEmail}");
     }
 }
