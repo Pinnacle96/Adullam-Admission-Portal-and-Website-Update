@@ -198,6 +198,9 @@ $payments = $stmt->fetchAll();
                                             <button onclick="handleAction('reject', <?= $p['id'] ?>)"
                                                     class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">Reject</button>
                                         </div>
+                                    <?php elseif ($p['status'] === 'approved' && $p['mode_of_study'] === 'online'): ?>
+                                        <button onclick="bulkAction('onboard', <?= $p['id'] ?>)"
+                                                class="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700">Onboard</button>
                                     <?php else: ?>
                                         <span class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">Processed</span>
                                     <?php endif; ?>
@@ -340,16 +343,16 @@ $payments = $stmt->fetchAll();
             document.querySelectorAll('.payment-checkbox').forEach(cb => cb.checked = this.checked);
         });
 
-        function bulkAction(type) {
-            const selected = Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.value);
-            const modes = Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.dataset.mode);
+        function bulkAction(type, singleId = null) {
+            const selected = singleId ? [singleId] : Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.value);
+            const modes = singleId ? [] : Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.dataset.mode);
             
             if (selected.length === 0) {
                 Swal.fire('Error', 'Please select at least one entry.', 'error');
                 return;
             }
 
-            if (type === 'onboard') {
+            if (type === 'onboard' && !singleId) {
                 const hasOnsite = modes.some(m => m === 'onsite');
                 if (hasOnsite) {
                     Swal.fire('Restricted', 'Onboarding is only available for Online students.', 'warning');
