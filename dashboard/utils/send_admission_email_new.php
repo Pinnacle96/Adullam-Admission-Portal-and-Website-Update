@@ -4,10 +4,11 @@ require_once __DIR__ . '/generate_admission_letter.php';
 
 function sendAdmissionEmail($user_id, $pdo)
 {
+    // Step 1: Generate the admission letter PDF first (ensures the latest version)
     if (!generateAdmissionLetter($user_id, $pdo)) {
         return false;
     }
-    
+
     $stmt = $pdo->prepare("
         SELECT
             u.first_name, u.email,
@@ -34,16 +35,17 @@ function sendAdmissionEmail($user_id, $pdo)
     $dashboard_link = 'https://adullam.ng/dashboard';
     $logo           = 'https://adullam.ng/assets/img/logo1.png';
     $resumption_date = 'June 15, 2026';
-    $contact_email  = 'adullamadmissions@gmail.com';
 
     $programMap = [
-        'MA'         => 'Master of Arts',
-        'PGDT'       => 'Postgraduate Diploma in Theology',
-        'B.DIV'      => 'Bachelor of Divinity',
-        'DIPLOMA'    => 'Diploma in Theology',
-        'CERTIFICATE'=> 'Certificate in Theology',
+        'MA'          => ['name' => 'Master of Arts', 'duration' => '24 months'],
+        'PGDT'        => ['name' => 'Postgraduate Diploma in Theology', 'duration' => '10 months'],
+        'B.DIV'       => ['name' => 'Bachelor of Divinity', 'duration' => '4 years'],
+        'DIPLOMA'     => ['name' => 'Diploma in Theology', 'duration' => '3 years'],
+        'CERTIFICATE' => ['name' => 'Certificate in Theology', 'duration' => '1 year'],
     ];
-    $programLabel = $programMap[$programCode] ?? $programCode;
+
+    $programLabel = $programMap[$programCode]['name'] ?? $programCode;
+    $duration = $programMap[$programCode]['duration'] ?? 'N/A';
 
     if ($programCode === 'MA' && !empty($ma_focus)) {
         $programLabel .= " ($ma_focus)";
@@ -67,7 +69,8 @@ function sendAdmissionEmail($user_id, $pdo)
             <div style='background-color:#F5F3FF; padding:20px; border-radius:12px; margin:20px 0; border-left:4px solid #6B21A8;'>
                 <p style='margin:0; font-size:15px; color:#1E1B4B;'>
                     <strong>Admission Number:</strong> $admission_no<br>
-                    <strong>Program:</strong> $programLabel
+                    <strong>Program:</strong> $programLabel<br>
+                    <strong>Duration:</strong> $duration
                 </p>
             </div>
 
@@ -111,7 +114,8 @@ function sendAdmissionEmail($user_id, $pdo)
             <div style='background-color:#F5F3FF; padding:20px; border-radius:12px; margin:20px 0; border-left:4px solid #6B21A8;'>
                 <p style='margin:0; font-size:15px; color:#1E1B4B;'>
                     <strong>Admission Number:</strong> $admission_no<br>
-                    <strong>Program:</strong> $programLabel
+                    <strong>Program:</strong> $programLabel<br>
+                    <strong>Duration:</strong> $duration
                 </p>
             </div>
 

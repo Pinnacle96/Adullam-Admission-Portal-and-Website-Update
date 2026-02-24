@@ -49,7 +49,9 @@ function generateAdmissionLetter($userId, $pdo)
     $outputDir = realpath(__DIR__ . '/../letters/admission_letters');
     if (!$outputDir) {
         $outputDir = __DIR__ . '/../letters/admission_letters';
-        mkdir($outputDir, 0775, true);
+        if (!is_dir($outputDir)) {
+            mkdir($outputDir, 0775, true);
+        }
     }
 
     $letterPath = $outputDir . "/{$userId}.pdf";
@@ -60,42 +62,32 @@ function generateAdmissionLetter($userId, $pdo)
     <body style='font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#333;padding:40px;'>
         <div style='text-align:center;margin-bottom:30px;'>
             <img src='$logoSrc' style='height:70px;'><br>
-            <h2 style='color:#6B21A8;'>RCN Theological Seminary – Adullam</h2>
-            <p style='font-size:14px;font-weight:bold;'>Admission Letter</p>
+            <h2 style='color:#6B21A8;margin-bottom:5px;'>RCN Theological Seminary – Adullam</h2>
+            <p style='font-size:14px;font-weight:bold;margin-top:0;'>Admission Letter ($modeOfStudy)</p>
         </div>
 
         <p>Dear <strong>$fullName</strong>,</p>
-                        <p>
-             We are delighted to inform you that the Admissions Committee of 
-            <strong>Remnant Christian Network Theological Seminary - Adullam</strong> 
-            has approved your application for provisional admission to the 
-            <strong>$programLabel</strong>" .
-        ($programCode === 'MA' ? " (<em>$maFocus</em>)" : "") .
-        " program, commencing on <strong>January 5, 2026</strong>. Please note that this offer of admission is 
-        for the January 2026 academic session and may not be deferred
+        
+        <p>
+            We are delighted to inform you that the Admissions Committee of <strong>Remnant Christian Network Theological Seminary - Adullam</strong> has approved your application for provisional admission to the <strong>$programLabel" . ($programCode === 'MA' ? " (<em>$maFocus</em>)" : "") . "</strong> program, commencing on <strong>June 15, 2026</strong>. Please note that this offer of admission is for the <strong>June 2026 academic session</strong> and <strong>may not be deferred</strong>.
         </p>
 
         <p>
-           Congratulations on your academic achievements and welcome to our academic community!
+            Congratulations on your academic achievements and welcome to our academic community!
         </p>
 
-        <p><strong>Below are the admission Details::</strong></p>
-        <ul>
-            <li><strong>Admission Number:</strong> $admissionNo</li>
-            <li><strong>Program:</strong> $programLabel</li>" .
-        ($programCode === 'MA' ? "<li><strong>Focus Area:</strong> $maFocus</li>" : "") . "
-            <li><strong>Learning Option:</strong> $modeOfStudy</li>
-            <li><strong>Duration:</strong> $programDuration</li>
-            <li><strong>Start Date:</strong> January 5, 2026</li>
+        <p>Below are the admission Details:</p>
+        <ul style='list-style-type: none; padding-left: 0;'>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Admission Number:</strong> $admissionNo</li>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Program:</strong> $programLabel" . ($programCode === 'MA' ? " ($maFocus)" : "") . "</li>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Learning Option:</strong> $modeOfStudy</li>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Duration:</strong> $programDuration</li>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Start Date:</strong> June 15, 2026</li>
         </ul>
         
-       
         <p>
-        Please note that you may forfeit this admission <strong>if you fail to register by documenting your academic credentials,</strong> uploading/filing your fee receipt (at least 60% of the semester’s fees),<br>
-            <strong>and other required documents before the day of matriculation,</strong> which is held immediately after the start date.
+            Please note that you may forfeit this admission <strong>if you fail to register by documenting your academic credentials, uploading/filing your fee receipt (at least 60% of the semester’s fees), and other required documents before the day of matriculation</strong>, which is held immediately after the start date.
         </p>
-
-        
 
         <p>Once again, <strong>congratulations on your admission</strong>.</p>
 
