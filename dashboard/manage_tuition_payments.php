@@ -115,6 +115,10 @@ $payments = $stmt->fetchAll();
                            class="w-full sm:w-64 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600">
                     
                     <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="bulkAction('delete')" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition">Delete Selected</button>
+                            <button type="button" onclick="bulkAction('onboard')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">Onboard Selected</button>
+                        </div>
                         <select name="cohort" onchange="this.form.submit()" class="w-full sm:w-auto px-4 py-2 border rounded-lg shadow-sm bg-purple-50 text-purple-900 font-medium">
                             <option value="">All Cohorts</option>
                             <?php foreach ($cohorts as $c): ?>
@@ -143,6 +147,9 @@ $payments = $stmt->fetchAll();
                     <table class="w-full text-sm text-left min-w-[640px]" id="paymentTable">
                         <thead class="text-gray-700 border-b bg-gray-50">
                             <tr>
+                                <th class="py-3 px-4 w-10">
+                                    <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                                </th>
                                 <th class="py-3 px-4">Name</th>
                                 <th class="py-3 px-4">Program</th>
                                 <th class="py-3 px-4">Focus (MA)</th>
@@ -156,6 +163,9 @@ $payments = $stmt->fetchAll();
                         <tbody>
                         <?php foreach ($payments as $p): ?>
                             <tr class="border-b hover:bg-gray-50" data-cohort="<?= htmlspecialchars($p['cohort'] ?? '') ?>">
+                                <td class="py-3 px-4">
+                                    <input type="checkbox" name="payment_ids[]" value="<?= $p['id'] ?>" data-mode="<?= $p['mode_of_study'] ?>" class="payment-checkbox rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                                </td>
                                 <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap"> <?= htmlspecialchars($p['first_name'] . ' ' . $p['last_name']) ?> </td>
                                 <td class="py-3 px-4"> <?= htmlspecialchars(strtoupper($p['program'])) ?> </td>
                                 <td class="py-3 px-4"> <?= $p['program'] === 'MA' ? htmlspecialchars($p['ma_focus'] ?? '') : '-' ?> </td>
@@ -176,7 +186,12 @@ $payments = $stmt->fetchAll();
                                     </span>
                                 </td>
                                 <td class="py-3 px-4">
-                                    <?php if ($p['status'] === 'pending'): ?>
+                                    <?php if ($p['onboarded']): ?>
+                                        <span class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-bold border border-green-200 flex items-center gap-1 w-fit">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                            Onboarded
+                                        </span>
+                                    <?php elseif ($p['status'] === 'pending'): ?>
                                         <div class="flex flex-col sm:flex-row gap-2">
                                             <button onclick="handleAction('approve', <?= $p['id'] ?>)"
                                                     class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">Approve</button>
@@ -306,7 +321,7 @@ $payments = $stmt->fetchAll();
                         body: JSON.stringify({
                             id,
                             action: type,
-                            note: result.value || ''
+                            remarks: result.value || ''
                         })
                     }).then(res => res.json()).then(data => {
                         Swal.fire({
@@ -315,6 +330,52 @@ $payments = $stmt->fetchAll();
                             text: data.message,
                             confirmButtonColor: '#6B21A8'
                         }).then(() => window.location.reload());
+                    });
+                }
+            });
+        }
+
+        // Bulk Action Logic
+        document.getElementById('selectAll')?.addEventListener('change', function() {
+            document.querySelectorAll('.payment-checkbox').forEach(cb => cb.checked = this.checked);
+        });
+
+        function bulkAction(type) {
+            const selected = Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.value);
+            const modes = Array.from(document.querySelectorAll('.payment-checkbox:checked')).map(cb => cb.dataset.mode);
+            
+            if (selected.length === 0) {
+                Swal.fire('Error', 'Please select at least one entry.', 'error');
+                return;
+            }
+
+            if (type === 'onboard') {
+                const hasOnsite = modes.some(m => m === 'onsite');
+                if (hasOnsite) {
+                    Swal.fire('Restricted', 'Onboarding is only available for Online students.', 'warning');
+                    return;
+                }
+            }
+
+            const title = type === 'delete' ? 'Delete Selected Entries?' : 'Onboard Selected Students?';
+            const text = type === 'delete' ? 'This action is permanent!' : 'These students will be moved to the onboarding list.';
+
+            Swal.fire({
+                title,
+                text,
+                icon: type === 'delete' ? 'warning' : 'question',
+                showCancelButton: true,
+                confirmButtonColor: type === 'delete' ? '#d33' : '#16a34a',
+                confirmButtonText: 'Yes, proceed'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('ajax/tuition_bulk_action', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ids: selected, action: type })
+                    }).then(res => res.json()).then(data => {
+                        Swal.fire(data.status === 'success' ? 'Success' : 'Error', data.message, data.status)
+                        .then(() => window.location.reload());
                     });
                 }
             });
