@@ -180,7 +180,7 @@ if ($modal_active) {
                 <p class="text-lg md:text-xl font-light max-w-2xl mx-auto mb-8">
                     An institution committed to raising Christ-like leaders with deep biblical roots and spiritual fire.
                 </p>
-                <a href="requirements" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition transform hover:scale-105">
+                <a href="#programs" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition transform hover:scale-105">
                     Explore Our Programs
                 </a>
             </div>
