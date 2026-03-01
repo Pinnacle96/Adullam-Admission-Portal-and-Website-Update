@@ -36,7 +36,7 @@
                             Develop skills in critical theological research writing
                         </li>
                     </ul>
-                    <a href="dashboard" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition mt-8 transform hover:scale-105">Apply Now</a>
+                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition mt-8 transform hover:scale-105">Apply Now</a>
                 </div>
                 <div class="order-1 lg:order-2">
                     <div class="image-container shadow-lg transform hover:scale-105 transition-transform duration-300">
@@ -94,7 +94,7 @@
 
         <!-- Sticky Apply Now Button (unchanged) -->
         <div class="fixed bottom-6 right-6 z-50">
-            <a href="dashboard" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="Apply Now for Bachelor of Divinity">
+            <a href="requirements" class="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-purple-900 transition transform hover:scale-105 flex items-center" aria-label="Apply Now for Bachelor of Divinity">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Apply Now
             </a>

@@ -36,7 +36,7 @@
                             Develop skills in critical thinking
                         </li>
                     </ul>
-                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition mt-8 transform hover:scale-105">Apply Now</a>
+                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition mt-8 transform hover:scale-105 animate-fadeInUp">Apply Now</a>
                 </div>
                 <div class="order-1 lg:order-2">
                     <div class="image-container shadow-lg transform hover:scale-105 transition-transform duration-300">
