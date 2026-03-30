@@ -45,6 +45,8 @@ foreach ($semesters as $sem) {
 }
 
 $fullyFull = ($totalBedsLeft === 0); // nothing left at all
+
+$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,6 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
       text: 'Sorry, all available spaces have been reserved for this semester. Please contact admin for assistance.',
       confirmButtonColor: '#6B21A8'
     });
+  } else if (p.get('closed') === '1') {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Registration Closed',
+      text: 'Hostel registration is currently closed. Please check back later.',
+      confirmButtonColor: '#6B21A8'
+    });
   }
 });
 </script>
@@ -94,7 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
     🏨 Family-House Registration – Returning Students
   </h1>
 
-<?php if ($fullyFull): ?>
+<?php if (!$hostelRegistrationOpen): ?>
+  <div class="bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded">
+    <p class="font-semibold">⛔ Registration Closed</p>
+    <p>Hostel registration is currently closed. Please check back later or contact the hostel administrator.</p>
+  </div>
+
+<?php elseif ($fullyFull): ?>
   <div class="bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded">
     <p class="font-semibold">⛔ Hostel Capacity Reached</p>
     <p>All beds for both semesters are currently taken. Please check back

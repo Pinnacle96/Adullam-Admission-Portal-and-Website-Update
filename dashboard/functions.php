@@ -3,6 +3,17 @@
  * Check if Family-House is full for a semester
  * (optionally per-gender). Returns true when no bed is left.
  */
+function getSettingValue(PDO $pdo, string $key, ?string $default = null): ?string
+{
+    $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = ? LIMIT 1");
+    $stmt->execute([$key]);
+    $val = $stmt->fetchColumn();
+    if ($val === false || $val === null || $val === '') {
+        return $default;
+    }
+    return (string)$val;
+}
+
 function hostelIsFull(PDO $pdo, string $semester, ?string $gender = null): bool
 {
     /* ── total capacity ────────────────────────────────── */

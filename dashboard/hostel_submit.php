@@ -15,6 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index'); exit;
 }
 
+$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
+if (!$hostelRegistrationOpen) {
+    $dest = (($_POST['student_type'] ?? '') === 'returning') ? 'register_hostel_returning' : 'register_hostel';
+    header("Location: {$dest}?closed=1");
+    exit;
+}
+
 /* ---------- reCAPTCHA verification ---------- */
 $recaptchaSecret = "6LckELErAAAAAEX6sZUeY6MybRwhq-XweFFMHiNh"; // Replace with your reCAPTCHA v2 secret
 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';

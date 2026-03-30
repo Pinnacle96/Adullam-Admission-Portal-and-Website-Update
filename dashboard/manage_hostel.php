@@ -3,6 +3,7 @@ session_start();
 // Include the database connection and mailer utility
 require_once 'db.php';
 require_once 'mailer.php';
+require_once 'functions.php';
 
 // --- Session and Role-based Access Control ---
 // Check if user is logged in and has 'admin' or 'superadmin' role.
@@ -11,6 +12,8 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
     header('Location: index');
     exit;
 }
+
+$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
 
 // --- Initialize Filters ---
 // Get filter parameters from the URL query string. Default to empty if not set.
@@ -264,6 +267,27 @@ try {
         <h1 class="text-2xl sm:text-3xl font-extrabold text-purple-800 mb-4 sm:mb-6 flex items-center gap-2">
             <span role="img" aria-label="hostel">🏨</span> Hostel Registration Management
         </h1>
+
+        <div class="mb-6 bg-white p-4 sm:p-5 rounded-lg shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="text-sm sm:text-base">
+                <span class="font-semibold text-gray-800">Hostel Registration:</span>
+                <?php if ($hostelRegistrationOpen): ?>
+                    <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">OPEN</span>
+                <?php else: ?>
+                    <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">CLOSED</span>
+                <?php endif; ?>
+            </div>
+            <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
+                <button type="button" onclick="toggleHostelRegistration(<?= $hostelRegistrationOpen ? '0' : '1' ?>)"
+                    class="w-full sm:w-auto px-4 py-2 rounded-md text-sm font-semibold <?= $hostelRegistrationOpen ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' ?>">
+                    <?= $hostelRegistrationOpen ? 'Lock Registration' : 'Open Registration' ?>
+                </button>
+                <button type="button" onclick="clearHostelSemester()"
+                    class="w-full sm:w-auto px-4 py-2 rounded-md text-sm font-semibold bg-gray-900 text-white hover:bg-gray-800">
+                    Clear Semester
+                </button>
+            </div>
+        </div>
 
         <div class="max-w-screen-xl mx-auto">
             <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 bg-white p-4 sm:p-6 rounded-lg shadow-md">
@@ -889,6 +913,93 @@ window.viewDetails = async function(id) {
         });
     };
 });
+
+function toggleHostelRegistration(nextValue) {
+    const actionText = nextValue === 1 || nextValue === '1' ? 'open' : 'lock';
+    Swal.fire({
+        title: actionText === 'open' ? 'Open Hostel Registration?' : 'Lock Hostel Registration?',
+        text: actionText === 'open'
+            ? 'Students will be able to register for hostel again.'
+            : 'Students will not be able to register for hostel until you reopen it.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: actionText === 'open' ? '#16a34a' : '#dc2626',
+        confirmButtonText: actionText === 'open' ? 'Yes, Open' : 'Yes, Lock'
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        fetch('ajax/hostel_toggle_registration.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value: String(nextValue) })
+        })
+        .then(r => r.json())
+        .then(data => {
+            Swal.fire({
+                icon: data.success ? 'success' : 'error',
+                title: data.success ? 'Done' : 'Error',
+                text: data.message,
+                confirmButtonColor: '#6B21A8'
+            }).then(() => {
+                if (data.success) window.location.reload();
+            });
+        })
+        .catch(() => Swal.fire('Error', 'Something went wrong.', 'error'));
+    });
+}
+
+function clearHostelSemester() {
+    Swal.fire({
+        title: 'Clear Hostel For Semester',
+        text: 'This will remove all hostel registrations and allocations for the selected semester. Students will need to register again.',
+        input: 'select',
+        inputOptions: {
+            'First Semester': 'First Semester',
+            'Second Semester': 'Second Semester',
+            '__all__': 'All Semesters'
+        },
+        inputValue: 'First Semester',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Clear',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        const semester = result.value;
+        Swal.fire({
+            title: 'Confirm Clearing',
+            input: 'text',
+            inputLabel: 'Type CLEAR to confirm',
+            inputPlaceholder: 'CLEAR',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'Yes, Clear'
+        }).then((confirmRes) => {
+            if (!confirmRes.isConfirmed) return;
+            if ((confirmRes.value || '').trim().toUpperCase() !== 'CLEAR') {
+                Swal.fire('Cancelled', 'Confirmation text did not match.', 'info');
+                return;
+            }
+            fetch('ajax/clear_hostel_semester.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ semester })
+            })
+            .then(r => r.json())
+            .then(data => {
+                Swal.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.success ? 'Cleared' : 'Error',
+                    text: data.message,
+                    confirmButtonColor: '#6B21A8'
+                }).then(() => {
+                    if (data.success) window.location.reload();
+                });
+            })
+            .catch(() => Swal.fire('Error', 'Something went wrong.', 'error'));
+        });
+    });
+}
 </script>
 </body>
 </html>
