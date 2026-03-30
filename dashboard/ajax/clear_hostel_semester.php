@@ -88,6 +88,9 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     http_response_code(500);
-    error_log('clear_hostel_semester.php error: ' . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Failed to clear hostel records. Please check server error logs.']);
+    // Log to a file we can actually read from the server easily
+    file_put_contents(__DIR__ . '/clear_error.log', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+    
+    // Also return the raw error message to the frontend just for debugging (temporarily)
+    echo json_encode(['success' => false, 'message' => 'DB Error: ' . $e->getMessage()]);
 }
