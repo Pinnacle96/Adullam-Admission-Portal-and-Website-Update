@@ -49,10 +49,10 @@ try {
         }
     };
 
-    $pdo->beginTransaction();
-
     $relaxArchiveTable('hostel_registrations_archive', 'hostel_registrations');
     $relaxArchiveTable('hostel_allocations_archive', 'hostel_allocations');
+
+    $pdo->beginTransaction();
 
     if ($semester === '__all__') {
         $insAlloc = $pdo->exec("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations");
