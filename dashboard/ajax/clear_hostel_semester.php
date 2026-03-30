@@ -18,52 +18,33 @@ if (!in_array($semester, $allowed, true)) {
     exit;
 }
 
-$dashboardDir = realpath(__DIR__ . '/..');
-if (!$dashboardDir) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Server path error']);
-    exit;
-}
-
-$safeDeleteFile = function (?string $path) use ($dashboardDir) {
-    if (!$path) return;
-    $path = trim($path);
-    if ($path === '') return;
-
-    $candidate = null;
-    if (preg_match('/^(\/|[A-Za-z]:\\\\)/', $path)) {
-        $candidate = realpath($path);
-    } else {
-        $candidate = realpath($dashboardDir . DIRECTORY_SEPARATOR . ltrim($path, '/\\'));
-    }
-
-    if ($candidate && strpos($candidate, $dashboardDir) === 0 && is_file($candidate)) {
-        @unlink($candidate);
-    }
-};
-
 try {
     $pdo->beginTransaction();
 
     if ($semester === '__all__') {
-        $stmt = $pdo->query("SELECT passport_file, payment_proof_file FROM hostel_registrations");
-    } else {
-        $stmt = $pdo->prepare("SELECT passport_file, payment_proof_file FROM hostel_registrations WHERE semester = ?");
-        $stmt->execute([$semester]);
-    }
+        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_registrations_archive LIKE hostel_registrations");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_allocations_archive LIKE hostel_allocations");
 
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $safeDeleteFile($row['passport_file'] ?? null);
-        $safeDeleteFile($row['payment_proof_file'] ?? null);
-    }
-
-    if ($semester === '__all__') {
+        $insAlloc = $pdo->exec("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations");
         $delAlloc = $pdo->exec("DELETE FROM hostel_allocations");
-        $delReg   = $pdo->exec("DELETE FROM hostel_registrations");
+
+        $insReg = $pdo->exec("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations");
+        $delReg = $pdo->exec("DELETE FROM hostel_registrations");
     } else {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_registrations_archive LIKE hostel_registrations");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_allocations_archive LIKE hostel_allocations");
+
+        $insAllocStmt = $pdo->prepare("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations WHERE semester = ?");
+        $insAllocStmt->execute([$semester]);
+        $insAlloc = $insAllocStmt->rowCount();
+
         $delAllocStmt = $pdo->prepare("DELETE FROM hostel_allocations WHERE semester = ?");
         $delAllocStmt->execute([$semester]);
         $delAlloc = $delAllocStmt->rowCount();
+
+        $insRegStmt = $pdo->prepare("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations WHERE semester = ?");
+        $insRegStmt->execute([$semester]);
+        $insReg = $insRegStmt->rowCount();
 
         $delRegStmt = $pdo->prepare("DELETE FROM hostel_registrations WHERE semester = ?");
         $delRegStmt->execute([$semester]);
@@ -75,11 +56,10 @@ try {
     $label = $semester === '__all__' ? 'all semesters' : $semester;
     echo json_encode([
         'success' => true,
-        'message' => "Cleared hostel registrations ({$delReg}) and allocations ({$delAlloc}) for {$label}."
+        'message' => "Archived hostel registrations ({$insReg}) and allocations ({$insAlloc}) for {$label}."
     ]);
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Failed to clear hostel records.']);
 }
-

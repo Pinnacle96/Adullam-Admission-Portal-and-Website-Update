@@ -950,7 +950,7 @@ function toggleHostelRegistration(nextValue) {
 function clearHostelSemester() {
     Swal.fire({
         title: 'Clear Hostel For Semester',
-        text: 'This will remove all hostel registrations and allocations for the selected semester. Students will need to register again.',
+        text: 'This will archive all hostel registrations and allocations for the selected semester. Students will need to register again.',
         input: 'select',
         inputOptions: {
             'First Semester': 'First Semester',
@@ -961,7 +961,7 @@ function clearHostelSemester() {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'Clear',
+        confirmButtonText: 'Archive & Clear',
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (!result.isConfirmed) return;
@@ -969,14 +969,14 @@ function clearHostelSemester() {
         Swal.fire({
             title: 'Confirm Clearing',
             input: 'text',
-            inputLabel: 'Type CLEAR to confirm',
-            inputPlaceholder: 'CLEAR',
+            inputLabel: 'Type ARCHIVE to confirm',
+            inputPlaceholder: 'ARCHIVE',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
-            confirmButtonText: 'Yes, Clear'
+            confirmButtonText: 'Yes, Archive'
         }).then((confirmRes) => {
             if (!confirmRes.isConfirmed) return;
-            if ((confirmRes.value || '').trim().toUpperCase() !== 'CLEAR') {
+            if ((confirmRes.value || '').trim().toUpperCase() !== 'ARCHIVE') {
                 Swal.fire('Cancelled', 'Confirmation text did not match.', 'info');
                 return;
             }
