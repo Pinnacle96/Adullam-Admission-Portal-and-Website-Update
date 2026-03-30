@@ -39,6 +39,7 @@ rsort($cohorts);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 </head>
 
@@ -202,17 +203,43 @@ $(document).ready(function () {
 });
 
 function deleteApplication(id) {
-    if (confirm('Are you sure you want to permanently delete this application? This will also remove all uploaded documents.')) {
-        $.post('delete_application_admin.php', { id: id }, function(response) {
-            const res = JSON.parse(response);
-            if (res.success) {
-                alert(res.message);
-                fetchApplicants(); // Refresh list
-            } else {
-                alert('Error: ' + res.message);
-            }
-        });
-    }
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this! This will permanently delete the applicant and all associated data.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post('delete_application_admin.php', { id: id }, function(response) {
+                try {
+                    const res = JSON.parse(response);
+                    if (res.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'The application has been deleted.',
+                            'success'
+                        );
+                        fetchApplicants(); // Refresh list
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            res.message,
+                            'error'
+                        );
+                    }
+                } catch (e) {
+                    Swal.fire(
+                        'Error!',
+                        'An unexpected error occurred.',
+                        'error'
+                    );
+                }
+            });
+        }
+    })
 }
 </script>
 

@@ -26,13 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($docs) {
             $file_fields = ['passport', 'ssce_cert', 'ssce_cert2', 'birth_cert', 'origin_cert', 'recommendation', 'payment_proof', 'degree_cert', 'transcript'];
             foreach ($file_fields as $field) {
-                if (!empty($docs[$field]) && file_exists($docs[$field])) {
-                    unlink($docs[$field]);
+                if (!empty($docs[$field])) {
+                    $filePath = $docs[$field];
+                    // Handle relative paths
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    } elseif (file_exists('../' . $filePath)) {
+                        unlink('../' . $filePath);
+                    }
                 }
             }
         }
 
-        // 2. Delete from related tables (Cascading delete would be better, but doing it manually for safety)
+        // 2. Delete from related tables
         $tables = [
             'application_details',
             'application_personal',
@@ -41,7 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'application_references',
             'application_recommendations',
             'application_documents',
-            'applications'
+            'applications',
+            'tuition_payment',
+            'onboarding_queue'
         ];
 
         foreach ($tables as $table) {
@@ -49,14 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$applicant_id]);
         }
 
-        // 3. Optional: Delete user account? 
-        // User instruction said "delete applications", usually means the application data.
-        // We'll keep the user record for now to prevent breaking session logic if they are logged in,
-        // but if they aren't, it might be cleaner to delete the user too.
-        // For safety, let's JUST delete the application.
+        // 3. Delete user account
+        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+        $stmt->execute([$applicant_id]);
 
         $pdo->commit();
-        echo json_encode(['success' => true, 'message' => 'Application deleted successfully']);
+        echo json_encode(['success' => true, 'message' => 'Applicant deleted successfully']);
 
     } catch (Exception $e) {
         $pdo->rollBack();
