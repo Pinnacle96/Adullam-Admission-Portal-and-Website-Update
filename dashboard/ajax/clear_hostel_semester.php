@@ -19,21 +19,48 @@ if (!in_array($semester, $allowed, true)) {
 }
 
 try {
+    $relaxArchiveTable = function (string $archiveTable, string $sourceTable) use ($pdo) {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `$archiveTable` LIKE `$sourceTable`");
+
+        try {
+            $pdo->exec("ALTER TABLE `$archiveTable` DROP PRIMARY KEY");
+        } catch (Exception $e) {
+        }
+
+        try {
+            $idxStmt = $pdo->query("SHOW INDEX FROM `$archiveTable`");
+            $idxRows = $idxStmt ? $idxStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+            $uniqueIndexNames = [];
+            foreach ($idxRows as $row) {
+                if (($row['Key_name'] ?? '') === 'PRIMARY') {
+                    continue;
+                }
+                if (isset($row['Non_unique']) && (string)$row['Non_unique'] === '0') {
+                    $uniqueIndexNames[(string)$row['Key_name']] = true;
+                }
+            }
+            foreach (array_keys($uniqueIndexNames) as $idxName) {
+                try {
+                    $pdo->exec("ALTER TABLE `$archiveTable` DROP INDEX `$idxName`");
+                } catch (Exception $e) {
+                }
+            }
+        } catch (Exception $e) {
+        }
+    };
+
     $pdo->beginTransaction();
 
-    if ($semester === '__all__') {
-        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_registrations_archive LIKE hostel_registrations");
-        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_allocations_archive LIKE hostel_allocations");
+    $relaxArchiveTable('hostel_registrations_archive', 'hostel_registrations');
+    $relaxArchiveTable('hostel_allocations_archive', 'hostel_allocations');
 
+    if ($semester === '__all__') {
         $insAlloc = $pdo->exec("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations");
         $delAlloc = $pdo->exec("DELETE FROM hostel_allocations");
 
         $insReg = $pdo->exec("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations");
         $delReg = $pdo->exec("DELETE FROM hostel_registrations");
     } else {
-        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_registrations_archive LIKE hostel_registrations");
-        $pdo->exec("CREATE TABLE IF NOT EXISTS hostel_allocations_archive LIKE hostel_allocations");
-
         $insAllocStmt = $pdo->prepare("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations WHERE semester = ?");
         $insAllocStmt->execute([$semester]);
         $insAlloc = $insAllocStmt->rowCount();
@@ -61,5 +88,6 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Failed to clear hostel records.']);
+    error_log('clear_hostel_semester.php error: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Failed to clear hostel records. Please check server error logs.']);
 }
