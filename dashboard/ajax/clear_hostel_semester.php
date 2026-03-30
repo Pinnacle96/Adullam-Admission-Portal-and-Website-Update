@@ -61,20 +61,45 @@ try {
         $insReg = $pdo->exec("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations");
         $delReg = $pdo->exec("DELETE FROM hostel_registrations");
     } else {
-        $insAllocStmt = $pdo->prepare("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations WHERE semester = ?");
-        $insAllocStmt->execute([$semester]);
-        $insAlloc = $insAllocStmt->rowCount();
+        $regIdsStmt = $pdo->prepare("SELECT id FROM hostel_registrations WHERE semester = ?");
+        $regIdsStmt->execute([$semester]);
+        $regIds = $regIdsStmt->fetchAll(PDO::FETCH_COLUMN);
 
-        $delAllocStmt = $pdo->prepare("DELETE FROM hostel_allocations WHERE semester = ?");
-        $delAllocStmt->execute([$semester]);
-        $delAlloc = $delAllocStmt->rowCount();
+        if (!$regIds) {
+            $pdo->commit();
+            echo json_encode(['success' => true, 'message' => "No hostel records found for {$semester}."]);
+            exit;
+        }
 
-        $insRegStmt = $pdo->prepare("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations WHERE semester = ?");
-        $insRegStmt->execute([$semester]);
+        $regPlaceholders = implode(',', array_fill(0, count($regIds), '?'));
+
+        $allocIdsStmt = $pdo->prepare(
+            "SELECT id FROM hostel_allocations WHERE semester = ? OR registration_id IN ($regPlaceholders)"
+        );
+        $allocIdsStmt->execute(array_merge([$semester], $regIds));
+        $allocIds = $allocIdsStmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if ($allocIds) {
+            $allocPlaceholders = implode(',', array_fill(0, count($allocIds), '?'));
+
+            $insAllocStmt = $pdo->prepare("INSERT INTO hostel_allocations_archive SELECT * FROM hostel_allocations WHERE id IN ($allocPlaceholders)");
+            $insAllocStmt->execute($allocIds);
+            $insAlloc = $insAllocStmt->rowCount();
+
+            $delAllocStmt = $pdo->prepare("DELETE FROM hostel_allocations WHERE id IN ($allocPlaceholders)");
+            $delAllocStmt->execute($allocIds);
+            $delAlloc = $delAllocStmt->rowCount();
+        } else {
+            $insAlloc = 0;
+            $delAlloc = 0;
+        }
+
+        $insRegStmt = $pdo->prepare("INSERT INTO hostel_registrations_archive SELECT * FROM hostel_registrations WHERE id IN ($regPlaceholders)");
+        $insRegStmt->execute($regIds);
         $insReg = $insRegStmt->rowCount();
 
-        $delRegStmt = $pdo->prepare("DELETE FROM hostel_registrations WHERE semester = ?");
-        $delRegStmt->execute([$semester]);
+        $delRegStmt = $pdo->prepare("DELETE FROM hostel_registrations WHERE id IN ($regPlaceholders)");
+        $delRegStmt->execute($regIds);
         $delReg = $delRegStmt->rowCount();
     }
 
