@@ -1,0 +1,94 @@
+name: Rollback Hostinger Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_name:
+        description: "Optional backup file name to restore, for example 20260520123000-abc1234.tar.gz"
+        required: false
+        default: ""
+
+concurrency:
+  group: hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    environment: adullam secret
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Rollback ID
+        shell: bash
+        run: |
+          echo "ROLLBACK_ID=rollback-$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Upload Rollback Support Files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.HOSTINGER_SSH_FINGERPRINT }}
+          source: "deploy/hostinger/rsync-exclude.txt,deploy/hostinger/backup-exclude.txt"
+          target: "${{ secrets.HOSTINGER_DEPLOY_PATH }}/incoming/${{ env.ROLLBACK_ID }}"
+
+      - name: Restore Backup On Hostinger
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.HOSTINGER_SSH_FINGERPRINT }}
+          script_stop: true
+          envs: ROLLBACK_ID
+          script: |
+            set -eu
+
+            DEPLOY_PATH="${{ secrets.HOSTINGER_DEPLOY_PATH }}"
+            PUBLIC_PATH="${{ secrets.HOSTINGER_PUBLIC_PATH }}"
+            REQUESTED_BACKUP="${{ github.event.inputs.backup_name }}"
+
+            SUPPORT_DIR="$DEPLOY_PATH/incoming/$ROLLBACK_ID"
+            RSYNC_EXCLUDE="$SUPPORT_DIR/deploy/hostinger/rsync-exclude.txt"
+            BACKUP_EXCLUDE="$SUPPORT_DIR/deploy/hostinger/backup-exclude.txt"
+            BACKUP_DIR="$DEPLOY_PATH/backups"
+            RESTORE_DIR="$DEPLOY_PATH/tmp/$ROLLBACK_ID"
+
+            command -v rsync >/dev/null 2>&1 || { echo "rsync is required on the server."; exit 1; }
+
+            if [ -n "$REQUESTED_BACKUP" ]; then
+              BACKUP_FILE="$BACKUP_DIR/$REQUESTED_BACKUP"
+            else
+              BACKUP_FILE="$(ls -1t "$BACKUP_DIR"/*.tar.gz 2>/dev/null | head -n 1)"
+            fi
+
+            if [ -z "${BACKUP_FILE:-}" ] || [ ! -f "$BACKUP_FILE" ]; then
+              echo "Backup file not found."
+              exit 1
+            fi
+
+            mkdir -p "$BACKUP_DIR" "$DEPLOY_PATH/tmp"
+
+            if [ -n "$(find "$PUBLIC_PATH" -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)" ]; then
+              SAFETY_BACKUP="$BACKUP_DIR/pre-rollback-$(date -u +%Y%m%d%H%M%S).tar.gz"
+              tar -czf "$SAFETY_BACKUP" --exclude-from="$BACKUP_EXCLUDE" -C "$PUBLIC_PATH" .
+              printf '%s pre-rollback %s\n' "$(date -u +%FT%TZ)" "$(basename "$SAFETY_BACKUP")" >> "$BACKUP_DIR/history.log"
+            fi
+
+            rm -rf "$RESTORE_DIR"
+            mkdir -p "$RESTORE_DIR"
+
+            tar -xzf "$BACKUP_FILE" -C "$RESTORE_DIR"
+            rsync -a --delete --exclude-from="$RSYNC_EXCLUDE" "$RESTORE_DIR"/ "$PUBLIC_PATH"/
+
+            printf '%s rollback %s\n' "$(date -u +%FT%TZ)" "$(basename "$BACKUP_FILE")" >> "$BACKUP_DIR/history.log"
+
+            rm -rf "$RESTORE_DIR" "$SUPPORT_DIR"

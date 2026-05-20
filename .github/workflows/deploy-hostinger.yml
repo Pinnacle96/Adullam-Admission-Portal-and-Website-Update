@@ -1,0 +1,143 @@
+name: Deploy To Hostinger
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: adullam secret
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          extensions: mbstring, dom, gd, pdo_mysql, zip
+          tools: composer:v2
+
+      - name: Create Release ID
+        shell: bash
+        run: |
+          echo "RELEASE_ID=$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Install Production Dependencies
+        shell: bash
+        run: |
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Build Release Archive
+        shell: bash
+        run: |
+          rm -rf build
+          mkdir -p build/package
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='build/' \
+            --exclude='node_modules/' \
+            "$GITHUB_WORKSPACE"/ build/package/
+          tar -czf build/release.tar.gz -C build/package .
+
+      - name: Upload Release Bundle
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.HOSTINGER_SSH_FINGERPRINT }}
+          source: "build/release.tar.gz,deploy/hostinger/rsync-exclude.txt,deploy/hostinger/backup-exclude.txt"
+          target: "${{ secrets.HOSTINGER_DEPLOY_PATH }}/incoming/${{ env.RELEASE_ID }}"
+
+      - name: Deploy On Hostinger
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.HOSTINGER_SSH_FINGERPRINT }}
+          script_stop: true
+          envs: RELEASE_ID
+          script: |
+            set -eu
+
+            DEPLOY_PATH="${{ secrets.HOSTINGER_DEPLOY_PATH }}"
+            PUBLIC_PATH="${{ secrets.HOSTINGER_PUBLIC_PATH }}"
+            KEEP_BACKUPS="${{ secrets.HOSTINGER_KEEP_BACKUPS }}"
+            HEALTHCHECK_URL="${{ secrets.HOSTINGER_HEALTHCHECK_URL }}"
+
+            if [ -z "$KEEP_BACKUPS" ]; then
+              KEEP_BACKUPS="5"
+            fi
+
+            INCOMING_DIR="$DEPLOY_PATH/incoming/$RELEASE_ID"
+            PACKAGE_PATH="$INCOMING_DIR/build/release.tar.gz"
+            RSYNC_EXCLUDE="$INCOMING_DIR/deploy/hostinger/rsync-exclude.txt"
+            BACKUP_EXCLUDE="$INCOMING_DIR/deploy/hostinger/backup-exclude.txt"
+            BACKUP_DIR="$DEPLOY_PATH/backups"
+            TMP_DIR="$DEPLOY_PATH/tmp/$RELEASE_ID"
+            RESTORE_DIR="$DEPLOY_PATH/tmp/restore-$RELEASE_ID"
+            BACKUP_FILE="$BACKUP_DIR/$RELEASE_ID.tar.gz"
+
+            command -v rsync >/dev/null 2>&1 || { echo "rsync is required on the server."; exit 1; }
+
+            mkdir -p "$DEPLOY_PATH" "$BACKUP_DIR" "$DEPLOY_PATH/tmp" "$PUBLIC_PATH"
+            rm -rf "$TMP_DIR" "$RESTORE_DIR"
+            mkdir -p "$TMP_DIR"
+
+            tar -xzf "$PACKAGE_PATH" -C "$TMP_DIR"
+
+            if [ -n "$(find "$PUBLIC_PATH" -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)" ]; then
+              tar -czf "$BACKUP_FILE" --exclude-from="$BACKUP_EXCLUDE" -C "$PUBLIC_PATH" .
+              printf '%s deploy %s\n' "$(date -u +%FT%TZ)" "$(basename "$BACKUP_FILE")" >> "$BACKUP_DIR/history.log"
+            fi
+
+            rsync -a --delete --exclude-from="$RSYNC_EXCLUDE" "$TMP_DIR"/ "$PUBLIC_PATH"/
+
+            mkdir -p \
+              "$PUBLIC_PATH/uploads" \
+              "$PUBLIC_PATH/dashboard/uploads" \
+              "$PUBLIC_PATH/dashboard/logs" \
+              "$PUBLIC_PATH/dashboard/letters/admission_letters" \
+              "$PUBLIC_PATH/user/uploads" \
+              "$PUBLIC_PATH/user/userimages"
+
+            chmod 755 \
+              "$PUBLIC_PATH/uploads" \
+              "$PUBLIC_PATH/dashboard/uploads" \
+              "$PUBLIC_PATH/dashboard/logs" \
+              "$PUBLIC_PATH/dashboard/letters/admission_letters" \
+              "$PUBLIC_PATH/user/uploads" \
+              "$PUBLIC_PATH/user/userimages" || true
+
+            if [ -n "$HEALTHCHECK_URL" ]; then
+              if ! curl -fsSIL --max-time 20 "$HEALTHCHECK_URL" >/dev/null; then
+                echo "Health check failed. Restoring previous backup."
+                if [ -f "$BACKUP_FILE" ]; then
+                  mkdir -p "$RESTORE_DIR"
+                  tar -xzf "$BACKUP_FILE" -C "$RESTORE_DIR"
+                  rsync -a --delete --exclude-from="$RSYNC_EXCLUDE" "$RESTORE_DIR"/ "$PUBLIC_PATH"/
+                fi
+                exit 1
+              fi
+            fi
+
+            ls -1t "$BACKUP_DIR"/*.tar.gz 2>/dev/null | tail -n +$((KEEP_BACKUPS + 1)) | xargs -r rm -f
+
+            printf '%s\n' "$RELEASE_ID" > "$DEPLOY_PATH/last_release.txt"
+
+            rm -rf "$TMP_DIR" "$RESTORE_DIR" "$INCOMING_DIR"
