@@ -15,18 +15,24 @@ These paths are not overwritten during deployment:
 - `db.php`
 - `dashboard/db.php`
 - `includes/dbconnection.php`
+- `june2025/dashboard/db.php`
+- `june2025/includes/dbconnection.php`
 - `token.json`
 - `uploads/`
 - `dashboard/uploads/`
 - `dashboard/logs/`
 - `dashboard/letters/admission_letters/`
+- `june2025/dashboard/uploads/`
+- `june2025/dashboard/logs/`
+- `june2025/dashboard/letters/admission_letters/`
 - `user/uploads/`
 - `user/userimages/`
 - `error_log`
 - `dashboard/error_log`
 - `dashboard/error_log.txt`
+- `june2025/dashboard/error_log`
 
-This is important for this project because live database credentials and uploaded files must stay on the server.
+This is important for this project because live database credentials, student uploads, and generated PDF letters must stay on the server.
 
 ## GitHub Secrets To Add
 

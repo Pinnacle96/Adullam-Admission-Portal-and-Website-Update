@@ -113,6 +113,9 @@ jobs:
               "$PUBLIC_PATH/dashboard/uploads" \
               "$PUBLIC_PATH/dashboard/logs" \
               "$PUBLIC_PATH/dashboard/letters/admission_letters" \
+              "$PUBLIC_PATH/june2025/dashboard/uploads" \
+              "$PUBLIC_PATH/june2025/dashboard/logs" \
+              "$PUBLIC_PATH/june2025/dashboard/letters/admission_letters" \
               "$PUBLIC_PATH/user/uploads" \
               "$PUBLIC_PATH/user/userimages"
 
@@ -121,6 +124,9 @@ jobs:
               "$PUBLIC_PATH/dashboard/uploads" \
               "$PUBLIC_PATH/dashboard/logs" \
               "$PUBLIC_PATH/dashboard/letters/admission_letters" \
+              "$PUBLIC_PATH/june2025/dashboard/uploads" \
+              "$PUBLIC_PATH/june2025/dashboard/logs" \
+              "$PUBLIC_PATH/june2025/dashboard/letters/admission_letters" \
               "$PUBLIC_PATH/user/uploads" \
               "$PUBLIC_PATH/user/userimages" || true
 
