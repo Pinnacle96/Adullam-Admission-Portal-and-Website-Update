@@ -46,7 +46,7 @@ foreach ($semesters as $sem) {
 
 $fullyFull = ($totalBedsLeft === 0); // nothing left at all
 
-$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
+$hostelRegistrationOpen = isHostelRegistrationOpen($pdo, 'returning');
 ?>
 <!DOCTYPE html>
 <html lang="en">

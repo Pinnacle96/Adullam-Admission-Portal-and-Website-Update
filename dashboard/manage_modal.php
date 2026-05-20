@@ -14,6 +14,16 @@ $name = $_SESSION['name'] ?? 'Admin';
 $message = "";
 $msgType = "";
 
+function ensureCohortsTable(PDO $pdo) {
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS cohorts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL UNIQUE,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+}
+
 // Fetch Current Data
 $stmt = $pdo->prepare("SELECT * FROM tblpage WHERE PageType = 'home_modal'");
 $stmt->execute();
@@ -71,6 +81,27 @@ $editorContent = preg_replace('/<div[^>]*>\s*<\/div>/is', '', $editorContent);
 
 // Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = (string)($_POST['action'] ?? 'save_modal');
+
+    if ($action === 'add_cohort_only') {
+        $newCohortName = trim((string)($_POST['cohort_name'] ?? ''));
+
+        if ($newCohortName === '') {
+            $message = "Please enter a cohort name.";
+            $msgType = "error";
+        } else {
+            try {
+                ensureCohortsTable($pdo);
+                $ins = $pdo->prepare("INSERT IGNORE INTO cohorts (name) VALUES (?)");
+                $ins->execute([$newCohortName]);
+                $message = "Cohort saved.";
+                $msgType = "success";
+            } catch (Throwable $e) {
+                $message = "Could not save cohort.";
+                $msgType = "error";
+            }
+        }
+    } else {
     $newTitle = $_POST['pagetitle'];
     $newContent = $_POST['pagedes']; // Content from editor (cleaned)
     $newStatus = $_POST['status'];
@@ -81,6 +112,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES ('current_cohort', ?) ON DUPLICATE KEY UPDATE `value` = ?");
     $stmt->execute([$newCohort, $newCohort]);
     $currentCohort = $newCohort;
+    try {
+        ensureCohortsTable($pdo);
+        $ins = $pdo->prepare("INSERT IGNORE INTO cohorts (name) VALUES (?)");
+        $ins->execute([$newCohort]);
+    } catch (Throwable $e) {
+    }
     
     // Save Deadline
     file_put_contents($deadlineFile, json_encode(['deadline' => $newDeadline]));
@@ -144,6 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msgType = "error";
         }
     }
+    }
 }
 
 ?>
@@ -192,6 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="bg-white rounded-xl shadow p-6">
                 <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    <input type="hidden" name="action" value="save_modal">
                     
                     <!-- Status -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -262,6 +301,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                 </form>
+                <div class="mt-8 border-t pt-6">
+                    <h2 class="text-lg font-bold text-purple-800 mb-3">Add Upcoming Cohort (No Opening)</h2>
+                    <form method="post" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <input type="hidden" name="action" value="add_cohort_only">
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cohort Name</label>
+                            <input type="text" name="cohort_name" placeholder="e.g. January 2027" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border">
+                            <p class="text-sm text-gray-500 mt-1">This adds the cohort to the system so students can pick it for deferral, without changing the current active cohort.</p>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-6 rounded-xl shadow transition duration-200">
+                                Add Cohort
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </main>
     </div>

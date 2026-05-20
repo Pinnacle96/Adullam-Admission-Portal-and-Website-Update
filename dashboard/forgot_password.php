@@ -75,15 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>";
 
-                sendMail($email, "Adullam Admissions", $subject, $body);
-                logAudit($pdo, $user['id'], 'OTP Sent', 'Password reset OTP issued');
+                $sent = sendMail($email, "Adullam Admissions", $subject, $body);
+                if (!$sent) {
+                    $feedbackType = 'error';
+                    $feedbackMessage = 'Could not send OTP email right now. Please try again.';
+                    logAudit($pdo, $user['id'], 'OTP Send Failed', 'Mailer failed to send password reset OTP');
+                } else {
+                    logAudit($pdo, $user['id'], 'OTP Sent', 'Password reset OTP issued');
 
-                $_SESSION['reset_user_id'] = $user['id'];
-                $_SESSION['email'] = $email;
-                $_SESSION['active_token'] = $otp; // ✅ Store OTP for later redirect
+                    $_SESSION['reset_user_id'] = $user['id'];
+                    $_SESSION['email'] = $email;
+                    $_SESSION['active_token'] = $otp;
 
-                $feedbackType = 'success';
-                $feedbackMessage = 'OTP sent to your email. You will be redirected shortly.';
+                    $feedbackType = 'success';
+                    $feedbackMessage = 'OTP sent to your email. You will be redirected shortly.';
+                }
             }
         }
     }

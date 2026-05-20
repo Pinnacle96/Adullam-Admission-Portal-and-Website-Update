@@ -7,11 +7,20 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
     exit;
 }
 
+$normalizeText = function ($value) {
+    $value = (string)$value;
+    $value = str_replace("\xC2\xA0", ' ', $value);
+    $value = str_replace("\xA0", ' ', $value);
+    $value = preg_replace('/\s+/u', ' ', $value);
+    return trim($value);
+};
+
 // Fetch Distinct Cohorts from Applications
 $cohorts = $pdo->query("SELECT DISTINCT cohort FROM applications WHERE cohort IS NOT NULL AND cohort != ''")->fetchAll(PDO::FETCH_COLUMN);
+$cohorts = array_values(array_unique(array_map($normalizeText, $cohorts)));
 
 // Fetch Current Active Cohort (Default Selection)
-$currentCohort = trim($pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026');
+$currentCohort = $normalizeText($pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026');
 
 // Ensure Current Active Cohort is in the list
 if (!in_array($currentCohort, $cohorts)) {

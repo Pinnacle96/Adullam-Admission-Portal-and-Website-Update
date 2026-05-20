@@ -58,7 +58,7 @@ $takenBeds = (int) $occStmt->fetchColumn();
 
 $availableBeds = max(0, $totalBeds - $takenBeds);
 
-$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
+$hostelRegistrationOpen = isHostelRegistrationOpen($pdo, 'new');
 ?>
 <!DOCTYPE html>
 <html lang="en">

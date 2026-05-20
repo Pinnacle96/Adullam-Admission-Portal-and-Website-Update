@@ -7,6 +7,14 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['superadmin', 
     exit('Access denied');
 }
 
+$normalizeText = function ($value) {
+    $value = (string)$value;
+    $value = str_replace("\xC2\xA0", ' ', $value);
+    $value = str_replace("\xA0", ' ', $value);
+    $value = preg_replace('/\s+/u', ' ', $value);
+    return trim($value);
+};
+
 // Get filter parameters
 $search = $_GET['search'] ?? '';
 $program = $_GET['program'] ?? '';
@@ -17,6 +25,8 @@ $moderate = isset($_GET['moderate']) && $_GET['moderate'] === 'true';
 $start_date = $_GET['start_date'] ?? '';
 $end_date = $_GET['end_date'] ?? '';
 $cohort = $_GET['cohort'] ?? '';
+
+$cohort = $normalizeText($cohort);
 
 // Pagination variables
 $limit = 20; // Number of records per page
@@ -30,7 +40,7 @@ $where = ["u.role = 'student'"];
 // Fetch Current Active Cohort
 $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = 'current_cohort'");
 $stmt->execute();
-$currentActiveCohort = $stmt->fetchColumn();
+$currentActiveCohort = $normalizeText($stmt->fetchColumn());
 
 if (!empty($cohort)) {
     $where[] = "a.cohort = :cohort";
@@ -38,10 +48,26 @@ if (!empty($cohort)) {
 }
 
 if (!empty($search)) {
-    $where[] = "(u.first_name LIKE :first OR u.last_name LIKE :last OR LOWER(u.email) LIKE LOWER(:email))";
+    $searchTrimmed = $normalizeText($search);
+    $searchIsNumeric = $searchTrimmed !== '' && ctype_digit($searchTrimmed);
+
+    $searchConditions = [
+        "u.first_name LIKE :first",
+        "u.last_name LIKE :last",
+        "LOWER(u.email) LIKE LOWER(:email)",
+        "a.admission_no LIKE :admission_no",
+    ];
+    if ($searchIsNumeric) {
+        $searchConditions[] = "u.id = :user_id_exact";
+    }
+    $where[] = "(" . implode(" OR ", $searchConditions) . ")";
     $params[':first'] = "%$search%";
     $params[':last'] = "%$search%";
     $params[':email'] = "%$search%";
+    $params[':admission_no'] = "%$search%";
+    if ($searchIsNumeric) {
+        $params[':user_id_exact'] = (int)$searchTrimmed;
+    }
 }
 
 if (!empty($program)) {

@@ -41,9 +41,12 @@ if (isset($_GET['resend'])) {
             <p>This code will expire in 15 minutes.</p>
         </div>";
 
-        sendMail($email, "Adullam Admissions", $subject, $body);
-
-        $_SESSION['otp_feedback'] = ['type' => 'success', 'message' => 'A new OTP has been sent to your email.'];
+        $sent = sendMail($email, "Adullam Admissions", $subject, $body);
+        if (!$sent) {
+            $_SESSION['otp_feedback'] = ['type' => 'error', 'message' => 'Could not send OTP email right now. Please try again.'];
+        } else {
+            $_SESSION['otp_feedback'] = ['type' => 'success', 'message' => 'A new OTP has been sent to your email.'];
+        }
         header("Location: verify_reset_otp");
         exit;
     }

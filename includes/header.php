@@ -25,6 +25,29 @@ if (isset($con)) {
     $stmt->close();
 }
 
+$hostelRegistrationOpenNew = true;
+$hostelRegistrationOpenReturning = true;
+if (isset($con)) {
+    $stmt = $con->prepare("SELECT `key`, value FROM settings WHERE `key` IN (?, ?, ?)");
+    if ($stmt) {
+        $legacyKey = 'hostel_registration_open';
+        $newKey = 'hostel_registration_open_new';
+        $returningKey = 'hostel_registration_open_returning';
+        $stmt->bind_param('sss', $legacyKey, $newKey, $returningKey);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $settings = [];
+        while ($row = $result->fetch_assoc()) {
+            $settings[(string)$row['key']] = (string)$row['value'];
+        }
+        $stmt->close();
+
+        $legacyValue = $settings['hostel_registration_open'] ?? '1';
+        $hostelRegistrationOpenNew = (($settings['hostel_registration_open_new'] ?? $legacyValue) === '1');
+        $hostelRegistrationOpenReturning = (($settings['hostel_registration_open_returning'] ?? $legacyValue) === '1');
+    }
+}
+
 // Dynamic SEO metadata based on page
 $current_page = basename($_SERVER['PHP_SELF']);
 $page_titles = [
@@ -180,7 +203,9 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                     <div class="bg-white rounded-md shadow-lg border border-gray-100 py-1">
                         <a href="dashboard/applicant_login" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Login / Apply</a>
                         <a href="admission_status" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Check Admission Status</a>
+                        <?php if ($hostelRegistrationOpenReturning): ?>
                         <a href="dashboard/register_hostel_returning" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Hostel Registration</a>
+                        <?php endif; ?>
                         <a href="june2025/dashboard/applicant_login" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Returning Student Portal</a>
                     </div>
                 </div>
@@ -284,7 +309,9 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                     <div id="mobile-portal-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
                         <a href="requirements" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Login / Apply</a>
                         <a href="admission_status" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Check Admission Status</a>
+                        <?php if ($hostelRegistrationOpenReturning): ?>
                         <a href="dashboard/register_hostel_returning" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Hostel Registration</a>
+                        <?php endif; ?>
                         <a href="june2025/dashboard/applicant_login" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Returning Student Portal</a>
                     </div>
                 </div>

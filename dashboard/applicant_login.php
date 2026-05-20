@@ -182,13 +182,20 @@ require 'db.php';
                     body: formData
                 });
 
-                const result = await response.json();
+                let result = null;
+                try {
+                    result = await response.json();
+                } catch (e) {
+                    const text = await response.text();
+                    throw new Error(text || 'Invalid server response');
+                }
 
                 if (result.status === 'success') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Login Successful',
                         text: 'Redirecting to your dashboard...',
+                        footer: result.request_id ? `Trace ID: ${result.request_id}` : undefined,
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
@@ -199,6 +206,7 @@ require 'db.php';
                         icon: 'error',
                         title: 'Login Failed',
                         text: result.message || 'Invalid email or password',
+                        footer: result.request_id ? `Trace ID: ${result.request_id}` : undefined,
                         confirmButtonColor: '#6B21A8'
                     });
                 }

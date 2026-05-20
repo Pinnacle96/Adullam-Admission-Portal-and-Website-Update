@@ -16,9 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index'); exit;
 }
 
-$hostelRegistrationOpen = (getSettingValue($pdo, 'hostel_registration_open', '1') === '1');
-if (!$hostelRegistrationOpen) {
-    $dest = (($_POST['student_type'] ?? '') === 'returning') ? 'register_hostel_returning' : 'register_hostel';
+$studentType = strtolower(trim((string)($_POST['student_type'] ?? 'new')));
+$dest = ($studentType === 'returning') ? 'register_hostel_returning' : 'register_hostel';
+
+if (!isHostelRegistrationOpen($pdo, $studentType)) {
     header("Location: {$dest}?closed=1");
     exit;
 }
@@ -28,7 +29,7 @@ $recaptchaSecret = "6LckELErAAAAAEX6sZUeY6MybRwhq-XweFFMHiNh"; // Replace with y
 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
 if (empty($recaptchaResponse)) {
-    header("Location: register_hostel?captcha=0"); exit;
+    header("Location: {$dest}?captcha=0"); exit;
 }
 
 $verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="
@@ -36,7 +37,6 @@ $verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?sec
 $captchaSuccess = json_decode($verify, true);
 
 if (empty($captchaSuccess['success']) || $captchaSuccess['success'] !== true) {
-    $dest = ($_POST['student_type'] === 'returning') ? 'register_hostel_returning' : 'register_hostel';
     header("Location: {$dest}?captcha=0"); exit;
 }
 

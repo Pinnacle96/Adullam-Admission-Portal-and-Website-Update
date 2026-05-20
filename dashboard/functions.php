@@ -14,6 +14,25 @@ function getSettingValue(PDO $pdo, string $key, ?string $default = null): ?strin
     return (string)$val;
 }
 
+function getHostelRegistrationSettingKey(string $studentType): string
+{
+    return strtolower(trim($studentType)) === 'returning'
+        ? 'hostel_registration_open_returning'
+        : 'hostel_registration_open_new';
+}
+
+function isHostelRegistrationOpen(PDO $pdo, string $studentType, string $default = '1'): bool
+{
+    $specificKey = getHostelRegistrationSettingKey($studentType);
+    $specificValue = getSettingValue($pdo, $specificKey, null);
+
+    if ($specificValue === null) {
+        $specificValue = getSettingValue($pdo, 'hostel_registration_open', $default);
+    }
+
+    return (string)$specificValue === '1';
+}
+
 function hostelIsFull(PDO $pdo, string $semester, ?string $gender = null): bool
 {
     /* ── total capacity ────────────────────────────────── */

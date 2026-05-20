@@ -10,8 +10,16 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['superadmin', 
 $role = $_SESSION['role'];
 $name = $_SESSION['name'];
 
+$normalizeText = function ($value) {
+    $value = (string)$value;
+    $value = str_replace("\xC2\xA0", ' ', $value);
+    $value = str_replace("\xA0", ' ', $value);
+    $value = preg_replace('/\s+/u', ' ', $value);
+    return trim($value);
+};
+
 // Fetch Current Active Cohort (Default Selection)
-$defaultCohort = trim($pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026');
+$defaultCohort = $normalizeText($pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026');
 
 // Capture GET parameters for pre-filtering
 $selectedCohort = $_GET['cohort'] ?? $defaultCohort;
@@ -22,6 +30,7 @@ $selectedSearch = $_GET['search'] ?? '';
 
 // Fetch Distinct Cohorts from Applications
 $cohorts = $pdo->query("SELECT DISTINCT cohort FROM applications WHERE cohort IS NOT NULL AND cohort != ''")->fetchAll(PDO::FETCH_COLUMN);
+$cohorts = array_values(array_unique(array_map($normalizeText, $cohorts)));
 
 // Ensure Current Active Cohort is in the list (if not already present)
 if (!in_array($defaultCohort, $cohorts)) {
