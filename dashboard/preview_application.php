@@ -53,7 +53,7 @@ $otherDocs = [
 ];
 
 // Function to display form sections
-function renderTable($title, $data, $editLink, $isLocked)
+function renderTable(string $title, array $data, string $editLink, bool $isLocked): void
 {
     echo "<div class='mt-8'>
         <div class='flex justify-between items-center mb-2'>

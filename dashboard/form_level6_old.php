@@ -32,7 +32,7 @@ if ($userProgram === '') {
 $isPGDTorMA = in_array(strtoupper($userProgram), ['MA', 'PGDT'], true);
 
 // Handle file uploads
-function saveFile($file, $field)
+function saveFile(array $file, string $field): array
 {
     $maxFileSize = 5 * 1024 * 1024; // 5MB
     if ($file['size'] > $maxFileSize) {

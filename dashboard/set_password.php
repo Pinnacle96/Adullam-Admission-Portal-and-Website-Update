@@ -3,7 +3,7 @@ session_start();
 require 'db.php';
 
 // 📝 Log helper
-function logError($message) {
+function logError(string $message): void {
     $logDir = __DIR__ . '/logs';
     if (!is_dir($logDir)) {
         mkdir($logDir, 0755, true);

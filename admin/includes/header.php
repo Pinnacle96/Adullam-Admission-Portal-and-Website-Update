@@ -1,3 +1,8 @@
+<?php
+if (!isset($con)) {
+    require_once __DIR__ . '/dbconnection.php';
+}
+?>
   <link rel="stylesheet" type="text/css" href="../app-assets/css/vendors.css">
   <link rel="stylesheet" type="text/css" href="../app-assets/css/app.css">
   <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/vertical-menu-modern.css">

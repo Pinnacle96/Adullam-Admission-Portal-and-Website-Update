@@ -12,6 +12,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
 $data = json_decode(file_get_contents("php://input"), true);
 $ids = $data['ids'] ?? [];
 $action = $data['action'] ?? '';
+$message = 'Operation completed.';
 
 if (empty($ids) || !in_array($action, ['delete', 'onboard'])) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);

@@ -4,7 +4,7 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/upload_error.log');
 
-function log_message($message, $type = 'INFO') {
+function log_message(string $message, string $type = 'INFO'): void {
     $log_file = __DIR__ . '/upload_trace.log';
     $timestamp = date('[Y-m-d H:i:s T]');
     file_put_contents($log_file, "$timestamp [$type] $message\n", FILE_APPEND);
@@ -53,7 +53,7 @@ try {
 $isPGDTorMA = in_array(strtoupper($userProgram), ['MA', 'PGDT'], true);
 
 // ================= FILE UPLOAD FUNCTION =================
-function saveFile($file, $field) {
+function saveFile(array $file, string $field): array {
     log_message("Debug for $field => tmp_name: {$file['tmp_name']}, size: {$file['size']}, type: {$file['type']}", 'DEBUG');
 
     if ($file['error'] !== UPLOAD_ERR_OK) {

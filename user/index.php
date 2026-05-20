@@ -4,6 +4,10 @@ session_start();
 include 'config.php';
 $msg = "";
 
+if (!isset($conn)) {
+    die('Database connection not available.');
+}
+
 // Redirect to index if user is already logged in
 if (isset($_SESSION['uid'])) {
     header("Location: dashboard");

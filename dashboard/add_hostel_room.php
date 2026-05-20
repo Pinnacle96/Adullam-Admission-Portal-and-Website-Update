@@ -3,7 +3,7 @@ session_start();
 require_once '../db.php';
 
 // Logging setup
-function log_debug($message) {
+function log_debug(string $message): void {
     $logDir = __DIR__ . '/../logs';
     $logFile = $logDir . '/hostel_debug.log';
     if (!is_dir($logDir)) {
@@ -22,6 +22,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
 
 // Initialize
 $errors = [];
+$hostel_names = [];
 $formData = [
     'hostel_name' => '',
     'room_number' => '',

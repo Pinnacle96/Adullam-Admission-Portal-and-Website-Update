@@ -1,4 +1,22 @@
-<?php include 'dashboard_logic.php' ?>
+<?php
+include 'dashboard_logic.php';
+
+/** @var PDO $pdo */
+/** @var array<string, mixed> $appData */
+/** @var string $passport */
+/** @var string $name */
+/** @var string $addmissionNo */
+/** @var string $currentCohort */
+/** @var string $program */
+/** @var string $transcriptUploaded */
+/** @var string $focus */
+/** @var string $mode */
+/** @var bool|int $isSubmitted */
+/** @var bool $isAdmitted */
+/** @var string $admissionLetterPath */
+/** @var array<int, string> $availableCohorts */
+/** @var array<string, mixed>|null $pendingDeferralRequest */
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,6 +62,13 @@
                     <?= ucfirst($appData['status'] ?? 'Not Started') ?></p>
             </div>
 
+            <div class="bg-white shadow p-4 sm:p-5 rounded-xl">
+                <p class="text-xs sm:text-sm text-gray-600 mb-1">📅 Cohort</p>
+                <p class="text-base sm:text-lg font-bold text-purple-700">
+                    <?= htmlspecialchars($currentCohort ?: 'N/A') ?>
+                </p>
+            </div>
+
             <?php if (in_array($program, ['MA', 'PGDT'])): ?>
                 <div class="bg-white shadow p-4 sm:p-5 rounded-xl">
                     <p class="text-xs sm:text-sm text-gray-600 mb-1">📎 Transcript Uploaded</p>
@@ -68,6 +93,13 @@
             </div>
         </div>
 
+        <?php if (isset($_SESSION['deferral_status'], $_SESSION['deferral_message'])): ?>
+            <div class="bg-white p-4 rounded-xl shadow mb-6">
+                <p class="text-sm text-gray-800"><?= htmlspecialchars($_SESSION['deferral_message']) ?></p>
+            </div>
+            <?php unset($_SESSION['deferral_status'], $_SESSION['deferral_message']); ?>
+        <?php endif; ?>
+
         <!-- Actions Section -->
         <div class="bg-white p-4 sm:p-6 rounded-xl shadow space-y-4">
             <h2 class="text-lg sm:text-xl font-bold text-purple-800 mb-2">🧾 Actions</h2>
@@ -84,6 +116,41 @@
                         Download Admission Letter</a>
                 <?php endif; ?>
             </div>
+
+            <?php if ($isAdmitted): ?>
+                <div class="border-t pt-4">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-2">Defer Admission</h3>
+
+                    <?php if ($pendingDeferralRequest): ?>
+                        <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm p-3 rounded">
+                            Your deferral request is pending review.
+                            Requested cohort: <?= htmlspecialchars($pendingDeferralRequest['to_cohort'] ?? '') ?>
+                        </div>
+                    <?php else: ?>
+                        <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                            <input type="hidden" name="action" value="request_deferral">
+                            <div class="sm:col-span-1">
+                                <label class="block text-xs text-gray-500 mb-1">Defer to</label>
+                                <select name="to_cohort" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Select cohort</option>
+                                    <?php foreach ($availableCohorts as $c): ?>
+                                        <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-xs text-gray-500 mb-1">Reason (optional)</label>
+                                <input type="text" name="reason" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Reason for deferral">
+                            </div>
+                            <div class="sm:col-span-1">
+                                <button type="submit" class="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">
+                                    Request Deferral
+                                </button>
+                            </div>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </main>
     </div>
