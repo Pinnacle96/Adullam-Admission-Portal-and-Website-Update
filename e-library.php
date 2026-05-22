@@ -187,6 +187,7 @@ $highlights = [
 <?php endif; ?>
 
 <main class="bg-gradient-to-b from-white via-purple-50/40 to-white">
+    <?php if (false): ?>
     <section class="relative overflow-hidden bg-slate-950 text-white">
         <div class="absolute inset-0">
             <img src="assets/img/e-library.jpg" alt="Digital E-Library" class="h-full w-full object-cover opacity-20">
@@ -196,7 +197,7 @@ $highlights = [
         <div class="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-fuchsia-400/10 blur-3xl"></div>
 
         <div class="relative max-w-7xl mx-auto px-6 py-20 md:py-28 lg:py-32">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+            <div class="max-w-3xl">
                 <div>
                     <span class="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold tracking-wide">
                         Digital Learning Hub
@@ -217,6 +218,7 @@ $highlights = [
                     </div>
                 </div>
 
+                <?php if (false): ?>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="rounded-3xl border border-white/15 bg-white/10 p-6 backdrop-blur">
                         <p class="text-sm uppercase tracking-[0.2em] text-purple-200">Collections</p>
@@ -232,6 +234,90 @@ $highlights = [
                         <p class="text-sm uppercase tracking-[0.2em] text-purple-200">Articles and Journals</p>
                         <p class="mt-3 text-4xl font-extrabold"><?php echo count($articleResources); ?></p>
                         <p class="mt-2 text-sm text-purple-100">Peer-reviewed articles, biblical studies journals, and evangelical research resources.</p>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <section class="relative overflow-hidden bg-slate-950 text-white">
+        <div class="absolute inset-0">
+            <img src="assets/img/e-library.jpg" alt="Digital E-Library" class="h-full w-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.12),_transparent_35%),linear-gradient(120deg,rgba(2,6,23,0.96),rgba(76,29,149,0.92),rgba(126,34,206,0.82))]"></div>
+        </div>
+        <div class="absolute -top-10 right-0 h-64 w-64 rounded-full bg-purple-400/20 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-fuchsia-400/10 blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto px-6 py-20 md:py-28 lg:py-32">
+            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,420px)] gap-10 items-center">
+                <div>
+                    <span class="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold tracking-wide text-purple-100">
+                        Curated Theology Resources
+                    </span>
+                    <h1 class="mt-6 max-w-3xl text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+                        Digital E-Library
+                    </h1>
+                    <p class="mt-6 max-w-2xl text-lg md:text-xl text-purple-100 leading-relaxed">
+                        Explore a rich collection of books, research materials, audio teachings, videos, journals, and downloadable resources designed to support learning, growth, and knowledge development.
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-purple-100">Theological Books</span>
+                        <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-purple-100">Scholarly Journals</span>
+                        <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-purple-100">Research Materials</span>
+                    </div>
+
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                        <a href="#books" class="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 font-semibold text-purple-800 shadow-lg transition hover:bg-purple-100">
+                            Explore Books
+                        </a>
+                        <a href="#articles" class="inline-flex items-center justify-center rounded-full border border-white/30 px-7 py-3.5 font-semibold text-white transition hover:bg-white/10">
+                            Browse Journals
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:justify-self-end">
+                    <div class="rounded-[2rem] border border-white/15 bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
+                        <div class="rounded-[1.5rem] bg-white/95 p-6 text-slate-900">
+                            <span class="inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-purple-700">
+                                Featured Access
+                            </span>
+                            <h2 class="mt-4 text-2xl font-extrabold leading-tight">
+                                Start with the collections that matter most
+                            </h2>
+                            <p class="mt-3 text-gray-600 leading-relaxed">
+                                Jump directly into the book library or move to the journal section for academic and evangelical research resources.
+                            </p>
+
+                            <div class="mt-6 space-y-3">
+                                <a href="#books" class="flex items-center justify-between rounded-2xl bg-purple-50 px-4 py-4 transition hover:bg-purple-100">
+                                    <div>
+                                        <p class="font-semibold text-slate-900">Theological Books</p>
+                                        <p class="text-sm text-gray-600">Repositories, devotionals, and study resources</p>
+                                    </div>
+                                    <svg class="h-5 w-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                                <a href="#articles" class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-4 transition hover:bg-slate-100">
+                                    <div>
+                                        <p class="font-semibold text-slate-900">Biblical-Theological Articles</p>
+                                        <p class="text-sm text-gray-600">Journals, papers, and research links</p>
+                                    </div>
+                                    <svg class="h-5 w-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div class="mt-6 rounded-2xl bg-slate-900 px-4 py-4 text-white">
+                                <p class="text-sm font-semibold text-purple-200">Designed for learning</p>
+                                <p class="mt-1 text-sm text-slate-300">A cleaner resource entry point without distracting counters or empty statistic space.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
