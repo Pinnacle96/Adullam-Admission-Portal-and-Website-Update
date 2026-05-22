@@ -1,6 +1,39 @@
 <?php include('includes/header.php'); ?>
 
 <?php
+function normalizeModalImagePath(string $path): string
+{
+    $path = trim($path);
+    if ($path === '') {
+        return '';
+    }
+
+    if (preg_match('#^https?://[^/]+/(.+)$#i', $path, $matches)) {
+        $path = $matches[1];
+    }
+
+    $path = preg_replace('#^(?:\.\./|\.\/)+#', '', $path);
+    $path = ltrim($path, '/');
+
+    $assetPos = stripos($path, 'assets/img/');
+    if ($assetPos !== false) {
+        return substr($path, $assetPos);
+    }
+
+    return $path;
+}
+
+function normalizeModalContentImages(string $html): string
+{
+    return preg_replace_callback(
+        '/(<img\b[^>]*\bsrc=["\'])([^"\']+)(["\'])/i',
+        function ($matches) {
+            return $matches[1] . normalizeModalImagePath($matches[2]) . $matches[3];
+        },
+        $html
+    );
+}
+
 // Fetch Modal Settings
 $modal_active = false;
 $modal_content = "";
@@ -13,7 +46,7 @@ if (isset($con)) {
     if ($row = $result->fetch_assoc()) {
         if ($row['Email'] === 'active') {
             $modal_active = true;
-            $modal_content = $row['PageDescription'];
+            $modal_content = normalizeModalContentImages((string)$row['PageDescription']);
             $modal_title = $row['PageTitle'];
         }
     }

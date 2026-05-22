@@ -24,6 +24,39 @@ function ensureCohortsTable(PDO $pdo) {
     ");
 }
 
+function normalizeModalImagePath(string $path): string
+{
+    $path = trim($path);
+    if ($path === '') {
+        return '';
+    }
+
+    if (preg_match('#^https?://[^/]+/(.+)$#i', $path, $matches)) {
+        $path = $matches[1];
+    }
+
+    $path = preg_replace('#^(?:\.\./|\.\/)+#', '', $path);
+    $path = ltrim($path, '/');
+
+    $assetPos = stripos($path, 'assets/img/');
+    if ($assetPos !== false) {
+        return substr($path, $assetPos);
+    }
+
+    return $path;
+}
+
+function normalizeModalContentImages(string $html): string
+{
+    return preg_replace_callback(
+        '/(<img\b[^>]*\bsrc=["\'])([^"\']+)(["\'])/i',
+        function ($matches) {
+            return $matches[1] . normalizeModalImagePath($matches[2]) . $matches[3];
+        },
+        $html
+    );
+}
+
 // Fetch Current Data
 $stmt = $pdo->prepare("SELECT * FROM tblpage WHERE PageType = 'home_modal'");
 $stmt->execute();
@@ -31,12 +64,12 @@ $row = $stmt->fetch();
 
 // Default values if not found (should be found if setup was run)
 $pageTitle = $row['PageTitle'] ?? 'Application Portal Now Open!';
-$pageContent = $row['PageDescription'] ?? '';
+$pageContent = normalizeModalContentImages((string)($row['PageDescription'] ?? ''));
 $status = $row['Email'] ?? 'inactive';
 
 // Extract current image src for preview and preservation
 preg_match('/<img[^>]+src="([^">]+)"/', $pageContent, $matches);
-$currentImage = $matches[1] ?? '';
+$currentImage = normalizeModalImagePath($matches[1] ?? '');
 
 // Load Deadline Settings
 $deadlineFile = 'modal_settings.json';
@@ -103,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
     $newTitle = $_POST['pagetitle'];
-    $newContent = $_POST['pagedes']; // Content from editor (cleaned)
+    $newContent = normalizeModalContentImages((string)$_POST['pagedes']); // Content from editor (cleaned)
     $newStatus = $_POST['status'];
     $newDeadline = $_POST['deadline'];
     $newCohort = $_POST['cohort'];
@@ -124,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deadlineDate = $newDeadline;
     
     // Determine Final Image URL
-    $finalImageUrl = $currentImage; // Default to existing
+    $finalImageUrl = normalizeModalImagePath($currentImage); // Default to existing
 
     // Handle Image Upload
     if (isset($_FILES['modal_image']) && $_FILES['modal_image']['error'] === UPLOAD_ERR_OK) {
@@ -175,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
              // Refresh image preview
             preg_match('/<img[^>]+src="([^">]+)"/', $pageContent, $matches);
-            $currentImage = $matches[1] ?? '';
+            $currentImage = normalizeModalImagePath($matches[1] ?? '');
         } else {
             $message = "Database update failed.";
             $msgType = "error";
