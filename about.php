@@ -10,17 +10,18 @@
             <div class="relative max-w-7xl mx-auto px-6 text-center text-white">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6 animate-fadeInUp">Our Story: Who We Are</h1>
                 <p class="text-lg md:text-xl font-light max-w-3xl mx-auto mb-8 animate-fadeInUp animation-delay-200">Discover our mission, vision, and core values as we raise a new generation of transformational leaders.</p>
-                <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Learn About Us</a>
+                <!-- <a href="requirements" class="inline-block bg-white text-purple-700 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-100 transition transform hover:scale-105 animate-fadeInUp animation-delay-400">Learn About Us</a> -->
             </div>
         </section>
 
-        <!-- Overview Section -->
+        <!--
+        Original Overview Section kept for future use.
         <section class="py-16 md:py-24" id="overview">
             <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="order-2 lg:order-1">
                     <h2 class="text-3xl md:text-4xl font-bold text-purple-700 mb-6 animate-fadeInUp">Raising Kingdom-Minded Leaders</h2>
                     <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                        <strong class="text-purple-700">Adullam Seminary</strong> began in 2015 as a humble Bible college with just 35 students in modular programs. Driven by a deep spiritual vision, our institution evolved, and in July 2022, we officially became a full-fledged seminary. Since then, we have been committed to producing <strong class="text-purple-700">transformational leaders</strong> who are impacting the church and society at large.
+                        <strong class="text-purple-700">RCN Theological Seminary - Adullam</strong> began in 2015 as a humble Bible college with just 35 students in modular programs. Driven by a deep spiritual vision, our institution evolved, and in July 2022, we officially became a full-fledged seminary. Since then, we have been committed to producing <strong class="text-purple-700">transformational leaders</strong> who are impacting the church and society at large.
                     </p>
                     <p class="text-lg text-gray-700 leading-relaxed">
                         Our journey is one of faith, diligence, and a relentless pursuit of truth. We believe in preparing students not just for ministry, but for a life of purpose, equipped with the knowledge and spiritual conviction to make a lasting difference in the world.
@@ -32,6 +33,23 @@
                         <img src="assets/img/AAO.jpg" alt="About Adullam Seminary" aria-describedby="about-image-desc">
                     </div>
                     <p id="about-image-desc" class="sr-only">A group of students and faculty at Adullam Seminary, engaging in community and learning activities.</p>
+                </div>
+            </div>
+        </section>
+        -->
+
+        <!-- Overview Section -->
+        <section class="py-16 md:py-24" id="overview">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-purple-700 mb-6 animate-fadeInUp">Raising Kingdom-Minded Leaders</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        <strong class="text-purple-700">RCN Theological Seminary - Adullam</strong> began in 2015 as a humble Bible college with just 35 students in modular programs. Driven by a deep spiritual vision, our institution evolved, and in July 2022, we officially became a full-fledged seminary. Since then, we have been committed to producing <strong class="text-purple-700">transformational leaders</strong> who are impacting the church and society at large.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Our journey is one of faith, diligence, and a relentless pursuit of truth. We believe in preparing students not just for ministry, but for a life of purpose, equipped with the knowledge and spiritual conviction to make a lasting difference in the world.
+                    </p>
+                    <a href="requirements" class="inline-block bg-purple-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-purple-900 transition transform hover:scale-105 mt-6">Explore Our Programs</a>
                 </div>
             </div>
         </section>

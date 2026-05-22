@@ -217,7 +217,7 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
     </div>
 
     <!-- MAIN HEADER -->
-    <header class="relative sticky top-0 bg-white shadow-sm z-40 transition-all duration-300">
+    <header class="sticky top-0 bg-white shadow-sm z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 
@@ -228,51 +228,10 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                     </a>
                 </div>
 
-                <!--
-                Previous desktop navigation kept for future reference.
+                <!-- DESKTOP NAVIGATION -->
                 <nav class="hidden lg:flex space-x-8 items-center">
                     <a href="index" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Home</a>
                     <a href="about" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">About Us</a>
-                    <div class="relative group">
-                        <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-purple-700 focus:outline-none py-4">
-                            Academic Programs
-                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="absolute left-0 top-full pt-2 w-64 hidden group-hover:block">
-                            <div class="bg-white border border-gray-100 rounded-lg shadow-xl py-2">
-                                <a href="cert" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Certificate in Theology</a>
-                                <a href="dip" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Diploma in Theology</a>
-                                <a href="bdiv" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Bachelor of Divinity</a>
-                                <a href="pgdt" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Postgraduate Diploma</a>
-                                <a href="masters" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">M.A. Christian Apologetics</a>
-                                <a href="master" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">M.A. Biblical Studies</a>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="online_school" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Online School</a>
-                    <a href="e-library" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">E-Library</a>
-                    <a href="admissions" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Admissions</a>
-                    <a href="partner" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Partnership</a>
-                    <a href="contact" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Contact</a>
-                </nav>
-                -->
-
-                <!-- DESKTOP NAVIGATION -->
-                <nav class="hidden lg:flex space-x-7 items-center">
-                    <a href="index" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Home</a>
-
-                    <div class="relative group">
-                        <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-purple-700 focus:outline-none py-4">
-                            About
-                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="absolute left-0 top-full pt-2 w-56 hidden group-hover:block">
-                            <div class="bg-white border border-gray-100 rounded-lg shadow-xl py-2">
-                                <a href="about" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">About Us</a>
-                                <a href="contact" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Contact Us</a>
-                            </div>
-                        </div>
-                    </div>
                     
                     <!-- Academics Dropdown -->
                     <div class="relative group">
@@ -292,31 +251,11 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                         </div>
                     </div>
 
-                    <div class="relative group">
-                        <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-purple-700 focus:outline-none py-4">
-                            Resources
-                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="absolute left-0 top-full pt-2 w-56 hidden group-hover:block">
-                            <div class="bg-white border border-gray-100 rounded-lg shadow-xl py-2">
-                                <a href="online_school" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Online School</a>
-                                <a href="e-library" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">E-Library</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="relative group">
-                        <button class="flex items-center text-sm font-semibold text-gray-700 hover:text-purple-700 focus:outline-none py-4">
-                            Explore
-                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="absolute left-0 top-full pt-2 w-60 hidden group-hover:block">
-                            <div class="bg-white border border-gray-100 rounded-lg shadow-xl py-2">
-                                <a href="admissions" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Admissions</a>
-                                <a href="partner" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700">Donation & Partnership</a>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="online_school" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Online School</a>
+                    <a href="e-library" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">E-Library</a>
+                    <a href="admissions" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Admissions</a>
+                    <a href="partner" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Partnership</a>
+                    <a href="contact" class="text-sm font-semibold text-gray-700 hover:text-purple-700 transition-colors">Contact</a>
                 </nav>
 
                 <!-- APPLY BUTTON (Desktop) -->
@@ -338,33 +277,11 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
         </div>
 
         <!-- MOBILE MENU -->
-        <div id="mobile-menu" class="absolute left-0 right-0 top-full z-50 hidden border-t border-gray-100 bg-white/95 backdrop-blur lg:hidden shadow-2xl overflow-y-auto max-h-[calc(100vh-5rem)]">
-            <div class="max-w-7xl mx-auto px-4 pt-4 pb-8 space-y-2">
+        <div id="mobile-menu" class="hidden bg-white border-t border-gray-100 lg:hidden shadow-xl overflow-y-auto max-h-[80vh]">
+            <div class="px-4 pt-4 pb-8 space-y-2">
                 
-                <!--
-                Previous mobile navigation kept for future reference.
                 <a href="index" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Home</a>
                 <a href="about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">About Us</a>
-                <a href="online_school" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Online School</a>
-                <a href="e-library" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">E-Library</a>
-                <a href="admissions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Admissions</a>
-                <a href="partner" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Donation & Partnership</a>
-                <a href="contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Contact Us</a>
-                -->
-
-                <a href="index" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Home</a>
-
-                <!-- About Accordion -->
-                <div>
-                    <button id="mobile-about-btn" class="w-full text-left flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                        About
-                        <svg id="mobile-about-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="mobile-about-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
-                        <a href="about" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">About Us</a>
-                        <a href="contact" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Contact Us</a>
-                    </div>
-                </div>
                 
                 <!-- Academics Accordion -->
                 <div>
@@ -382,29 +299,11 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                     </div>
                 </div>
 
-                <!-- Resources Accordion -->
-                <div>
-                    <button id="mobile-resources-btn" class="w-full text-left flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                        Resources
-                        <svg id="mobile-resources-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="mobile-resources-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
-                        <a href="online_school" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Online School</a>
-                        <a href="e-library" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">E-Library</a>
-                    </div>
-                </div>
-
-                <!-- Explore Accordion -->
-                <div>
-                    <button id="mobile-explore-btn" class="w-full text-left flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                        Explore
-                        <svg id="mobile-explore-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="mobile-explore-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
-                        <a href="admissions" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Admissions</a>
-                        <a href="partner" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Donation & Partnership</a>
-                    </div>
-                </div>
+                <a href="online_school" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Online School</a>
+                <a href="e-library" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">E-Library</a>
+                <a href="admissions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Admissions</a>
+                <a href="partner" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Donation & Partnership</a>
+                <a href="contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700">Contact Us</a>
 
                 <!-- Student Portal Accordion -->
                 <div>
@@ -457,9 +356,6 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
             }
         }
 
-        setupAccordion('mobile-about-btn', 'mobile-about-menu', 'mobile-about-icon');
         setupAccordion('mobile-academics-btn', 'mobile-academics-menu', 'mobile-academics-icon');
-        setupAccordion('mobile-resources-btn', 'mobile-resources-menu', 'mobile-resources-icon');
-        setupAccordion('mobile-explore-btn', 'mobile-explore-menu', 'mobile-explore-icon');
         setupAccordion('mobile-portal-btn', 'mobile-portal-menu', 'mobile-portal-icon');
     </script>
