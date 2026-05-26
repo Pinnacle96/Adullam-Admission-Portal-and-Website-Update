@@ -12,11 +12,19 @@ require 'functions.php';          // ➜ contains hostelIsFull() and hostelRemai
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index'); exit;
+    header('Location: index');
+    exit;
 }
 
 $studentType = strtolower(trim((string)($_POST['student_type'] ?? 'new')));
-$dest = ($studentType === 'returning') ? 'register_hostel_returning' : 'register_hostel';
+$formSource = $_POST['form_source'] ?? 'dashboard';
+
+// Redirect to appropriate form based on source
+if ($formSource === 'external') {
+    $dest = 'register_hostel_returning';
+} else {
+    $dest = 'register_hostel_unified';
+}
 
 if (!isHostelRegistrationOpen($pdo, $studentType)) {
     header("Location: {$dest}?closed=1");
@@ -28,19 +36,24 @@ $recaptchaSecret = "6LckELErAAAAAEX6sZUeY6MybRwhq-XweFFMHiNh"; // Replace with y
 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
 if (empty($recaptchaResponse)) {
-    header("Location: {$dest}?captcha=0"); exit;
+    header("Location: {$dest}?captcha=0");
+    exit;
 }
 
 $verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="
-          . urlencode($recaptchaSecret) . "&response=" . urlencode($recaptchaResponse));
+    . urlencode($recaptchaSecret) . "&response=" . urlencode($recaptchaResponse));
 $captchaSuccess = json_decode($verify, true);
 
 if (empty($captchaSuccess['success']) || $captchaSuccess['success'] !== true) {
-    header("Location: {$dest}?captcha=0"); exit;
+    header("Location: {$dest}?captcha=0");
+    exit;
 }
 
 /* ---------- tiny helper ---------- */
-function sanitize(string $key): string { return htmlspecialchars(trim($_POST[$key] ?? '')); }
+function sanitize(string $key): string
+{
+    return htmlspecialchars(trim($_POST[$key] ?? ''));
+}
 
 /* ---------- collect POST ---------- */
 $user_id      = $_SESSION['user_id'] ?? null;             // null for returning
@@ -82,54 +95,54 @@ $gname = sanitize('gname');
 $grel  = sanitize('grelation');
 $gcont = sanitize('gcontact');
 
-$amount_paid   = floatval(str_replace(',','',sanitize('fee')));
+$amount_paid   = floatval(str_replace(',', '', sanitize('fee')));
 $pay_date      = sanitize('payment_date') ?: date('Y-m-d');
 $mattress      = isset($_POST['has_mattress'])      ? 'Yes' : 'No';
-$declaration   = isset($_POST['confirm_born_again'])? 1     : 0;
+$declaration   = isset($_POST['confirm_born_again']) ? 1     : 0;
 
 /* ---------- duplicate check ---------- */
-if ($student_type==='new'){
+if ($student_type === 'new') {
     $dup = $pdo->prepare("SELECT COUNT(*) FROM hostel_registrations
                           WHERE user_id=? AND semester=? AND student_type='new'");
-    $dup->execute([$user_id,$semester]);
-    if ($dup->fetchColumn()>0){
-        header("Location: register_hostel?error=1"); exit;
+    $dup->execute([$user_id, $semester]);
+    if ($dup->fetchColumn() > 0) {
+        header("Location: {$dest}?error=1");
+        exit;
     }
 } else {
     $dup = $pdo->prepare("SELECT COUNT(*) FROM hostel_registrations
                           WHERE email=? AND semester=? AND program_year=? AND student_type='returning'");
-    $dup->execute([$email,$semester,$year]);
-    if ($dup->fetchColumn()>0){
-        header("Location: register_hostel_returning?error=1"); exit;
+    $dup->execute([$email, $semester, $year]);
+    if ($dup->fetchColumn() > 0) {
+        header("Location: {$dest}?error=1");
+        exit;
     }
 }
 
 /* ---------- CAPACITY VERIFICATION (🚦 NEW) ---------- */
-if (hostelIsFull($pdo,$semester,$gender)){
+if (hostelIsFull($pdo, $semester, $gender)) {
     // optional: determine remaining so we can show nice msg
-    header("Location: " .
-       ($student_type==='new' ? 'register_hostel' : 'register_hostel_returning')
-       . "?full=1");
+    header("Location: {$dest}?full=1");
     exit;
 }
 
 /* ---------- handle uploads ---------- */
 $uploadDir = 'uploads/';
-if (!is_dir($uploadDir)) mkdir($uploadDir,0755,true);
+if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 $passport_file = '';
 $payment_file  = '';
 
-if (!empty($_FILES['passport']['name'])){
-    $passport_file = $uploadDir.time().'_passport_'.basename($_FILES['passport']['name']);
-    move_uploaded_file($_FILES['passport']['tmp_name'],$passport_file);
+if (!empty($_FILES['passport']['name'])) {
+    $passport_file = $uploadDir . time() . '_passport_' . basename($_FILES['passport']['name']);
+    move_uploaded_file($_FILES['passport']['tmp_name'], $passport_file);
 }
-if (!empty($_FILES['fees']['name'])){
-    $payment_file  = $uploadDir.time().'_payment_'.basename($_FILES['fees']['name']);
-    move_uploaded_file($_FILES['fees']['tmp_name'],$payment_file);
+if (!empty($_FILES['fees']['name'])) {
+    $payment_file  = $uploadDir . time() . '_payment_' . basename($_FILES['fees']['name']);
+    move_uploaded_file($_FILES['fees']['tmp_name'], $payment_file);
 }
 
 /* ---------- insert record ---------- */
-$sql="INSERT INTO hostel_registrations
+$sql = "INSERT INTO hostel_registrations
  (user_id,full_name,email,phone,emergency_contact,gender,dob,age,
   blood_group,genotype,allergies,nationality,state_of_origin,
   marital_status,spouse_name,spouse_contact,
@@ -150,14 +163,43 @@ $sql="INSERT INTO hostel_registrations
   :pf,:payf,:amt,:pdt,
   :mat,:dec)";
 $pdo->prepare($sql)->execute([
- 'uid'=>$user_id,'fn'=>$full_name,'em'=>$email,'ph'=>$phone,'ec'=>$econtact,'gd'=>$gender,
- 'dob'=>$dob,'age'=>$age,'bl'=>$blood,'ge'=>$geno,'al'=>$allergy,'na'=>$nation,'or'=>$origin,
- 'ms'=>$marital,'sn'=>$sname,'sc'=>$scont,'pr'=>$program,'yr'=>$year,'sem'=>$semester,'st'=>$student_type,
- 'ra'=>$res_address,'rc'=>$res_city,'rs'=>$res_state,'rco'=>$res_country,
- 'pa'=>$perm_address,'pc'=>$perm_city,'ps'=>$perm_state,'pco'=>$perm_country,
- 'gn'=>$gname,'gr'=>$grel,'gc'=>$gcont,
- 'pf'=>$passport_file,'payf'=>$payment_file,'amt'=>$amount_paid,'pdt'=>$pay_date,
- 'mat'=>$mattress,'dec'=>$declaration
+    'uid' => $user_id,
+    'fn' => $full_name,
+    'em' => $email,
+    'ph' => $phone,
+    'ec' => $econtact,
+    'gd' => $gender,
+    'dob' => $dob,
+    'age' => $age,
+    'bl' => $blood,
+    'ge' => $geno,
+    'al' => $allergy,
+    'na' => $nation,
+    'or' => $origin,
+    'ms' => $marital,
+    'sn' => $sname,
+    'sc' => $scont,
+    'pr' => $program,
+    'yr' => $year,
+    'sem' => $semester,
+    'st' => $student_type,
+    'ra' => $res_address,
+    'rc' => $res_city,
+    'rs' => $res_state,
+    'rco' => $res_country,
+    'pa' => $perm_address,
+    'pc' => $perm_city,
+    'ps' => $perm_state,
+    'pco' => $perm_country,
+    'gn' => $gname,
+    'gr' => $grel,
+    'gc' => $gcont,
+    'pf' => $passport_file,
+    'payf' => $payment_file,
+    'amt' => $amount_paid,
+    'pdt' => $pay_date,
+    'mat' => $mattress,
+    'dec' => $declaration
 ]);
 
 /* ---------- Confirmation Email ---------- */
@@ -189,6 +231,5 @@ $body = "
 sendMail($email, "Adullam Seminary", $subject, $body);
 
 /* ---------- redirect with success ---------- */
-$dest = ($student_type==='new') ? 'register_hostel' : 'register_hostel_returning';
-header("Location: {$dest}?success=1"); exit;
-?>
+header("Location: {$dest}?success=1");
+exit;
