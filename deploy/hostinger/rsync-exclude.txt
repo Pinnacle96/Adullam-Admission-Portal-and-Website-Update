@@ -12,6 +12,7 @@ june2025/dashboard/logs/
 june2025/dashboard/letters/admission_letters/
 user/uploads/
 user/userimages/
+assets/img/
 db.php
 dashboard/db.php
 includes/dbconnection.php
