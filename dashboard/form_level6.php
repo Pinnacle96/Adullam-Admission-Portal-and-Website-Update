@@ -124,7 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($isPGDTorMA) $requiredFields[] = 'degree_cert';
 
         foreach ($requiredFields as $requiredField) {
-            if (!isset($filePaths[$requiredField]) && (!isset($_FILES[$requiredField]) || $_FILES[$requiredField]['error'] === UPLOAD_ERR_NO_FILE)) {
+            // Check if file exists in new upload OR existing database records
+            $hasNewFile = isset($filePaths[$requiredField]);
+            $hasExistingFile = !empty($existingDocs[$requiredField]);
+            
+            if (!$hasNewFile && !$hasExistingFile) {
                 $uploadErrors[] = "The " . str_replace('_', ' ', $requiredField) . " file is required.";
             }
         }
@@ -205,7 +209,7 @@ $existingDocs = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
       foreach ($inputs as $name => $details): ?>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"><?= $details['label'] ?></label>
-          <input type="file" name="<?= $name ?>" accept="<?= $details['accept'] ?>" class="w-full border p-2 rounded-md" <?= $details['required'] ? 'required' : '' ?> />
+          <input type="file" name="<?= $name ?>" accept="<?= $details['accept'] ?>" class="w-full border p-2 rounded-md" <?= ($details['required'] && empty($existingDocs[$name])) ? 'required' : '' ?> />
 
           <?php if (!empty($existingDocs[$name])): ?>
             <p class="text-xs text-gray-600 mt-1">
