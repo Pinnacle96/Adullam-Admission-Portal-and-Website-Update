@@ -516,6 +516,7 @@ $progress = ($step / 7) * 100;
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -524,6 +525,7 @@ $progress = ($step / 7) * 100;
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 </head>
+
 <body class="bg-gray-100 min-h-screen">
     <div class="max-w-4xl mx-auto py-10 px-4">
         <div class="mb-8">
@@ -531,122 +533,174 @@ $progress = ($step / 7) * 100;
                 <span>Start</span><span>Step <?= $step ?> of 7</span><span>Finish</span>
             </div>
             <div class="w-full bg-gray-300 rounded-full h-2.5">
-                <div class="bg-purple-600 h-2.5 rounded-full transition-all duration-500" style="width: <?= $progress ?>%"></div>
+                <div class="bg-purple-600 h-2.5 rounded-full transition-all duration-500"
+                    style="width: <?= $progress ?>%"></div>
             </div>
         </div>
 
         <div class="bg-white p-8 rounded-xl shadow-xl">
             <?php if ($isSubmitted): ?>
-                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6" role="alert">
-                    <p class="font-bold">Application Submitted</p>
-                    <p>Your application has been submitted and is currently in <strong>Read-Only Mode</strong>. You cannot make further edits.</p>
-                    <a href="dashboard" class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Back to Dashboard</a>
-                </div>
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6" role="alert">
+                <p class="font-bold">Application Submitted</p>
+                <p>Your application has been submitted and is currently in <strong>Read-Only Mode</strong>. You cannot
+                    make further edits.</p>
+                <a href="dashboard"
+                    class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Back to
+                    Dashboard</a>
+            </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-                </div>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
             <?php endif; ?>
             <?php if (isset($_SESSION['success'])): ?>
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    <?= $_SESSION['success']; unset($_SESSION['success']); ?>
-                </div>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+            </div>
             <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data">
-                
+
                 <?php if ($step === 1): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 1: Personal Information</h2>
-                    <fieldset class="border border-gray-200 p-4 rounded-md mb-6">
-                        <legend class="text-sm font-semibold text-purple-700 px-2">👤 Personal Info</legend>
-                        <div class="space-y-4">
-                            <input type="text" value="<?= htmlspecialchars($full_name) ?>" readonly class="w-full px-4 py-2 bg-gray-100 border rounded-md cursor-not-allowed" />
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-sm text-gray-700">Gender<span class="text-red-500">*</span></label>
-                                    <select name="gender" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
-                                        <option value="">-- Select --</option>
-                                        <option value="male" <?= ($details['gender'] ?? '') === 'male' ? 'selected' : '' ?>>Male</option>
-                                        <option value="female" <?= ($details['gender'] ?? '') === 'female' ? 'selected' : '' ?>>Female</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-sm text-gray-700">Date of Birth<span class="text-red-500">*</span></label>
-                                    <input type="date" name="dob" required value="<?= htmlspecialchars($details['dob'] ?? '') ?>" class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                                </div>
-                            </div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 1: Personal Information</h2>
+                <fieldset class="border border-gray-200 p-4 rounded-md mb-6">
+                    <legend class="text-sm font-semibold text-purple-700 px-2">👤 Personal Info</legend>
+                    <div class="space-y-4">
+                        <input type="text" value="<?= htmlspecialchars($full_name) ?>" readonly
+                            class="w-full px-4 py-2 bg-gray-100 border rounded-md cursor-not-allowed" />
+                        <div class="grid sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="text-sm text-gray-700">Program Applying For<span class="text-red-500">*</span></label>
-                                <select name="program" id="program" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
-                                    <option value="">-- Select Program --</option>
-                                    <option value="Certificate" <?= ($details['program'] ?? '') === 'Certificate' ? 'selected' : '' ?>>Certificate</option>
-                                    <option value="Diploma" <?= ($details['program'] ?? '') === 'Diploma' ? 'selected' : '' ?>>Diploma</option>
-                                    <option value="B.Div" <?= ($details['program'] ?? '') === 'B.Div' ? 'selected' : '' ?>>Bachelor of Divinity (B.Div)</option>
-                                    <option value="PGDT" <?= ($details['program'] ?? '') === 'PGDT' ? 'selected' : '' ?>>Postgraduate Diploma (PGDT)</option>
-                                    <option value="MA" <?= ($details['program'] ?? '') === 'MA' ? 'selected' : '' ?>>Master of Arts (MA)</option>
-                                </select>
-                            </div>
-                            <div id="maFocusWrapper" class="<?= ($details['program'] ?? '') === 'MA' ? '' : 'hidden' ?>">
-                                <label class="text-sm text-gray-700">MA Focus</label>
-                                <select name="ma_focus" class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
-                                    <option value="">-- Select MA Focus --</option>
-                                    <option value="MA Christian Apologetics" <?= ($details['ma_focus'] ?? '') === 'MA Christian Apologetics' ? 'selected' : '' ?>>MA Christian Apologetics</option>
-                                    <option value="MA Biblical Studies (OT/NT)" <?= ($details['ma_focus'] ?? '') === 'MA Biblical Studies (OT/NT)' ? 'selected' : '' ?>>MA Biblical Studies (OT/NT)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-sm text-gray-700">Mode of Study<span class="text-red-500">*</span></label>
-                                <select name="mode" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
+                                <label class="text-sm text-gray-700">Gender<span class="text-red-500">*</span></label>
+                                <select name="gender" required
+                                    class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
                                     <option value="">-- Select --</option>
-                                    <option value="online" <?= ($details['mode_of_study'] ?? '') === 'online' ? 'selected' : '' ?>>Online</option>
-                                    <option value="onsite" <?= ($details['mode_of_study'] ?? '') === 'onsite' ? 'selected' : '' ?>>Onsite</option>
+                                    <option value="male" <?= ($details['gender'] ?? '') === 'male' ? 'selected' : '' ?>>
+                                        Male</option>
+                                    <option value="female"
+                                        <?= ($details['gender'] ?? '') === 'female' ? 'selected' : '' ?>>Female</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="text-sm text-gray-700">Date of Birth<span
+                                        class="text-red-500">*</span></label>
+                                <input type="date" name="dob" required
+                                    value="<?= htmlspecialchars($details['dob'] ?? '') ?>"
+                                    class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                            </div>
                         </div>
-                    </fieldset>
-                    <fieldset class="border border-gray-200 p-4 rounded-md mb-6">
-                        <legend class="text-sm font-semibold text-purple-700 px-2">📍 Residential Address</legend>
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <input type="text" name="res_address" required placeholder="Address Line" value="<?= htmlspecialchars($details['res_address'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="res_city" required placeholder="City" value="<?= htmlspecialchars($details['res_city'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="res_state" required placeholder="State" value="<?= htmlspecialchars($details['res_state'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="res_country" required placeholder="Country" value="<?= htmlspecialchars($details['res_country'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <div>
+                            <label class="text-sm text-gray-700">Program Applying For<span
+                                    class="text-red-500">*</span></label>
+                            <select name="program" id="program" required
+                                class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
+                                <option value="">-- Select Program --</option>
+                                <option value="Certificate"
+                                    <?= ($details['program'] ?? '') === 'Certificate' ? 'selected' : '' ?>>Certificate
+                                </option>
+                                <option value="Diploma"
+                                    <?= ($details['program'] ?? '') === 'Diploma' ? 'selected' : '' ?>>Diploma</option>
+                                <option value="B.Div" <?= ($details['program'] ?? '') === 'B.Div' ? 'selected' : '' ?>>
+                                    Bachelor of Divinity (B.Div)</option>
+                                <option value="PGDT" <?= ($details['program'] ?? '') === 'PGDT' ? 'selected' : '' ?>>
+                                    Postgraduate Diploma (PGDT)</option>
+                                <option value="MA" <?= ($details['program'] ?? '') === 'MA' ? 'selected' : '' ?>>Master
+                                    of Arts (MA)</option>
+                            </select>
                         </div>
-                    </fieldset>
-                    <fieldset class="border border-gray-200 p-4 rounded-md">
-                        <legend class="text-sm font-semibold text-purple-700 px-2">🏡 Permanent Address</legend>
-                        <label class="block text-sm mb-2"><input type="checkbox" id="copyAddress" class="mr-2"> Same as Residential Address</label>
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <input type="text" name="perm_address" placeholder="Address Line" value="<?= htmlspecialchars($details['perm_address'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="perm_city" placeholder="City" value="<?= htmlspecialchars($details['perm_city'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="perm_state" placeholder="State" value="<?= htmlspecialchars($details['perm_state'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            <input type="text" name="perm_country" placeholder="Country" value="<?= htmlspecialchars($details['perm_country'] ?? '') ?>" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <div id="maFocusWrapper" class="<?= ($details['program'] ?? '') === 'MA' ? '' : 'hidden' ?>">
+                            <label class="text-sm text-gray-700">MA Focus</label>
+                            <select name="ma_focus"
+                                class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
+                                <option value="">-- Select MA Focus --</option>
+                                <option value="MA Christian Apologetics"
+                                    <?= ($details['ma_focus'] ?? '') === 'MA Christian Apologetics' ? 'selected' : '' ?>>
+                                    MA Christian Apologetics</option>
+                                <option value="MA Biblical Studies (OT/NT)"
+                                    <?= ($details['ma_focus'] ?? '') === 'MA Biblical Studies (OT/NT)' ? 'selected' : '' ?>>
+                                    MA Biblical Studies (OT/NT)</option>
+                            </select>
                         </div>
-                    </fieldset>
+                        <div>
+                            <label class="text-sm text-gray-700">Mode of Study<span
+                                    class="text-red-500">*</span></label>
+                            <select name="mode" required
+                                class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
+                                <option value="">-- Select --</option>
+                                <option value="online"
+                                    <?= ($details['mode_of_study'] ?? '') === 'online' ? 'selected' : '' ?>>Online
+                                </option>
+                                <option value="onsite"
+                                    <?= ($details['mode_of_study'] ?? '') === 'onsite' ? 'selected' : '' ?>>Onsite
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="border border-gray-200 p-4 rounded-md mb-6">
+                    <legend class="text-sm font-semibold text-purple-700 px-2">📍 Residential Address</legend>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <input type="text" name="res_address" required placeholder="Address Line"
+                            value="<?= htmlspecialchars($details['res_address'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="res_city" required placeholder="City"
+                            value="<?= htmlspecialchars($details['res_city'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="res_state" required placeholder="State"
+                            value="<?= htmlspecialchars($details['res_state'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="res_country" required placeholder="Country"
+                            value="<?= htmlspecialchars($details['res_country'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                    </div>
+                </fieldset>
+                <fieldset class="border border-gray-200 p-4 rounded-md">
+                    <legend class="text-sm font-semibold text-purple-700 px-2">🏡 Permanent Address</legend>
+                    <label class="block text-sm mb-2"><input type="checkbox" id="copyAddress" class="mr-2"> Same as
+                        Residential Address</label>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <input type="text" name="perm_address" placeholder="Address Line"
+                            value="<?= htmlspecialchars($details['perm_address'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="perm_city" placeholder="City"
+                            value="<?= htmlspecialchars($details['perm_city'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="perm_state" placeholder="State"
+                            value="<?= htmlspecialchars($details['perm_state'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        <input type="text" name="perm_country" placeholder="Country"
+                            value="<?= htmlspecialchars($details['perm_country'] ?? '') ?>"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                    </div>
+                </fieldset>
 
                 <?php elseif ($step === 2): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 2: Personal Evaluation</h2>
-                    <p class="text-gray-600 mb-4">The following questions are for counselling purposes.</p>
-                    <div class="space-y-6">
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class='block text-sm font-medium text-gray-700 mb-1'>Marital Status<span class='text-red-500'>*</span></label>
-                                <select name='maritalstatus' id="maritalSelect" required class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
-                                    <option value=''>Marital Status</option>
-                                    <?php foreach (['Married', 'Divorced', 'Remarried', 'Separated', 'Single', 'Widowed'] as $opt) {
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 2: Personal Evaluation</h2>
+                <p class="text-gray-600 mb-4">The following questions are for counselling purposes.</p>
+                <div class="space-y-6">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class='block text-sm font-medium text-gray-700 mb-1'>Marital Status<span
+                                    class='text-red-500'>*</span></label>
+                            <select name='maritalstatus' id="maritalSelect" required
+                                class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
+                                <option value=''>Marital Status</option>
+                                <?php foreach (['Married', 'Divorced', 'Remarried', 'Separated', 'Single', 'Widowed'] as $opt) {
                                         $sel = ($personal['maritalstatus'] ?? '') === $opt ? "selected" : "";
                                         echo "<option value='{$opt}' {$sel}>{$opt}</option>";
                                     } ?>
-                                </select>
-                            </div>
-                            <div id="children-wrapper">
-                                <label class='block text-sm font-medium text-gray-700 mb-1'>Number of Children<span class='text-red-500'>*</span></label>
-                                <input name='children' id="childrenField" type='number' min='0' value="<?= htmlspecialchars($personal['children'] ?? '') ?>" class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
-                            </div>
+                            </select>
                         </div>
-                        <?php 
+                        <div id="children-wrapper">
+                            <label class='block text-sm font-medium text-gray-700 mb-1'>Number of Children<span
+                                    class='text-red-500'>*</span></label>
+                            <input name='children' id="childrenField" type='number' min='0'
+                                value="<?= htmlspecialchars($personal['children'] ?? '') ?>"
+                                class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
+                        </div>
+                    </div>
+                    <?php 
                         $questions = [
                             'dhealth' => 'Do you have any physical, mental or emotional disabilities?',
                             'disciplinary' => 'Have you ever been on academic or disciplinary probation?',
@@ -669,85 +723,116 @@ $progress = ($step / 7) * 100;
                                   </select></div>";
                         }
                         ?>
-                        <div id="spouse-wrapper" class="<?= ($personal['maritalstatus'] ?? '') === 'Married' ? '' : 'hidden' ?>">
-                            <label class='block text-sm font-medium text-gray-700 mb-1'>If married, is your spouse in agreement with this program?</label>
-                            <select name='spouse' id="spouseField" class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
-                                <option value=''>Choose an Option</option>
-                                <option value='Yes' <?= ($personal['spouse'] ?? '') === 'Yes' ? 'selected' : '' ?>>Yes</option>
-                                <option value='No' <?= ($personal['spouse'] ?? '') === 'No' ? 'selected' : '' ?>>No</option>
-                            </select>
-                        </div>
+                    <div id="spouse-wrapper"
+                        class="<?= ($personal['maritalstatus'] ?? '') === 'Married' ? '' : 'hidden' ?>">
+                        <label class='block text-sm font-medium text-gray-700 mb-1'>If married, is your spouse in
+                            agreement with this program?</label>
+                        <select name='spouse' id="spouseField"
+                            class='w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600'>
+                            <option value=''>Choose an Option</option>
+                            <option value='Yes' <?= ($personal['spouse'] ?? '') === 'Yes' ? 'selected' : '' ?>>Yes
+                            </option>
+                            <option value='No' <?= ($personal['spouse'] ?? '') === 'No' ? 'selected' : '' ?>>No</option>
+                        </select>
                     </div>
+                </div>
 
                 <?php elseif ($step === 3): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 3: Church Information</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Church Name<span class="text-red-500">*</span></label>
-                            <input type="text" name="church_name" value="<?= htmlspecialchars($church['church_name'] ?? '') ?>" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Church Address<span class="text-red-500">*</span></label>
-                            <textarea name="caddress" rows="3" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($church['caddress'] ?? '') ?></textarea>
-                        </div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 3: Church Information</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Church Name<span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="church_name"
+                            value="<?= htmlspecialchars($church['church_name'] ?? '') ?>" required
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Church Address<span
+                                class="text-red-500">*</span></label>
+                        <textarea name="caddress" rows="3" required
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($church['caddress'] ?? '') ?></textarea>
+                    </div>
+                </div>
 
                 <?php elseif ($step === 4): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 4: Autobiography</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">How would you explain the gospel of Jesus Christ?<span class="text-red-500">*</span></label>
-                            <textarea name="qgospel" rows="5" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['qgospel'] ?? '') ?></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Your conversion and spiritual growth:<span class="text-red-500">*</span></label>
-                            <textarea name="sgrowth" rows="5" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['sgrowth'] ?? '') ?></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Call to ministry and/or reason for applying:<span class="text-red-500">*</span></label>
-                            <textarea name="callto" rows="5" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['callto'] ?? '') ?></textarea>
-                        </div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 4: Autobiography</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">How would you explain the gospel of Jesus
+                            Christ?<span class="text-red-500">*</span></label>
+                        <textarea name="qgospel" rows="5" required
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['qgospel'] ?? '') ?></textarea>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Your conversion and spiritual
+                            growth:<span class="text-red-500">*</span></label>
+                        <textarea name="sgrowth" rows="5" required
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['sgrowth'] ?? '') ?></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Call to ministry and/or reason for
+                            applying:<span class="text-red-500">*</span></label>
+                        <textarea name="callto" rows="5" required
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600"><?= htmlspecialchars($autobio['callto'] ?? '') ?></textarea>
+                    </div>
+                </div>
 
                 <?php elseif ($step === 5): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 5: Reference Information</h2>
-                    <div class="space-y-6">
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Name</label>
-                                <input type="text" name="ref1Name" value="<?= htmlspecialchars($refs['ref1Name'] ?? '') ?>" required class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Phone</label>
-                                <input type="tel" name="ref1Phone" value="<?= htmlspecialchars($refs['ref1Phone'] ?? '') ?>" required placeholder="+2348012345678" pattern="^\+\d{6,15}$" oninvalid="this.setCustomValidity('Enter a valid phone number with country code, e.g. +2348012345678')" oninput="this.setCustomValidity('')" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                                <small class="text-gray-500">Include country code</small>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Email</label>
-                                <input type="email" name="ref1Email" value="<?= htmlspecialchars($refs['ref1Email'] ?? '') ?>" required class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            </div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 5: Reference Information</h2>
+                <div class="space-y-6">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Name</label>
+                            <input type="text" name="ref1Name" value="<?= htmlspecialchars($refs['ref1Name'] ?? '') ?>"
+                                required
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4 border-t pt-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Name</label>
-                                <input type="text" name="ref2Name" value="<?= htmlspecialchars($refs['ref2Name'] ?? '') ?>" required class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Phone</label>
-                                <input type="tel" name="ref2Phone" value="<?= htmlspecialchars($refs['ref2Phone'] ?? '') ?>" required placeholder="+2348012345678" pattern="^\+\d{6,15}$" oninvalid="this.setCustomValidity('Enter a valid phone number with country code, e.g. +2348012345678')" oninput="this.setCustomValidity('')" class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                                <small class="text-gray-500">Include country code</small>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Email</label>
-                                <input type="email" name="ref2Email" value="<?= htmlspecialchars($refs['ref2Email'] ?? '') ?>" required class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Phone</label>
+                            <input type="tel" name="ref1Phone" value="<?= htmlspecialchars($refs['ref1Phone'] ?? '') ?>"
+                                required placeholder="+2348012345678" pattern="^\+\d{6,15}$"
+                                oninvalid="this.setCustomValidity('Enter a valid phone number with country code, e.g. +2348012345678')"
+                                oninput="this.setCustomValidity('')"
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                            <small class="text-gray-500">Include country code</small>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 1 Email</label>
+                            <input type="email" name="ref1Email"
+                                value="<?= htmlspecialchars($refs['ref1Email'] ?? '') ?>" required
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
                         </div>
                     </div>
+                    <div class="grid sm:grid-cols-2 gap-4 border-t pt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Name</label>
+                            <input type="text" name="ref2Name" value="<?= htmlspecialchars($refs['ref2Name'] ?? '') ?>"
+                                required
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Phone</label>
+                            <input type="tel" name="ref2Phone" value="<?= htmlspecialchars($refs['ref2Phone'] ?? '') ?>"
+                                required placeholder="+2348012345678" pattern="^\+\d{6,15}$"
+                                oninvalid="this.setCustomValidity('Enter a valid phone number with country code, e.g. +2348012345678')"
+                                oninput="this.setCustomValidity('')"
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                            <small class="text-gray-500">Include country code</small>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reference 2 Email</label>
+                            <input type="email" name="ref2Email"
+                                value="<?= htmlspecialchars($refs['ref2Email'] ?? '') ?>" required
+                                class="w-full px-4 py-2 border rounded-md focus:ring-purple-600 focus:border-purple-600" />
+                        </div>
+                    </div>
+                </div>
 
                 <?php elseif ($step === 6): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 6: Upload Documents</h2>
-                    <div class="space-y-6">
-                        <?php
+                <h2 class="text-2xl font-bold text-purple-800 mb-6">Step 6: Upload Documents</h2>
+                <div class="space-y-6">
+                    <?php
                         $isPGDTorMA = in_array(strtoupper($details['program'] ?? ''), ['MA', 'PGDT']);
                         
                         // Calculate Fees Document URL
@@ -807,38 +892,46 @@ $progress = ($step / 7) * 100;
                         }
                         foreach ($inputs as $key => $conf):
                         ?>
-                        <div class="border p-4 rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-center">
-                            <div class="mb-2 md:mb-0">
-                                <label class="block font-medium text-gray-700"><?= $conf['label'] ?></label>
-                                <?php if (!empty($docs[$key])): ?>
-                                    <p class="text-xs text-green-600 mt-1">✅ Already uploaded: <a href="<?= $docs[$key] ?>" target="_blank" class="text-purple-600 underline"><?= basename($docs[$key]) ?></a></p>
-                                <?php endif; ?>
-                            </div>
-                            <input type="file" name="<?= $key ?>" accept="<?= $conf['accept'] ?>" class="text-sm border p-2 rounded" <?= $conf['required'] && empty($docs[$key]) ? 'required' : '' ?>>
+                    <div
+                        class="border p-4 rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-center">
+                        <div class="mb-2 md:mb-0">
+                            <label class="block font-medium text-gray-700"><?= $conf['label'] ?></label>
+                            <?php if (!empty($docs[$key])): ?>
+                            <p class="text-xs text-green-600 mt-1">✅ Already uploaded: <a href="<?= $docs[$key] ?>"
+                                    target="_blank" class="text-purple-600 underline"><?= basename($docs[$key]) ?></a>
+                            </p>
+                            <?php endif; ?>
                         </div>
-                        <?php endforeach; ?>
+                        <input type="file" name="<?= $key ?>" accept="<?= $conf['accept'] ?>"
+                            class="text-sm border p-2 rounded"
+                            <?= $conf['required'] && empty($docs[$key]) ? 'required' : '' ?>>
                     </div>
+                    <?php endforeach; ?>
+                </div>
 
                 <?php elseif ($step === 7): ?>
-                    <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">📋 Preview Your Application</h2>
-                    
-                    <div class="bg-white shadow p-6 rounded-xl mb-8">
-                        <div class="flex flex-col sm:flex-row gap-6 items-center mb-8">
-                            <div class="w-40 h-40 overflow-hidden rounded-full border border-gray-300 bg-gray-100">
-                                <?php if (!empty($docs['passport'])): ?>
-                                    <img src="<?= htmlspecialchars($docs['passport']) ?>" alt="Passport Photo" class="object-cover w-full h-full">
-                                <?php else: ?>
-                                    <div class="text-sm text-gray-400 flex items-center justify-center h-full">No Photo</div>
-                                <?php endif; ?>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-semibold">Welcome, <?= htmlspecialchars($full_name) ?></h2>
-                                <p class="text-sm text-gray-600 mt-2">Please carefully review all provided information and uploaded files/documents. Verify that all details are accurate and complete or make any necessary edits at this stage.</p>
-                            </div>
-                        </div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">📋 Preview Your Application</h2>
 
-                        <div class="space-y-8">
-                            <?php
+                <div class="bg-white shadow p-6 rounded-xl mb-8">
+                    <div class="flex flex-col sm:flex-row gap-6 items-center mb-8">
+                        <div class="w-40 h-40 overflow-hidden rounded-full border border-gray-300 bg-gray-100">
+                            <?php if (!empty($docs['passport'])): ?>
+                            <img src="<?= htmlspecialchars($docs['passport']) ?>" alt="Passport Photo"
+                                class="object-cover w-full h-full">
+                            <?php else: ?>
+                            <div class="text-sm text-gray-400 flex items-center justify-center h-full">No Photo</div>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold">Welcome, <?= htmlspecialchars($full_name) ?></h2>
+                            <p class="text-sm text-gray-600 mt-2">Please carefully review all provided information and
+                                uploaded files/documents. Verify that all details are accurate and complete or make any
+                                necessary edits at this stage.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <?php
                             $sections = [
                                 'Program Details' => ['data' => $details, 'step' => 1],
                                 'Personal Information' => ['data' => $personal, 'step' => 2],
@@ -850,35 +943,40 @@ $progress = ($step / 7) * 100;
                             foreach ($sections as $title => $info):
                                 if (empty($info['data'])) continue;
                             ?>
-                                <div class="mt-8">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <h3 class="text-lg font-bold text-purple-700"><?= $title ?></h3>
-                                        <?php if (!$isSubmitted): ?>
-                                            <a href="?step=<?= $info['step'] ?>" class="text-sm text-purple-600 underline hover:text-purple-800">✏️ Edit</a>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-gray-50 p-4 rounded-lg shadow">
-                                        <?php foreach ($info['data'] as $key => $value): 
+                        <div class="mt-8">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-purple-700"><?= $title ?></h3>
+                                <?php if (!$isSubmitted): ?>
+                                <a href="?step=<?= $info['step'] ?>"
+                                    class="text-sm text-purple-600 underline hover:text-purple-800">✏️ Edit</a>
+                                <?php endif; ?>
+                            </div>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-gray-50 p-4 rounded-lg shadow">
+                                <?php foreach ($info['data'] as $key => $value): 
                                             if (in_array($key, ['id', 'user_id'])) continue;
                                         ?>
-                                            <div>
-                                                <p class="text-xs text-gray-500 mb-1"><?= ucwords(str_replace('_', ' ', $key)) ?></p>
-                                                <p class="text-sm font-medium text-gray-800 bg-white border px-3 py-1 rounded"><?= nl2br(htmlspecialchars($value ?? '')) ?></p>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1"><?= ucwords(str_replace('_', ' ', $key)) ?>
+                                    </p>
+                                    <p class="text-sm font-medium text-gray-800 bg-white border px-3 py-1 rounded">
+                                        <?= nl2br(htmlspecialchars($value ?? '')) ?></p>
                                 </div>
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
 
-                            <div class="mt-8">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h3 class="text-lg font-bold text-purple-700">📎 Uploaded Documents</h3>
-                                    <?php if (!$isSubmitted): ?>
-                                        <a href="?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️ Edit</a>
-                                    <?php endif; ?>
-                                </div>
-                                <ul class="space-y-2 bg-gray-50 p-4 rounded-lg shadow">
-                                    <?php 
+                        <div class="mt-8">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-purple-700">📎 Uploaded Documents</h3>
+                                <?php if (!$isSubmitted): ?>
+                                <a href="?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
+                                    Edit</a>
+                                <?php endif; ?>
+                            </div>
+                            <ul class="space-y-2 bg-gray-50 p-4 rounded-lg shadow">
+                                <?php 
                                     $docLabels = [
                                         'passport' => 'Passport Photograph',
                                         'ssce_cert' => 'SSCE Certificate - 1st Sitting',
@@ -893,57 +991,69 @@ $progress = ($step / 7) * 100;
                                     foreach ($docLabels as $key => $label): 
                                         if (!empty($docs[$key])):
                                     ?>
-                                        <li class="flex justify-between items-center border-b py-2 last:border-0">
-                                            <span class="text-sm font-medium text-gray-700"><?= $label ?></span>
-                                            <a href="<?= htmlspecialchars($docs[$key]) ?>" target="_blank" class="bg-purple-700 text-white px-3 py-1 text-sm rounded hover:bg-purple-800">View</a>
-                                        </li>
-                                    <?php endif; endforeach; ?>
-                                </ul>
-                            </div>
+                                <li class="flex justify-between items-center border-b py-2 last:border-0">
+                                    <span class="text-sm font-medium text-gray-700"><?= $label ?></span>
+                                    <a href="<?= htmlspecialchars($docs[$key]) ?>" target="_blank"
+                                        class="bg-purple-700 text-white px-3 py-1 text-sm rounded hover:bg-purple-800">View</a>
+                                </li>
+                                <?php endif; endforeach; ?>
+                            </ul>
                         </div>
-
-                        <?php if (!$isSubmitted): ?>
-                        <div class="mt-8 bg-yellow-50 p-4 border border-yellow-200 rounded">
-                            <label class="flex items-start gap-2 cursor-pointer">
-                                <input type="checkbox" name="agree" required class="mt-1 h-4 w-4 text-purple-600">
-                                <span class="text-sm text-gray-800">I confirm that all information provided is accurate and truthful. I understand that falsifying information may lead to disqualification.</span>
-                            </label>
-                        </div>
-                        <?php endif; ?>
                     </div>
+
+                    <?php if (!$isSubmitted): ?>
+                    <div class="mt-8 bg-yellow-50 p-4 border border-yellow-200 rounded">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" name="agree" required class="mt-1 h-4 w-4 text-purple-600">
+                            <span class="text-sm text-gray-800">I confirm that all information provided is accurate and
+                                truthful. I understand that falsifying information may lead to disqualification.</span>
+                        </label>
+                    </div>
+                    <?php endif; ?>
+                </div>
                 <?php endif; ?>
 
                 <div class="flex justify-between items-center mt-10 pt-6 border-t">
                     <?php if ($isSubmitted): ?>
-                        <!-- Read-Only Navigation -->
-                        <?php if ($step > 1): ?>
-                            <a href="?step=<?= $step - 1 ?>" class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Previous</a>
-                        <?php else: ?>
-                            <div></div>
-                        <?php endif; ?>
+                    <!-- Read-Only Navigation -->
+                    <?php if ($step > 1): ?>
+                    <a href="?step=<?= $step - 1 ?>"
+                        class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Previous</a>
+                    <?php else: ?>
+                    <div></div>
+                    <?php endif; ?>
 
-                        <?php if ($step < 7): ?>
-                            <a href="?step=<?= $step + 1 ?>" class="px-6 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 font-medium">Next</a>
-                        <?php else: ?>
-                            <a href="dashboard" class="px-8 py-3 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 font-bold text-lg">Back to Dashboard</a>
-                        <?php endif; ?>
+                    <?php if ($step < 7): ?>
+                    <a href="?step=<?= $step + 1 ?>"
+                        class="px-6 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 font-medium">Next</a>
+                    <?php else: ?>
+                    <a href="dashboard"
+                        class="px-8 py-3 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 font-bold text-lg">Back
+                        to Dashboard</a>
+                    <?php endif; ?>
 
                     <?php else: ?>
-                        <!-- Editable Navigation -->
-                        <?php if ($step > 1): ?>
-                            <button type="submit" name="previous" class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Previous</button>
-                        <?php else: ?>
-                            <div></div>
-                        <?php endif; ?>
+                    <!-- Editable Navigation -->
+                    <?php if ($step > 1): ?>
+                    <button type="submit" name="previous"
+                        class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Previous</button>
+                    <?php else: ?>
+                    <div></div>
+                    <?php endif; ?>
 
-                        <div class="flex gap-3">
-                            <?php if ($step < 7): ?>
-                                <button type="submit" name="save" class="px-6 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Save Progress</button>
-                                <button type="submit" name="continue" class="px-6 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 font-medium">Continue</button>
-                            <?php else: ?>
-                                <button type="submit" name="submit_application" class="px-8 py-3 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 font-bold text-lg">Submit Application</button>
-                            <?php endif; ?>
-                        </div>
+                    <div class="flex gap-3">
+                        <?php if ($step < 7): ?>
+                        <button type="submit" name="save"
+                            class="px-6 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Save
+                            Progress</button>
+                        <button type="submit" name="continue"
+                            class="px-6 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 font-medium">Continue</button>
+                        <?php else: ?>
+                        <button type="submit" name="submit_application"
+                            class="px-8 py-3 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 font-bold text-lg">Submit
+                            Application</button>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
                 </div>
             </form>
@@ -951,94 +1061,99 @@ $progress = ($step / 7) * 100;
     </div>
 
     <script>
-        // JS for Steps 1 & 2
-        const programSelect = document.getElementById('program');
-        if (programSelect) {
-            programSelect.addEventListener('change', function() {
-                const maDiv = document.getElementById('maFocusWrapper');
-                if (this.value === 'MA') maDiv.classList.remove('hidden');
-                else maDiv.classList.add('hidden');
-            });
-        }
-        const sameAddress = document.getElementById('copyAddress');
-        if (sameAddress) {
-            sameAddress.addEventListener('change', function() {
-                if (this.checked) {
-                    document.querySelector('[name="perm_address"]').value = document.querySelector('[name="res_address"]').value;
-                    document.querySelector('[name="perm_city"]').value = document.querySelector('[name="res_city"]').value;
-                    document.querySelector('[name="perm_state"]').value = document.querySelector('[name="res_state"]').value;
-                    document.querySelector('[name="perm_country"]').value = document.querySelector('[name="res_country"]').value;
-                } else {
-                    document.querySelector('[name="perm_address"]').value = '';
-                    document.querySelector('[name="perm_city"]').value = '';
-                    document.querySelector('[name="perm_state"]').value = '';
-                    document.querySelector('[name="perm_country"]').value = '';
-                }
-            });
-        }
-        const maritalSelect = document.getElementById('maritalSelect');
-        if (maritalSelect) {
-            function toggleMarital() {
-                const val = maritalSelect.value;
-                document.getElementById('spouse-wrapper').classList.toggle('hidden', val !== 'Married');
-                const childrenWrapper = document.getElementById('children-wrapper');
-                const childrenField = document.getElementById('childrenField');
-                if (val === 'Single') {
-                    childrenWrapper.classList.add('hidden');
-                    childrenField.value = '0';
-                    childrenField.required = false;
-                } else {
-                    childrenWrapper.classList.remove('hidden');
-                    childrenField.required = true;
-                }
+    // JS for Steps 1 & 2
+    const programSelect = document.getElementById('program');
+    if (programSelect) {
+        programSelect.addEventListener('change', function() {
+            const maDiv = document.getElementById('maFocusWrapper');
+            if (this.value === 'MA') maDiv.classList.remove('hidden');
+            else maDiv.classList.add('hidden');
+        });
+    }
+    const sameAddress = document.getElementById('copyAddress');
+    if (sameAddress) {
+        sameAddress.addEventListener('change', function() {
+            if (this.checked) {
+                document.querySelector('[name="perm_address"]').value = document.querySelector(
+                    '[name="res_address"]').value;
+                document.querySelector('[name="perm_city"]').value = document.querySelector('[name="res_city"]')
+                    .value;
+                document.querySelector('[name="perm_state"]').value = document.querySelector(
+                    '[name="res_state"]').value;
+                document.querySelector('[name="perm_country"]').value = document.querySelector(
+                    '[name="res_country"]').value;
+            } else {
+                document.querySelector('[name="perm_address"]').value = '';
+                document.querySelector('[name="perm_city"]').value = '';
+                document.querySelector('[name="perm_state"]').value = '';
+                document.querySelector('[name="perm_country"]').value = '';
             }
-            maritalSelect.addEventListener('change', toggleMarital);
-            toggleMarital();
+        });
+    }
+    const maritalSelect = document.getElementById('maritalSelect');
+    if (maritalSelect) {
+        function toggleMarital() {
+            const val = maritalSelect.value;
+            document.getElementById('spouse-wrapper').classList.toggle('hidden', val !== 'Married');
+            const childrenWrapper = document.getElementById('children-wrapper');
+            const childrenField = document.getElementById('childrenField');
+            if (val === 'Single') {
+                childrenWrapper.classList.add('hidden');
+                childrenField.value = '0';
+                childrenField.required = false;
+            } else {
+                childrenWrapper.classList.remove('hidden');
+                childrenField.required = true;
+            }
         }
+        maritalSelect.addEventListener('change', toggleMarital);
+        toggleMarital();
+    }
 
-        <?php if (!empty($_SESSION['upload_errors'])): ?>
-            Swal.fire({
-                icon: 'warning',
-                title: 'Upload Issues',
-                html: '<?= implode("<br>", array_map("htmlspecialchars", $_SESSION['upload_errors'])) ?>',
-                confirmButtonColor: '#6B21A8'
-            });
-            <?php unset($_SESSION['upload_errors']); ?>
-        <?php endif; ?>
+    <?php if (!empty($_SESSION['upload_errors'])): ?>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Upload Issues',
+        html: '<?= implode("<br>", array_map("htmlspecialchars", $_SESSION['upload_errors'])) ?>',
+        confirmButtonColor: '#6B21A8'
+    });
+    <?php unset($_SESSION['upload_errors']); ?>
+    <?php endif; ?>
 
-        <?php if (!empty($_SESSION['success'])): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Saved!',
-                text: '<?= htmlspecialchars($_SESSION['success']) ?>',
-                confirmButtonColor: '#6B21A8'
-            });
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
-        
-        <?php if (!empty($_SESSION['success_ref'])): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '<?= $_SESSION['success_ref'] ?>',
-                confirmButtonColor: '#6B21A8'
-            });
-            <?php unset($_SESSION['success_ref']); ?>
-        <?php endif; ?>
+    <?php if (!empty($_SESSION['success'])): ?>
+    Swal.fire({
+        icon: 'success',
+        title: 'Saved!',
+        text: '<?= htmlspecialchars($_SESSION['success']) ?>',
+        confirmButtonColor: '#6B21A8'
+    });
+    <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
 
-        <?php if ($isSubmitted): ?>
-            // Read-Only Mode: Disable all inputs
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('input, select, textarea, button[type="submit"]').forEach(el => {
-                    // Don't disable navigation buttons if I used button tags (I used <a> for nav, but just in case)
-                    if (!el.classList.contains('bg-gray-200') && !el.classList.contains('bg-purple-700')) { 
-                         el.disabled = true;
-                    }
-                    // Actually, I replaced the buttons with <a> tags for Next/Prev, so strict disabling is fine for inputs.
-                    if(el.tagName !== 'A') el.disabled = true;
-                });
-            });
-        <?php endif; ?>
+    <?php if (!empty($_SESSION['success_ref'])): ?>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '<?= $_SESSION['success_ref'] ?>',
+        confirmButtonColor: '#6B21A8'
+    });
+    <?php unset($_SESSION['success_ref']); ?>
+    <?php endif; ?>
+
+    <?php if ($isSubmitted): ?>
+    // Read-Only Mode: Disable all inputs
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input, select, textarea, button[type="submit"]').forEach(el => {
+            // Don't disable navigation buttons if I used button tags (I used <a> for nav, but just in case)
+            if (!el.classList.contains('bg-gray-200') && !el.classList.contains('bg-purple-700')) {
+                el.disabled = true;
+            }
+            // Actually, I replaced the buttons with <a> tags for Next/Prev, so strict disabling is fine for inputs.
+            if (el.tagName !== 'A') el.disabled = true;
+        });
+    });
+    <?php endif; ?>
     </script>
 </body>
+
 </html>
