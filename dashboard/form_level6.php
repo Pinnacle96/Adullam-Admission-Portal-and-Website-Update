@@ -102,6 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $filePaths = [];
     $uploadErrors = [];
 
+    // Fetch existing documents FIRST (before validation)
+    $stmt = $pdo->prepare("SELECT * FROM application_documents WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $existingDocs = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
     $allFields = ['passport', 'ssce_cert', 'ssce_cert2', 'birth_cert', 'origin_cert', 'recommendation', 'payment_proof'];
     if ($isPGDTorMA) {
         $allFields[] = 'degree_cert';

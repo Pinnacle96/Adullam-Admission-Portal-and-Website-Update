@@ -75,6 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //     exit;
     // }
 
+    // Fetch existing documents FIRST (before validation)
+    $stmt = $pdo->prepare("SELECT * FROM application_documents WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $existingDocs = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
     $fields = [
         'passport',
         'ssce_cert',
@@ -101,6 +106,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif (isset($_FILES[$field]) && $_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE) {
             $uploadErrors[] = "Error uploading $field: " . $_FILES[$field]['error'];
+        }
+    }
+
+    if (isset($_POST['continue'])) {
+        $requiredFields = ['passport', 'ssce_cert', 'birth_cert', 'origin_cert', 'recommendation', 'payment_proof'];
+        if ($isPGDTorMA) $requiredFields[] = 'degree_cert';
+
+        foreach ($requiredFields as $requiredField) {
+            // Check if file exists in new upload OR existing database records
+            $hasNewFile = isset($filePaths[$requiredField]);
+            $hasExistingFile = !empty($existingDocs[$requiredField]);
+            
+            if (!$hasNewFile && !$hasExistingFile) {
+                $uploadErrors[] = "The " . str_replace('_', ' ', $requiredField) . " file is required.";
+            }
         }
     }
 
