@@ -1,4 +1,8 @@
 <?php
+// Redirect legacy form_level6 to the unified multi-step application form
+header('Location: application_form?step=6', true, 301);
+exit;
+
 // ================= ERROR & SUCCESS LOGGING =================
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);

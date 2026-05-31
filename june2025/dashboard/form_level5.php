@@ -1,4 +1,8 @@
 <?php
+// Redirect legacy june2025 form_level5 to the unified multi-step application form
+header('Location: ../application_form?step=5', true, 301);
+exit;
+
 session_start();
 require 'db.php';
 require_once 'mailer.php';
