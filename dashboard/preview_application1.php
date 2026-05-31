@@ -119,7 +119,7 @@ Verify that all details are accurate and complete or make any necessary edits at
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="text-lg font-bold text-purple-700">📎 Uploaded Documents</h3>
                     <?php if (!$isLocked): ?>
-                        <a href="form_level6.php" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
+                        <a href="application_form?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
                             Edit</a>
                     <?php endif; ?>
                 </div>
@@ -151,7 +151,7 @@ Verify that all details are accurate and complete or make any necessary edits at
 
                 <div class="mt-6 flex justify-between items-center">
                     <?php if (!$isLocked): ?>
-                        <a href="form_level6.php" class="text-purple-700 hover:underline">⬅ Back to Uploads</a>
+                        <a href="application_form?step=6" class="text-purple-700 hover:underline">⬅ Back to Uploads</a>
                         <button type="submit"
                             class="bg-purple-700 text-white px-6 py-2 rounded-lg shadow hover:bg-purple-800">Submit
                             Application</button>
