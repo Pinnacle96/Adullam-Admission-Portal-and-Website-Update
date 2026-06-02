@@ -64,8 +64,8 @@ function saveFile($file, $field) {
     
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         log_message("File saved successfully: $targetFile", "INFO");
-        // Return path relative to public_html for database
-        $relativePath = "dashboard/uploads/documents/" . $newName;
+        // Return absolute path from site root for database
+        $relativePath = "/dashboard/uploads/documents/" . $newName;
         return ['success' => true, 'path' => $relativePath];
     }
     log_message("Failed to move uploaded file to: $targetFile", "ERROR");
@@ -919,8 +919,14 @@ $progress = ($step / 7) * 100;
                         <div class="mb-2 md:mb-0">
                             <label class="block font-medium text-gray-700"><?= $conf['label'] ?></label>
                             <?php if (!empty($docs[$key])): ?>
-                            <p class="text-xs text-green-600 mt-1">✅ Already uploaded: <a href="<?= $docs[$key] ?>"
-                                    target="_blank" class="text-purple-600 underline"><?= basename($docs[$key]) ?></a>
+                            <?php 
+                                $docPath = $docs[$key];
+                                if (substr($docPath, 0, 1) !== '/') {
+                                    $docPath = '/' . ltrim($docPath, '/');
+                                }
+                            ?>
+                            <p class="text-xs text-green-600 mt-1">✅ Already uploaded: <a href="<?= $docPath ?>"
+                                    target="_blank" class="text-purple-600 underline"><?= basename($docPath) ?></a>
                             </p>
                             <?php endif; ?>
                         </div>
@@ -938,7 +944,13 @@ $progress = ($step / 7) * 100;
                     <div class="flex flex-col sm:flex-row gap-6 items-center mb-8">
                         <div class="w-40 h-40 overflow-hidden rounded-full border border-gray-300 bg-gray-100">
                             <?php if (!empty($docs['passport'])): ?>
-                            <img src="<?= htmlspecialchars($docs['passport']) ?>" alt="Passport Photo"
+                            <?php 
+                                $passportPath = $docs['passport'];
+                                if (substr($passportPath, 0, 1) !== '/') {
+                                    $passportPath = '/' . ltrim($passportPath, '/');
+                                }
+                            ?>
+                            <img src="<?= htmlspecialchars($passportPath) ?>" alt="Passport Photo"
                                 class="object-cover w-full h-full">
                             <?php else: ?>
                             <div class="text-sm text-gray-400 flex items-center justify-center h-full">No Photo</div>
@@ -1015,7 +1027,13 @@ $progress = ($step / 7) * 100;
                                     ?>
                                 <li class="flex justify-between items-center border-b py-2 last:border-0">
                                     <span class="text-sm font-medium text-gray-700"><?= $label ?></span>
-                                    <a href="<?= htmlspecialchars($docs[$key]) ?>" target="_blank"
+                                    <?php 
+                                        $docPath = $docs[$key];
+                                        if (substr($docPath, 0, 1) !== '/') {
+                                            $docPath = '/' . ltrim($docPath, '/');
+                                        }
+                                    ?>
+                                    <a href="<?= htmlspecialchars($docPath) ?>" target="_blank"
                                         class="bg-purple-700 text-white px-3 py-1 text-sm rounded hover:bg-purple-800">View</a>
                                 </li>
                                 <?php endif; endforeach; ?>
