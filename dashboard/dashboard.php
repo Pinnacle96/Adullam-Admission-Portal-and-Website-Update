@@ -47,7 +47,7 @@ include 'dashboard_logic.php';
         </div>
         <?php
         $banner = $pdo->query("SELECT value FROM settings WHERE `key` = 'notice_banner'")->fetchColumn();
-        if ($banner):
+        if ($banner && !$isSubmitted):
         ?>
             <div class="bg-yellow-100 text-yellow-800 text-sm p-3 rounded mb-4 border border-yellow-300 shadow">
                 <?= htmlspecialchars($banner) ?>
