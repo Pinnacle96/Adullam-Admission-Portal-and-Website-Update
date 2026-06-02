@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        header("Location: dashboard?submitted=1");
+        header("Location: /dashboard/dashboard?submitted=1");
         exit;
     }
 
@@ -498,15 +498,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($next_level)) {
             $pdo->prepare("UPDATE applications SET current_level = ? WHERE user_id = ?")->execute([$next_level, $user_id]);
         }
-        header("Location: application_form?step=" . ($next_level ?? $step));
+        header("Location: /dashboard/application_form?step=" . ($next_level ?? $step));
         exit;
     } elseif (isset($_POST['save'])) {
         $_SESSION['success'] = "Progress saved successfully!";
-        header("Location: application_form?step=$step");
+        header("Location: /dashboard/application_form?step=$step");
         exit;
     } elseif (isset($_POST['previous'])) {
         $prev = max(1, $step - 1);
-        header("Location: application_form?step=$prev");
+        header("Location: /dashboard/application_form?step=$prev");
         exit;
     }
 }
@@ -566,7 +566,7 @@ $progress = ($step / 7) * 100;
                 <p class="font-bold">Application Submitted</p>
                 <p>Your application has been submitted and is currently in <strong>Read-Only Mode</strong>. You cannot
                     make further edits.</p>
-                <a href="dashboard"
+                <a href="/dashboard/dashboard"
                     class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Back to
                     Dashboard</a>
             </div>
@@ -981,7 +981,7 @@ $progress = ($step / 7) * 100;
                             <div class="flex justify-between items-center mb-2">
                                 <h3 class="text-lg font-bold text-purple-700"><?= $title ?></h3>
                                 <?php if (!$isSubmitted): ?>
-                                <a href="?step=<?= $info['step'] ?>"
+                                <a href="/dashboard/application_form?step=<?= $info['step'] ?>"
                                     class="text-sm text-purple-600 underline hover:text-purple-800">✏️ Edit</a>
                                 <?php endif; ?>
                             </div>
@@ -1005,7 +1005,7 @@ $progress = ($step / 7) * 100;
                             <div class="flex justify-between items-center mb-2">
                                 <h3 class="text-lg font-bold text-purple-700">📎 Uploaded Documents</h3>
                                 <?php if (!$isSubmitted): ?>
-                                <a href="?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
+                                <a href="/dashboard/application_form?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
                                     Edit</a>
                                 <?php endif; ?>
                             </div>
@@ -1067,7 +1067,7 @@ $progress = ($step / 7) * 100;
                     <a href="?step=<?= $step + 1 ?>"
                         class="px-6 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 font-medium">Next</a>
                     <?php else: ?>
-                    <a href="dashboard"
+                    <a href="/dashboard/dashboard"
                         class="px-8 py-3 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 font-bold text-lg">Back
                         to Dashboard</a>
                     <?php endif; ?>
