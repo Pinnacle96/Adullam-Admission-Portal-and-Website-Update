@@ -4,7 +4,7 @@ require_once 'db.php';
 
 // 🔐 Only logged-in students allowed
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    header("Location: index");
+    header("Location: /dashboard/index");
     exit;
 }
 
@@ -43,7 +43,7 @@ $currentLevel = $_SESSION['current_level'] ?? 1;
                     <br><br>Please check back later for the next admission window.
                 <?php endif; ?>
             </p>
-            <a href="logout" class="inline-block bg-purple-700 text-white px-6 py-2 rounded-full hover:bg-purple-800 transition duration-300">Logout</a>
+            <a href="/dashboard/logout" class="inline-block bg-purple-700 text-white px-6 py-2 rounded-full hover:bg-purple-800 transition duration-300">Logout</a>
         </div>
 
     <?php else: ?>
@@ -57,12 +57,12 @@ $currentLevel = $_SESSION['current_level'] ?? 1;
         <?php if (!$hasApp): ?>
             <!-- Redirect directly to form if application not started -->
             <script>
-                window.location.href = 'form_level1';
+                window.location.href = '/dashboard/application_form?step=1';
             </script>
         <?php else: ?>
             <!-- Auto resume if already started -->
             <script>
-                window.location.href = "form_level<?= intval($currentLevel) ?>";
+                window.location.href = "/dashboard/application_form?step=<?= intval($currentLevel) ?>";
             </script>
         <?php endif; ?>
 
