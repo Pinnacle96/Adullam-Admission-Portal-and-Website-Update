@@ -2,7 +2,8 @@
 // Enable logging first
 require_once __DIR__ . '/logging.php';
 
-ini_set('display_errors', 0); // Set to 1 for local debugging, 0 for production
+ini_set('display_errors', 1); // Temporarily set to 1 to see errors
+ini_set('display_startup_errors', 1);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
