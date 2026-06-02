@@ -18,3 +18,4 @@
 ./dashboard/error_log.txt
 ./.env
 ./assets/img
+./assets/images
