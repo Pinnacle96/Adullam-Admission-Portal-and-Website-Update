@@ -52,6 +52,10 @@ include 'dashboard_logic.php';
             <div class="bg-yellow-100 text-yellow-800 text-sm p-3 rounded mb-4 border border-yellow-300 shadow">
                 <?= htmlspecialchars($banner) ?>
             </div>
+        <?php elseif ($isSubmitted): ?>
+            <div class="bg-green-100 text-green-800 text-sm p-3 rounded mb-4 border border-green-300 shadow">
+                🎉 Welcome! Your application has been successfully submitted. Please check your email regularly for updates regarding your application status!
+            </div>
         <?php endif; ?>
 
         <!-- Status Cards -->
