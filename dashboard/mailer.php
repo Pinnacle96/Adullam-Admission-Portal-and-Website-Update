@@ -5,16 +5,17 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Safe autoloader logic for all environments
-$autoloadPath = '/home/adullamn/public_html/vendor/autoload.php'; // Absolute path (for cron/outside dashboard)
+$autoloadPath = __DIR__ . '/../vendor/autoload.php'; // Start with relative path (for dashboard and web scripts)
+
 if (!file_exists($autoloadPath)) {
-    $autoloadPath = __DIR__ . '/../vendor/autoload.php'; // Relative path (for dashboard and web scripts)
+    $autoloadPath = '/home/adullamn/public_html/vendor/autoload.php'; // Absolute path (for cron/outside dashboard on Linux server)
 }
 
 if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 } else {
     logMailerEvent("❌ autoload.php not found. Make sure Composer dependencies are installed.", "ERROR");
-    exit("Mailer error: Composer autoloader not found.");
+    // Don't exit the entire page just because mailer isn't available for local testing
 }
 
 /**

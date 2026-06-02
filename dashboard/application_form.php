@@ -1,7 +1,9 @@
 <?php
-ini_set('display_errors', 0);
+// Enable logging first
+require_once __DIR__ . '/logging.php';
+
+ini_set('display_errors', 0); // Set to 1 for local debugging, 0 for production
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/error_log.txt');
 error_reporting(E_ALL);
 
 session_start();
@@ -316,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!empty($uploadedPaths)) {
-            $check = $pdo->prepare("SELECT id FROM application_documents WHERE user_id = ?");
+            $check = $pdo->prepare("SELECT user_id FROM application_documents WHERE user_id = ?");
             $check->execute([$user_id]);
             if ($check->fetch()) {
                 $setClause = [];
