@@ -12,7 +12,7 @@ require 'db.php';
 require_once 'mailer.php';
 
 // --- Helper Functions ---
-function log_message($message, $type = 'INFO') {
+function log_upload_trace($message, $type = 'INFO') {
     $log_file = __DIR__ . '/upload_trace.log';
     $timestamp = date('[Y-m-d H:i:s T]');
     file_put_contents($log_file, "$timestamp [$type] $message\n", FILE_APPEND);
