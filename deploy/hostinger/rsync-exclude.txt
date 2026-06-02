@@ -18,3 +18,4 @@ dashboard/error_log
 dashboard/error_log.txt
 *.log
 .env
+assets/img/
