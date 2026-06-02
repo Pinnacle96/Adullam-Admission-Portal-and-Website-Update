@@ -177,21 +177,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reque
     if (!$isAdmitted) {
         $_SESSION['deferral_status'] = 'error';
         $_SESSION['deferral_message'] = 'Only admitted applicants can request a deferral.';
-        header('Location: dashboard');
+        header('Location: /dashboard/dashboard');
         exit;
     }
 
     if ($toCohort === '') {
         $_SESSION['deferral_status'] = 'error';
         $_SESSION['deferral_message'] = 'Please select the cohort you want to defer to.';
-        header('Location: dashboard');
+        header('Location: /dashboard/dashboard');
         exit;
     }
 
     if ($currentCohort !== '' && strcasecmp($toCohort, $currentCohort) === 0) {
         $_SESSION['deferral_status'] = 'error';
         $_SESSION['deferral_message'] = 'You are already in that cohort.';
-        header('Location: dashboard');
+        header('Location: /dashboard/dashboard');
         exit;
     }
 
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reque
 
     $_SESSION['deferral_status'] = 'success';
     $_SESSION['deferral_message'] = 'Deferral request submitted. Please wait for admin approval.';
-    header('Location: dashboard');
+    header('Location: /dashboard/dashboard');
     exit;
 }
 

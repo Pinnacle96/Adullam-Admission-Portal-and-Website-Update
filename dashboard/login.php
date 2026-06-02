@@ -147,11 +147,11 @@ try {
 
     switch ($user['role']) {
         case 'admin':
-            $redirect = 'admin_dashboard';
+            $redirect = '/dashboard/admin_dashboard';
             break;
 
         case 'superadmin':
-            $redirect = 'superadmin_dashboard';
+            $redirect = '/dashboard/superadmin_dashboard';
             break;
 
         case 'student':
@@ -169,14 +169,13 @@ try {
             $regOpen = $pdo->query("SELECT value FROM settings WHERE `key` = 'registration_open'")->fetchColumn();
 
             if ($submitted) {
-                $redirect = 'dashboard';
+                $redirect = '/dashboard/dashboard';
             } elseif (!$regOpen) {
-                $redirect = 'student_dashboard';
+                $redirect = '/dashboard/student_dashboard';
             } elseif ($level == 1) {
-                $redirect = 'student_dashboard';
+                $redirect = '/dashboard/student_dashboard';
             } else {
-                $maxFormLevel = 6;
-                $redirect = "form_level" . min($level, $maxFormLevel);
+                $redirect = "/dashboard/application_form?step=" . $level;
             }
             break;
     }
