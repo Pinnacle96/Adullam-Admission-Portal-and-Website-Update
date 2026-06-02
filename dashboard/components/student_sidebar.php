@@ -65,7 +65,7 @@ if (!isset($hostelRegistrationOpen)) {
                 Dashboard
             </h2>
             <nav class="space-y-2">
-                <a href="dashboard" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                <a href="/dashboard/dashboard" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -74,7 +74,7 @@ if (!isset($hostelRegistrationOpen)) {
                     Home
                 </a>
                 <?php if (isset($status) && $status === 'admitted'): ?>
-                    <a href="payment_proof" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                    <a href="/dashboard/payment_proof" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -84,7 +84,7 @@ if (!isset($hostelRegistrationOpen)) {
                     </a>
                 <?php endif; ?>
                 <?php if (isset($status) && $status === 'admitted' && $hostelRegistrationOpen): ?>
-                    <a href="register_hostel_unified" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                    <a href="/dashboard/register_hostel_unified" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -94,7 +94,7 @@ if (!isset($hostelRegistrationOpen)) {
                     </a>
                 <?php endif; ?>
 
-                <a href="application_form" class="flex items-center hover:bg-purple-700 px-3 py-2 rounded">
+                <a href="/dashboard/application_form" class="flex items-center hover:bg-purple-700 px-3 py-2 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,7 +102,7 @@ if (!isset($hostelRegistrationOpen)) {
                     </svg>
                     <?= (isset($isSubmitted) && $isSubmitted) ? 'View Application' : 'Continue Application' ?>
                 </a>
-                <a href="profile" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                <a href="/dashboard/profile" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -110,7 +110,7 @@ if (!isset($hostelRegistrationOpen)) {
                     </svg>
                     Profile
                 </a>
-                <a href="logout" class="flex items-center px-4 py-2 text-red-300 hover:text-white hover:bg-purple-800">
+                <a href="/dashboard/logout" class="flex items-center px-4 py-2 text-red-300 hover:text-white hover:bg-purple-800">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"

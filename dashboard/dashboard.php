@@ -104,10 +104,10 @@ include 'dashboard_logic.php';
         <div class="bg-white p-4 sm:p-6 rounded-xl shadow space-y-4">
             <h2 class="text-lg sm:text-xl font-bold text-purple-800 mb-2">🧾 Actions</h2>
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <a href="application_form" class="inline-block bg-blue-600 text-white px-4 sm:px-5 py-2 rounded hover:bg-blue-700 text-sm sm:text-base text-center">
+            <a href="/dashboard/application_form" class="inline-block bg-blue-600 text-white px-4 sm:px-5 py-2 rounded hover:bg-blue-700 text-sm sm:text-base text-center">
                 <?= $isSubmitted ? '📑 View Submitted Application' : '📑 Continue Application' ?>
             </a>
-            <a href="download_application"
+            <a href="/dashboard/download_application"
                     class="inline-block bg-green-600 text-white px-4 sm:px-5 py-2 rounded hover:bg-green-700 text-sm sm:text-base text-center">⬇️
                     Download Application Form</a>
                 <?php if ($isAdmitted && file_exists($admissionLetterPath)): ?>
