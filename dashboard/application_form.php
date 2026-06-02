@@ -77,6 +77,7 @@ if (!$regOpen) {
 
 $user_id = $_SESSION['user_id'];
 $step = isset($_GET['step']) ? max(1, min(7, (int)$_GET['step'])) : 1;
+log_message("Application form loaded for step $step, user ID: $user_id", "INFO");
 
 // --- Check Submission Status ---
 $subStmt = $pdo->prepare("SELECT submitted FROM applications WHERE user_id = ?");
@@ -95,8 +96,11 @@ if ($step === 1) {
 
 // --- Form Processing ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    log_message("POST request received for step $step", "INFO");
+    
     // Block updates if submitted (Read-Only Mode)
     if ($isSubmitted) {
+        log_message("Application already submitted, redirecting to dashboard", "WARNING");
         header("Location: dashboard");
         exit;
     }
