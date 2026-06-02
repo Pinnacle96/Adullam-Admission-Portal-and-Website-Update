@@ -4,12 +4,15 @@
  * Logs errors, warnings, and custom messages to files in the logs directory
  */
 
-// Define log directory
-define('LOG_DIR', __DIR__ . '/../logs');
+// Define log directories
+define('LOG_DIR_ROOT', __DIR__ . '/../logs');
+define('LOG_DIR_DASHBOARD', __DIR__ . '/logs');
 
-// Create log directory if it doesn't exist
-if (!is_dir(LOG_DIR)) {
-    mkdir(LOG_DIR, 0777, true);
+// Create log directories if they don't exist
+foreach ([LOG_DIR_ROOT, LOG_DIR_DASHBOARD] as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
 }
 
 /**
@@ -19,17 +22,26 @@ if (!is_dir(LOG_DIR)) {
  * @param string $logFile The name of the log file (without extension, e.g., 'app' for app.log)
  */
 function log_message($message, $level = 'INFO', $logFile = 'app') {
-    // Ensure the log directory exists
-    if (!is_dir(LOG_DIR)) {
-        mkdir(LOG_DIR, 0777, true);
+    // Ensure log directories exist
+    foreach ([LOG_DIR_ROOT, LOG_DIR_DASHBOARD] as $dir) {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
     }
 
     $timestamp = date('Y-m-d H:i:s T');
     $logEntry = "[{$timestamp}] [{$level}] {$message}" . PHP_EOL;
-    $logFilePath = LOG_DIR . '/' . $logFile . '.log';
     
-    // Write to log file
-    file_put_contents($logFilePath, $logEntry, FILE_APPEND | LOCK_EX);
+    // Log to both root logs and dashboard logs for redundancy
+    $logPaths = [
+        LOG_DIR_ROOT . '/' . $logFile . '.log',
+        LOG_DIR_DASHBOARD . '/' . $logFile . '.log'
+    ];
+    
+    foreach ($logPaths as $logFilePath) {
+        // Write to log file
+        file_put_contents($logFilePath, $logEntry, FILE_APPEND | LOCK_EX);
+    }
 
     // Also log to PHP's error log for server-level visibility
     error_log("[{$level}] {$message}");
