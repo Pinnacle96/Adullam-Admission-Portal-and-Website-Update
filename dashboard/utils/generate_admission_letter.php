@@ -34,10 +34,10 @@ function generateAdmissionLetter($userId, $pdo)
     $programDuration = $programMap[$programCode]['duration'] ?? 'N/A';
 
     // Embedded logo
-    $logoPath = realpath(__DIR__ . '/../../assets/img/logo1.png');
+    $logoPath = realpath(__DIR__ . '/../../assets/images/logo1.png');
     $logoSrc = $logoPath && file_exists($logoPath)
         ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
-        : 'https://adullam.ng/assets/img/logo1.png';
+        : 'https://adullam.ng/assets/images/logo1.png';
 
     // Registrar Signature
     $signPath = realpath(__DIR__ . '/../../assets/img/signature.png');
@@ -82,7 +82,7 @@ function generateAdmissionLetter($userId, $pdo)
             <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Program:</strong> $programLabel" . ($programCode === 'MA' ? " ($maFocus)" : "") . "</li>
             <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Learning Option:</strong> $modeOfStudy</li>
             <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Duration:</strong> $programDuration</li>
-            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Start Date:</strong> June 15, 2026</li>
+            <li style='margin-bottom: 5px;'>·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Start Date:</strong> June 22, 2026</li>
         </ul>
         
         <p>

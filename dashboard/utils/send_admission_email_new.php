@@ -33,8 +33,8 @@ function sendAdmissionEmail($user_id, $pdo)
     $mode_of_study = $data['mode_of_study'];
 
     $dashboard_link = 'https://adullam.ng/dashboard';
-    $logo           = 'https://adullam.ng/assets/img/logo1.png';
-    $resumption_date = 'June 15, 2026';
+    $logo           = 'https://adullam.ng/assets/images/logo1.png';
+    $resumption_date = 'June 22, 2026';
 
     $programMap = [
         'MA'          => ['name' => 'Master of Arts', 'duration' => '24 months'],

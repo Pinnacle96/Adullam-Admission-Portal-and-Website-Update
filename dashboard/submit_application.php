@@ -186,7 +186,7 @@ $body = "
   </p>
 
   <p style=\"font-size:15px;color:#333;line-height:1.6;\">
-    Resumption for the session is scheduled for <strong>Monday, 5th January, 2026</strong>.
+    Resumption for the session is scheduled for <strong>Monday, 22nd June 2026</strong>.
   </p>
 
   <p style=\"font-size:15px;color:#333;line-height:1.6;\">
