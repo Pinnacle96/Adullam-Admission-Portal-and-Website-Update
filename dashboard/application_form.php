@@ -19,6 +19,8 @@ function log_upload_trace($message, $type = 'INFO') {
 }
 
 function saveFile($file, $field) {
+    log_message("saveFile called for field: $field, file name: " . ($file['name'] ?? 'no name'), "INFO");
+    
     if ($file['error'] !== UPLOAD_ERR_OK) {
         $php_errors = [
             UPLOAD_ERR_INI_SIZE   => "File exceeds the max size defined in php.ini.",
@@ -30,6 +32,7 @@ function saveFile($file, $field) {
             UPLOAD_ERR_EXTENSION  => "A PHP extension stopped the file upload."
         ];
         $errorMessage = $php_errors[$file['error']] ?? "Unknown PHP upload error.";
+        log_message("Upload error for $field: $errorMessage", "ERROR");
         return ['success' => false, 'message' => "An upload error occurred for $field: " . $errorMessage];
     }
     
@@ -37,25 +40,35 @@ function saveFile($file, $field) {
     if ($file['size'] > $maxFileSize) {
         $readableLimit = "5MB";
         $actualSize = round($file['size'] / (1024 * 1024), 2) . "MB";
+        log_message("File too big for $field: $actualSize > $readableLimit", "ERROR");
         return ['success' => false, 'message' => "The uploaded document for $field ($actualSize) is larger than the allowed size of $readableLimit."];
     }
     
-    $targetDir = "uploads/documents/";
-    if (!file_exists($targetDir)) mkdir($targetDir, 0755, true);
+    $targetDir = __DIR__ . "/uploads/documents/";
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0755, true);
+        log_message("Created upload directory: $targetDir", "INFO");
+    }
     
     $fileName = basename($file['name']);
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $allowed = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
     if (!in_array($ext, $allowed)) {
+        log_message("Invalid file type for $field: $ext", "ERROR");
         return ['success' => false, 'message' => "Invalid file type for $field. Allowed: " . implode(', ', $allowed)];
     }
     
     $newName = uniqid($field . "_") . "." . $ext;
     $targetFile = $targetDir . $newName;
+    log_message("Attempting to save file to: $targetFile", "INFO");
     
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-        return ['success' => true, 'path' => $targetFile];
+        log_message("File saved successfully: $targetFile", "INFO");
+        // Return path relative to public_html for database
+        $relativePath = "dashboard/uploads/documents/" . $newName;
+        return ['success' => true, 'path' => $relativePath];
     }
+    log_message("Failed to move uploaded file to: $targetFile", "ERROR");
     return ['success' => false, 'message' => "Failed to save $field."];
 }
 
@@ -482,8 +495,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['continue'])) {
-        $pdo->prepare("UPDATE applications SET current_level = ? WHERE user_id = ?")->execute([$next_level, $user_id]);
-        header("Location: application_form?step=$next_level");
+        if (isset($next_level)) {
+            $pdo->prepare("UPDATE applications SET current_level = ? WHERE user_id = ?")->execute([$next_level, $user_id]);
+        }
+        header("Location: application_form?step=" . ($next_level ?? $step));
         exit;
     } elseif (isset($_POST['save'])) {
         $_SESSION['success'] = "Progress saved successfully!";
