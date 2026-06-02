@@ -467,7 +467,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $body = "<div style='max-width:600px;margin:auto;padding:20px;background-color:#f9fafb;font-family:sans-serif;border-radius:8px;border:1px solid #eee;'>
               <div style='text-align:center;margin-bottom:20px;'>
-                <img src='https://adullam.ng/assets/logo.png' alt='Adullam Seminary' style='height:80px;margin-bottom:10px;' />
+                <img src='https://adullam.ng/assets/images/logo1.png' alt='Adullam Seminary' style='height:80px;margin-bottom:10px;' />
                 <h2 style='color:#6B21A8;margin:0;'>RCN Theological Seminary - Adullam</h2>
               </div>
               <hr style='margin:20px 0;border:none;border-top:1px solid #ddd;' />
@@ -475,7 +475,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <p>We are pleased to confirm that your application has been successfully submitted. <strong>Application Number:</strong> $admissionNo</p>
               <p><strong>Program:</strong> $program_display <br> <strong>Study Option:</strong> $study_mode_display</p>
               <p>The admissions committee will review your application within 21 days.</p>
-              <p>Resumption: <strong>Monday, 5th January, 2026</strong>.</p>
+              <p>Resumption: <strong>Monday, 22nd June 2026</strong>.</p>
               <ol style='padding-left: 20px;'>
                 <li>Pay your fees (60% min) per the $feeDocLink.</li>
                 <li>Upload payment receipt on your portal.</li>
