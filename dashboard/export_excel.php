@@ -1,10 +1,19 @@
 <?php
+require_once 'logging.php';
+
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+log_message('Export Excel requested', 'INFO', 'export');
+log_message('Export Excel request params: ' . json_encode($_GET), 'DEBUG', 'export');
+
 header("Content-Type: application/vnd.ms-excel");
 header("Content-Disposition: attachment; filename=applicants_export_" . date("Y-m-d") . ".xls");
 
-require_once 'export_helpers.php';
+try {
+    require_once 'export_helpers.php';
 
-echo "<table border='1'>";
+    echo "<table border='1'>";
 echo "<tr>
         <th>Name</th>
         <th>Email</th>
@@ -28,4 +37,10 @@ foreach ($applicants as $a) {
     echo "</tr>";
 }
 
-echo "</table>";
+    echo "</table>";
+} catch (Throwable $e) {
+    log_message('Export Excel failed: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString(), 'ERROR', 'export');
+    http_response_code(500);
+    echo "An error occurred while generating the Excel export. Please check the export log.";
+    exit;
+}

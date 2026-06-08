@@ -1,9 +1,16 @@
 <?php
+require_once 'logging.php';
 require_once '../vendor/autoload.php';
 require_once 'export_helpers.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+log_message('Export PDF requested', 'INFO', 'export');
+log_message('Export PDF request params: ' . json_encode($_GET), 'DEBUG', 'export');
 
 // Increase memory limit and execution time for large PDF generation
 ini_set('memory_limit', '2048M');
@@ -26,10 +33,29 @@ ob_start();
 ?>
 
 <style>
-    body { font-family: Helvetica, sans-serif; font-size: 10px; }
-    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    th, td { border: 1px solid #000; padding: 4px; word-wrap: break-word; overflow-wrap: break-word; }
-    th { background-color: #522d80; color: white; }
+body {
+    font-family: Helvetica, sans-serif;
+    font-size: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th,
+td {
+    border: 1px solid #000;
+    padding: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+th {
+    background-color: #522d80;
+    color: white;
+}
 </style>
 
 <div style="text-align: center; margin-bottom: 20px;">
@@ -51,24 +77,32 @@ ob_start();
     </thead>
     <tbody>
         <?php foreach ($applicants as $a): ?>
-            <tr>
-                <td><?= htmlspecialchars($a['full_name'] ?? '') ?></td>
-                <td><?= htmlspecialchars($a['email'] ?? '') ?></td>
-                <td><?= htmlspecialchars($a['phone'] ?? '') ?></td> <!-- ✅ NEW CELL -->
-                <td><?= htmlspecialchars($a['program'] ?? '') ?></td>
-                <td><?= ($a['program'] ?? '') === 'MA' ? htmlspecialchars($a['ma_focus'] ?? '') : '-' ?></td>
-                <td><?= htmlspecialchars($a['mode_of_study'] ?? '') ?></td>
-                <td><?= ucfirst($a['status'] ?? '') ?></td>
+        <tr>
+            <td><?= htmlspecialchars($a['full_name'] ?? '') ?></td>
+            <td><?= htmlspecialchars($a['email'] ?? '') ?></td>
+            <td><?= htmlspecialchars($a['phone'] ?? '') ?></td> <!-- ✅ NEW CELL -->
+            <td><?= htmlspecialchars($a['program'] ?? '') ?></td>
+            <td><?= ($a['program'] ?? '') === 'MA' ? htmlspecialchars($a['ma_focus'] ?? '') : '-' ?></td>
+            <td><?= htmlspecialchars($a['mode_of_study'] ?? '') ?></td>
+            <td><?= ucfirst($a['status'] ?? '') ?></td>
 
-            </tr>
+        </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
 
 <?php
 $html = ob_get_clean();
-$dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'landscape');
-$dompdf->render();
-$dompdf->stream("applicants_export_" . date("Ymd") . ".pdf", ["Attachment" => true]);
-exit;
+
+try {
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->render();
+    $dompdf->stream("applicants_export_" . date("Ymd") . ".pdf", ["Attachment" => true]);
+    exit;
+} catch (Throwable $e) {
+    log_message('Export PDF failed: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString(), 'ERROR', 'export');
+    http_response_code(500);
+    echo "An error occurred while generating the PDF export. Please check the export log.";
+    exit;
+}
