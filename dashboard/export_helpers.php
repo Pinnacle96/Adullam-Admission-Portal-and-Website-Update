@@ -53,26 +53,30 @@ if (!empty($start_date) || !empty($end_date)) {
 
     if ($start_date_full !== null && $end_date_full !== null) {
         $where[] = "(
-            (a.submitted = 1 AND a.submitted_at BETWEEN :start_date AND :end_date)
+            (a.submitted = 1 AND a.submitted_at BETWEEN :start_date_submitted AND :end_date_submitted)
             OR
-            (a.submitted = 0 AND a.created_at BETWEEN :start_date AND :end_date)
+            (a.submitted = 0 AND a.created_at BETWEEN :start_date_draft AND :end_date_draft)
         )";
-        $params[':start_date'] = $start_date_full;
-        $params[':end_date'] = $end_date_full;
+        $params[':start_date_submitted'] = $start_date_full;
+        $params[':end_date_submitted'] = $end_date_full;
+        $params[':start_date_draft'] = $start_date_full;
+        $params[':end_date_draft'] = $end_date_full;
     } elseif ($start_date_full !== null) {
         $where[] = "(
-            (a.submitted = 1 AND a.submitted_at >= :start_date)
+            (a.submitted = 1 AND a.submitted_at >= :start_date_submitted)
             OR
-            (a.submitted = 0 AND a.created_at >= :start_date)
+            (a.submitted = 0 AND a.created_at >= :start_date_draft)
         )";
-        $params[':start_date'] = $start_date_full;
+        $params[':start_date_submitted'] = $start_date_full;
+        $params[':start_date_draft'] = $start_date_full;
     } else {
         $where[] = "(
-            (a.submitted = 1 AND a.submitted_at <= :end_date)
+            (a.submitted = 1 AND a.submitted_at <= :end_date_submitted)
             OR
-            (a.submitted = 0 AND a.created_at <= :end_date)
+            (a.submitted = 0 AND a.created_at <= :end_date_draft)
         )";
-        $params[':end_date'] = $end_date_full;
+        $params[':end_date_submitted'] = $end_date_full;
+        $params[':end_date_draft'] = $end_date_full;
     }
 }
 
