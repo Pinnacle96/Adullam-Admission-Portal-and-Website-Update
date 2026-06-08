@@ -14,28 +14,29 @@ if (!isset($hostelRegistrationOpen)) {
         require_once 'functions.php';
     }
 
-    // Determine student type to check correct registration status
-    // For onsite students, assume returning student registration
-    $checkType = (isset($mode) && strtolower($mode) === 'onsite') ? 'returning' : 'new';
-    $hostelRegistrationOpen = isHostelRegistrationOpen($pdo, $checkType);
+    // Check both new and returning hostel registration statuses
+    // This allows both newly admitted and returning students to see the link
+    $hostelRegistrationOpenNew = isHostelRegistrationOpen($pdo, 'new');
+    $hostelRegistrationOpenReturning = isHostelRegistrationOpen($pdo, 'returning');
+    $hostelRegistrationOpen = $hostelRegistrationOpenNew || $hostelRegistrationOpenReturning;
 }
 ?>
 <style>
-    /* Smooth transition for sidebar */
+/* Smooth transition for sidebar */
+#sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Hide sidebar on mobile by default */
+@media (max-width: 1023px) {
     #sidebar {
-        transition: transform 0.3s ease-in-out;
+        transform: translateX(-100%);
     }
 
-    /* Hide sidebar on mobile by default */
-    @media (max-width: 1023px) {
-        #sidebar {
-            transform: translateX(-100%);
-        }
-
-        #sidebar.open {
-            transform: translateX(0);
-        }
+    #sidebar.open {
+        transform: translateX(0);
     }
+}
 </style>
 </head>
 
@@ -74,24 +75,25 @@ if (!isset($hostelRegistrationOpen)) {
                     Home
                 </a>
                 <?php if (isset($status) && $status === 'admitted'): ?>
-                    <a href="/dashboard/payment_proof" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Upload proof of Payment
-                    </a>
+                <a href="/dashboard/payment_proof" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Upload proof of Payment
+                </a>
                 <?php endif; ?>
                 <?php if (isset($status) && $status === 'admitted' && $hostelRegistrationOpen): ?>
-                    <a href="/dashboard/register_hostel_unified" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        Hostel Registration
-                    </a>
+                <a href="/dashboard/register_hostel_unified"
+                    class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Hostel Registration
+                </a>
                 <?php endif; ?>
 
                 <a href="/dashboard/application_form" class="flex items-center hover:bg-purple-700 px-3 py-2 rounded">
@@ -110,7 +112,8 @@ if (!isset($hostelRegistrationOpen)) {
                     </svg>
                     Profile
                 </a>
-                <a href="/dashboard/logout" class="flex items-center px-4 py-2 text-red-300 hover:text-white hover:bg-purple-800">
+                <a href="/dashboard/logout"
+                    class="flex items-center px-4 py-2 text-red-300 hover:text-white hover:bg-purple-800">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"

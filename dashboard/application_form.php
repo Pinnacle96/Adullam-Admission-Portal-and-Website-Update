@@ -1005,7 +1005,8 @@ $progress = ($step / 7) * 100;
                             <div class="flex justify-between items-center mb-2">
                                 <h3 class="text-lg font-bold text-purple-700">📎 Uploaded Documents</h3>
                                 <?php if (!$isSubmitted): ?>
-                                <a href="/dashboard/application_form?step=6" class="text-sm text-purple-600 underline hover:text-purple-800">✏️
+                                <a href="/dashboard/application_form?step=6"
+                                    class="text-sm text-purple-600 underline hover:text-purple-800">✏️
                                     Edit</a>
                                 <?php endif; ?>
                             </div>
