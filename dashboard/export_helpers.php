@@ -47,25 +47,46 @@ if (!empty($cohort)) {
         // This matches fetch_applicants.php logic where selecting a cohort removes the default "submitted=1" filter.
     }
 
-if (!empty($start_date) && !empty($end_date)) {
-    $end_date_full = $end_date . ' 23:59:59';
-    $start_date_full = $start_date . ' 00:00:00';
-    
-    // Filter by submitted_at for submitted apps, or created_at for drafts
-    $where[] = "(
-        (a.submitted = 1 AND a.submitted_at BETWEEN :start_date AND :end_date) 
-        OR 
-        (a.submitted = 0 AND a.created_at BETWEEN :start_date AND :end_date)
-    )";
-    $params[':start_date'] = $start_date_full;
-    $params[':end_date'] = $end_date_full;
+if (!empty($start_date) || !empty($end_date)) {
+    $start_date_full = !empty($start_date) ? $start_date . ' 00:00:00' : null;
+    $end_date_full = !empty($end_date) ? $end_date . ' 23:59:59' : null;
+
+    if ($start_date_full !== null && $end_date_full !== null) {
+        $where[] = "(
+            (a.submitted = 1 AND a.submitted_at BETWEEN :start_date AND :end_date)
+            OR
+            (a.submitted = 0 AND a.created_at BETWEEN :start_date AND :end_date)
+        )";
+        $params[':start_date'] = $start_date_full;
+        $params[':end_date'] = $end_date_full;
+    } elseif ($start_date_full !== null) {
+        $where[] = "(
+            (a.submitted = 1 AND a.submitted_at >= :start_date)
+            OR
+            (a.submitted = 0 AND a.created_at >= :start_date)
+        )";
+        $params[':start_date'] = $start_date_full;
+    } else {
+        $where[] = "(
+            (a.submitted = 1 AND a.submitted_at <= :end_date)
+            OR
+            (a.submitted = 0 AND a.created_at <= :end_date)
+        )";
+        $params[':end_date'] = $end_date_full;
+    }
 }
 
 $status = $_GET['status'] ?? '';
 
 if (!empty($status)) {
     if ($status === 'submitted') {
-        $where[] = "a.submitted = 1 AND a.status IS NULL";
+        $where[] = "a.submitted = 1 AND (a.status IS NULL OR a.status = '' OR a.status = 'submitted')";
+    } elseif ($status === 'draft') {
+        $where[] = "a.submitted = 0 AND (a.status IS NULL OR a.status = '' OR a.status = 'draft')";
+    } elseif ($status === 'in_progress') {
+        $where[] = "(a.status IS NULL OR a.status = 'in_progress')";
+    } elseif ($status === 'pending') {
+        $where[] = "a.submitted = 1 AND (a.status IS NULL OR a.status = '' OR a.status = 'submitted')";
     } else {
         $where[] = "a.status = :status";
         $params[':status'] = $status;

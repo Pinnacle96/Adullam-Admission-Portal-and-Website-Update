@@ -64,16 +64,17 @@ rsort($cohorts);
 
             <!-- Filters -->
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-                <input type="text" id="search" placeholder="Search by name or email" value="<?= htmlspecialchars($selectedSearch) ?>"
+                <input type="text" id="search" placeholder="Search by name or email"
+                    value="<?= htmlspecialchars($selectedSearch) ?>"
                     class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
-                
+
                 <select id="cohort"
                     class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-purple-50 text-purple-900 font-medium">
                     <option value="">All Cohorts</option>
                     <?php foreach ($cohorts as $c): ?>
-                        <option value="<?= htmlspecialchars($c) ?>" <?= $c === $selectedCohort ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($c) ?>
-                        </option>
+                    <option value="<?= htmlspecialchars($c) ?>" <?= $c === $selectedCohort ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($c) ?>
+                    </option>
                     <?php endforeach; ?>
                 </select>
 
@@ -84,7 +85,8 @@ rsort($cohorts);
                     <option value="PGDT" <?= $selectedProgram === 'PGDT' ? 'selected' : '' ?>>PGDT</option>
                     <option value="B.Div" <?= $selectedProgram === 'B.Div' ? 'selected' : '' ?>>B.Div</option>
                     <option value="Diploma" <?= $selectedProgram === 'Diploma' ? 'selected' : '' ?>>Diploma</option>
-                    <option value="Certificate" <?= $selectedProgram === 'Certificate' ? 'selected' : '' ?>>Certificate</option>
+                    <option value="Certificate" <?= $selectedProgram === 'Certificate' ? 'selected' : '' ?>>Certificate
+                    </option>
                 </select>
 
                 <select id="mode_of_study"
@@ -97,12 +99,15 @@ rsort($cohorts);
                 <select id="status"
                     class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
                     <option value="">Filter by Status</option>
-                    <option value="submitted" <?= $selectedStatus === 'submitted' ? 'selected' : '' ?>>Submitted</option>
+                    <option value="submitted" <?= $selectedStatus === 'submitted' ? 'selected' : '' ?>>Submitted
+                    </option>
                     <option value="admitted" <?= $selectedStatus === 'admitted' ? 'selected' : '' ?>>Admitted</option>
                     <option value="rejected" <?= $selectedStatus === 'rejected' ? 'selected' : '' ?>>Rejected</option>
-                    <option value="pending" <?= $selectedStatus === 'pending' ? 'selected' : '' ?>>Pending Review</option>
-                    <option value="in_progress" <?= $selectedStatus === 'in_progress' ? 'selected' : '' ?>>Not Started</option>
-                     <option value="draft" <?= $selectedStatus === 'draft' ? 'selected' : '' ?>>In Progress</option>
+                    <option value="pending" <?= $selectedStatus === 'pending' ? 'selected' : '' ?>>Pending Review
+                    </option>
+                    <option value="in_progress" <?= $selectedStatus === 'in_progress' ? 'selected' : '' ?>>Not Started
+                    </option>
+                    <option value="draft" <?= $selectedStatus === 'draft' ? 'selected' : '' ?>>In Progress</option>
                 </select>
 
                 <select id="ma_focus"
@@ -117,14 +122,18 @@ rsort($cohorts);
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
                 <div class="flex flex-col">
                     <label class="text-xs text-gray-500 mb-1">From Date</label>
-                    <input type="date" id="start_date" class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <input type="date" id="start_date"
+                        class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs text-gray-500 mb-1">To Date</label>
-                    <input type="date" id="end_date" class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <input type="date" id="end_date"
+                        class="px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="flex items-end">
-                     <button onclick="fetchApplicants()" class="px-4 py-2 bg-purple-700 text-white rounded w-full hover:bg-purple-800">Apply Filter</button>
+                    <button onclick="applyFilter()"
+                        class="px-4 py-2 bg-purple-700 text-white rounded w-full hover:bg-purple-800">Apply
+                        Filter</button>
                 </div>
             </div>
 
@@ -132,8 +141,8 @@ rsort($cohorts);
             <div class="flex justify-end gap-4 mb-4">
                 <a id="exportExcel" href="#"
                     class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">⬇️ Export to Excel</a>
-                <a id="exportPDF" href="#"
-                    class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">📄 Export to PDF</a>
+                <a id="exportPDF" href="#" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">📄
+                    Export to PDF</a>
             </div>
 
             <!-- Table Results -->
@@ -143,114 +152,124 @@ rsort($cohorts);
         </main>
     </div>
 
-   <script>
-function fetchApplicants(page = 1) {
-    const search   = $('#search').val();
-    const program  = $('#program').val();
-    const mode_of_study = $('#mode_of_study').val();
-    const status   = $('#status').val();
-    const ma_focus = $('#ma_focus').val();
-    const start_date = $('#start_date').val();
-    const end_date = $('#end_date').val();
-    const cohort   = $('#cohort').val();
+    <script>
+    function fetchApplicants(page = 1) {
+        const search = $('#search').val();
+        const program = $('#program').val();
+        const mode_of_study = $('#mode_of_study').val();
+        const status = $('#status').val();
+        const ma_focus = $('#ma_focus').val();
+        const start_date = $('#start_date').val();
+        const end_date = $('#end_date').val();
+        const cohort = $('#cohort').val();
 
-    $.get('ajax/fetch_applicants.php', {
-        search: search,
-        program: program,
-        mode_of_study: mode_of_study,
-        status: status,
-        ma_focus: ma_focus,
-        start_date: start_date,
-        end_date: end_date,
-        cohort: cohort,
-        page: page
-    }, function (data) {
-        $('#results').html(data);
-    });
-}
+        $.get('ajax/fetch_applicants.php', {
+            search: search,
+            program: program,
+            mode_of_study: mode_of_study,
+            status: status,
+            ma_focus: ma_focus,
+            start_date: start_date,
+            end_date: end_date,
+            cohort: cohort,
+            page: page
+        }, function(data) {
+            $('#results').html(data);
+        });
+    }
 
-function updateExportLinks() {
-    const search   = encodeURIComponent($('#search').val());
-    const program  = encodeURIComponent($('#program').val());
-    const mode_of_study = encodeURIComponent($('#mode_of_study').val());
-    const status   = encodeURIComponent($('#status').val());
-    const ma_focus = encodeURIComponent($('#ma_focus').val());
-    const start_date = encodeURIComponent($('#start_date').val());
-    const end_date = encodeURIComponent($('#end_date').val());
-    const cohort   = encodeURIComponent($('#cohort').val());
+    function updateExportLinks() {
+        const search = encodeURIComponent($('#search').val());
+        const program = encodeURIComponent($('#program').val());
+        const mode_of_study = encodeURIComponent($('#mode_of_study').val());
+        const status = encodeURIComponent($('#status').val());
+        const ma_focus = encodeURIComponent($('#ma_focus').val());
+        const start_date = encodeURIComponent($('#start_date').val());
+        const end_date = encodeURIComponent($('#end_date').val());
+        const cohort = encodeURIComponent($('#cohort').val());
 
-    const query = `?search=${search}&program=${program}&mode_of_study=${mode_of_study}&status=${status}&ma_focus=${ma_focus}&start_date=${start_date}&end_date=${end_date}&cohort=${cohort}`;
-    $('#exportExcel').attr('href', 'export_excel' + query);
-    $('#exportPDF').attr('href', 'export_pdf' + query);
-}
+        const query =
+            `?search=${search}&program=${program}&mode_of_study=${mode_of_study}&status=${status}&ma_focus=${ma_focus}&start_date=${start_date}&end_date=${end_date}&cohort=${cohort}`;
+        $('#exportExcel').attr('href', 'export_excel' + query);
+        $('#exportPDF').attr('href', 'export_pdf' + query);
+    }
 
-$(document).ready(function () {
-    // Initial load
-    fetchApplicants();
-    updateExportLinks();
-
-    // Filters
-    $('#search, #program, #mode_of_study, #status, #ma_focus, #start_date, #end_date, #cohort').on('input change', function () {
+    function applyFilter() {
         fetchApplicants();
         updateExportLinks();
+    }
+
+    $(document).ready(function() {
+        // Initial load
+        fetchApplicants();
+        updateExportLinks();
+
+        // Filters
+        $('#search, #program, #mode_of_study, #status, #ma_focus, #start_date, #end_date, #cohort').on(
+            'input change',
+            function() {
+                fetchApplicants();
+                updateExportLinks();
+            });
+
+        // MA focus toggle
+        $('#program').on('change', function() {
+            if ($(this).val() === 'MA') {
+                $('#ma_focus').removeClass('hidden');
+            } else {
+                $('#ma_focus').val('').addClass('hidden');
+            }
+        });
+
+        // ✅ Pagination click handler (delegated, works on dynamically loaded buttons)
+        $(document).on('click', '.pagination-btn', function() {
+            const page = $(this).data('page');
+            fetchApplicants(page);
+        });
     });
 
-    // MA focus toggle
-    $('#program').on('change', function () {
-        if ($(this).val() === 'MA') {
-            $('#ma_focus').removeClass('hidden');
-        } else {
-            $('#ma_focus').val('').addClass('hidden');
-        }
-    });
-
-    // ✅ Pagination click handler (delegated, works on dynamically loaded buttons)
-    $(document).on('click', '.pagination-btn', function () {
-        const page = $(this).data('page');
-        fetchApplicants(page);
-    });
-});
-
-function deleteApplication(id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this! This will permanently delete the applicant and all associated data.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.post('delete_application_admin.php', { id: id }, function(response) {
-                try {
-                    const res = JSON.parse(response);
-                    if (res.success) {
-                        Swal.fire(
-                            'Deleted!',
-                            'The application has been deleted.',
-                            'success'
-                        );
-                        fetchApplicants(); // Refresh list
-                    } else {
+    function deleteApplication(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this! This will permanently delete the applicant and all associated data.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post('delete_application_admin.php', {
+                    id: id
+                }, function(response) {
+                    try {
+                        const res = JSON.parse(response);
+                        if (res.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The application has been deleted.',
+                                'success'
+                            );
+                            fetchApplicants(); // Refresh list
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                res.message,
+                                'error'
+                            );
+                        }
+                    } catch (e) {
                         Swal.fire(
                             'Error!',
-                            res.message,
+                            'An unexpected error occurred.',
                             'error'
                         );
                     }
-                } catch (e) {
-                    Swal.fire(
-                        'Error!',
-                        'An unexpected error occurred.',
-                        'error'
-                    );
-                }
-            });
-        }
-    })
-}
-</script>
+                });
+            }
+        })
+    }
+    </script>
 
 </body>
 
