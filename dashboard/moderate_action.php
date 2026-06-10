@@ -46,7 +46,7 @@ if ($newStatus === 'admitted') {
         $body = "
         <div style='font-family:Segoe UI, sans-serif; max-width:600px; margin:auto; background:#f9fafb; padding:24px; border:1px solid #eee; border-radius:10px;'>
             <div style='text-align:center;'>
-                <img src='https://adullam.ng/assets/img/logo1.png' alt='Adullam Seminary' style='height:60px;' />
+                <img src='https://adullam.ng/assets/images/logo1.png' alt='Adullam Seminary' style='height:60px;' />
                 <h2 style='color:#6B21A8; margin-top:10px;'>RCN Theological Seminary – Adullam</h2>
             </div>
             <p style='font-size:15px; color:#333;'>Dear <strong>$first</strong>,</p>

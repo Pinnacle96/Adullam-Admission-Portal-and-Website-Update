@@ -179,23 +179,25 @@ $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
 $body = "
 <div style='font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:auto;padding:20px;background-color:#f9fafb;border-radius:8px;border:1px solid #eee;'>
   <div style='text-align:center;margin-bottom:30px;'>
-    <img src='https://adullam.ng/assets/img/logo.png' alt='Adullam Seminary' style='height:60px;' />
+    <img src='https://adullam.ng/assets/images/logo.png' alt='Adullam Seminary' style='height:60px;' />
     <h2 style='color:#6B21A8;margin-top:10px;'>Adullam Seminary Family House Registration</h2>
   </div>
   <p style='font-size:16px;color:#111;'>Dear <strong>{$full_name}</strong>,</p>
-  <p style='font-size:15px;color:#333;line-height:1.6;'>We have received your Family House registration for the <strong>{$program}</strong> program, <strong>{$semester}</strong>.</p>
+  <p style='font-size:15px;color:#333;line-height:1.6;'>We have received your Family House registration for <strong>{$semester}</strong>, <strong>{$program}</strong>.</p>
 
-  <p style='font-size:15px;color:#333;line-height:1.6;'>Your application will be reviewed and you will be notified upon approval. Please ensure your student mattress is ready for inspection on resumption.</p>
+  <p style='font-size:15px;color:#333;line-height:1.6;'>Your application will be reviewed and you will be notified upon approval.</p>
 
   <p style='font-size:15px;color:#333;line-height:1.6; margin-top:20px;'>
-    <strong>Family House Room Reservation was successful</strong> – Please check back for management decision and to print out <strong>2 copies</strong> of the slip if approved. These must be submitted at the accommodation verification desk upon resumption on <strong>5th January, 2026.</strong>.
+   Please check back for management decision and to print out <strong>2 copies</strong> of the allocation slip if approved. These must be submitted at the accommodation verification desk upon resumption on <strong>22nd June, 2026.</strong>.
   </p>
+
+  <p style='font-size:15px;color:#333;line-height:1.6;'>The management reserves the right to reject or reallocate a student at any time.</p>
 
   <div style='text-align:center;margin:30px 0;'>
     <a href='https://adullam.ng/dashboard/index' style='background-color:#6B21A8;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold;'>Go to Dashboard</a>
   </div>
 
-  <p style='font-size:14px;color:#555;border-top:1px solid #ddd;padding-top:20px;'>Blessings,<br><strong>Adullam Seminary Team</strong><br><a href='mailto:admissions@adullam.ng' style='color:#6B21A8;'>admissions@adullam.ng</a><br><a href='https://adullam.ng' style='color:#6B21A8;'>www.adullam.ng</a></p>
+  <p style='font-size:14px;color:#555;border-top:1px solid #ddd;padding-top:20px;'>Blessings,<br><strong>Adullam Seminary Team</strong><br><a href='mailto:adullamadmissions@gmail.com' style='color:#6B21A8;'>adullamadmissions@gmail.com</a><br><a href='https://adullam.ng' style='color:#6B21A8;'>www.adullam.ng</a></p>
 </div>";
 
 sendMail($email, "Adullam Seminary", $subject, $body);

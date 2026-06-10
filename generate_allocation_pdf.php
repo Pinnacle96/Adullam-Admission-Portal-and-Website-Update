@@ -43,8 +43,8 @@ try {
     }
 
     /* ── logo / passport / registrar signature ───── */
-    $logoSrc       = file_exists(__DIR__.'/assets/img/logo1.png')
-        ? 'data:image/png;base64,'.base64_encode(file_get_contents(__DIR__.'/assets/img/logo1.png'))
+    $logoSrc       = file_exists(__DIR__.'/assets/images/logo1.png')
+        ? 'data:image/png;base64,'.base64_encode(file_get_contents(__DIR__.'/assets/images/logo1.png'))
         : '';
 
     $passportImg   = '';
