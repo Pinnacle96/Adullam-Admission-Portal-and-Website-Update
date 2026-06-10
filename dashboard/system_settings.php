@@ -13,6 +13,14 @@ while ($row = $stmt->fetch()) {
     $settings[$row['key']] = $row['value'];
 }
 
+// Fetch cohorts
+$currentCohort = $settings['current_cohort'] ?? 'January 2026';
+$cohorts = $pdo->query("SELECT DISTINCT cohort FROM applications WHERE cohort IS NOT NULL AND cohort != ''")->fetchAll(PDO::FETCH_COLUMN);
+if (!in_array($currentCohort, $cohorts)) {
+    array_unshift($cohorts, $currentCohort);
+}
+rsort($cohorts);
+
 // ✅ Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fields = [
@@ -23,12 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'admission_deadline' => trim($_POST['admission_deadline']),
         'terms_link'        => trim($_POST['terms_link']),
         'notice_banner' => trim($_POST['notice_banner']),
-
+        'current_cohort' => trim($_POST['current_cohort']),
+        'recaptcha_site_key' => trim($_POST['recaptcha_site_key']),
+        'recaptcha_secret_key' => trim($_POST['recaptcha_secret_key'])
     ];
 
-    $stmt = $pdo->prepare("UPDATE settings SET value = ? WHERE `key` = ?");
+    // Update or insert each setting
     foreach ($fields as $key => $value) {
-        $stmt->execute([$value, $key]);
+        $check_stmt = $pdo->prepare("SELECT COUNT(*) FROM settings WHERE `key` = ?");
+        $check_stmt->execute([$key]);
+        $exists = $check_stmt->fetchColumn() > 0;
+
+        if ($exists) {
+            $stmt = $pdo->prepare("UPDATE settings SET value = ? WHERE `key` = ?");
+            $stmt->execute([$value, $key]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO settings (`key`, value) VALUES (?, ?)");
+            $stmt->execute([$key, $value]);
+        }
     }
 
     // ✅ Show SweetAlert
@@ -75,11 +95,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <label class="flex items-center gap-3">
                         <input type="checkbox" name="registration_open" class="w-5 h-5"
-                            <?= $settings['registration_open'] == 1 ? 'checked' : '' ?>>
+                            <?= isset($settings['registration_open']) && $settings['registration_open'] == 1 ? 'checked' : '' ?>>
                         <span class="font-medium">Registration Open</span>
                     </label>
                     <p class="text-sm text-gray-500 ml-8">If unchecked, new users cannot register.</p>
                 </div>
+
+                <!-- Current Cohort -->
+                <div>
+                    <label class="block font-semibold mb-1">Current Cohort</label>
+                    <select name="current_cohort" required class="w-full p-2 border rounded">
+                        <?php foreach ($cohorts as $c): ?>
+                            <option value="<?= htmlspecialchars($c) ?>" 
+                                <?= (isset($settings['current_cohort']) && $settings['current_cohort'] === $c) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($c) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <!-- Notice Banner -->
                 <div>
                     <label class="block font-semibold mb-1">Dashboard Notice Banner</label>
@@ -125,6 +159,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label class="block font-semibold mb-1">Terms & Conditions Link</label>
                     <input type="url" name="terms_link" value="<?= htmlspecialchars($settings['terms_link'] ?? '') ?>"
                         class="w-full p-2 border rounded">
+                </div>
+
+                <!-- reCAPTCHA Site Key -->
+                <div>
+                    <label class="block font-semibold mb-1">reCAPTCHA Site Key</label>
+                    <input type="text" name="recaptcha_site_key" 
+                           value="<?= htmlspecialchars($settings['recaptcha_site_key'] ?? '') ?>" 
+                           class="w-full p-2 border rounded">
+                </div>
+
+                <!-- reCAPTCHA Secret Key -->
+                <div>
+                    <label class="block font-semibold mb-1">reCAPTCHA Secret Key</label>
+                    <input type="password" name="recaptcha_secret_key" 
+                           value="<?= htmlspecialchars($settings['recaptcha_secret_key'] ?? '') ?>" 
+                           class="w-full p-2 border rounded">
                 </div>
 
                 <div>

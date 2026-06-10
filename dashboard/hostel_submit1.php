@@ -1,16 +1,25 @@
 <?php
-/* ──────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────────────────────────
    hostel_submit.php   –   handles BOTH new & returning students
    • checks duplicates
    • validates hostel capacity (gender + semester)
    • validates reCAPTCHA v2
    • saves record + uploads
    • sends confirmation e-mail
-   ────────────────────────────────────────────────────────────── */
+   ───────────────────────────────────────────────────────────── */
 require 'db.php';
 require 'mailer.php';
 require 'functions.php';          // ➜ contains hostelIsFull() and hostelRemainingBeds()
 session_start();
+
+// Fetch reCAPTCHA secret key from settings
+$recaptcha_secret = '';
+$stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = 'recaptcha_secret_key'");
+$stmt->execute();
+$result = $stmt->fetchColumn();
+if ($result) {
+    $recaptcha_secret = $result;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index'); exit;
@@ -25,19 +34,21 @@ if (!isHostelRegistrationOpen($pdo, $studentType)) {
 }
 
 /* ---------- reCAPTCHA verification ---------- */
-$recaptchaSecret = "6LckELErAAAAAEX6sZUeY6MybRwhq-XweFFMHiNh"; // Replace with your reCAPTCHA v2 secret
 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
-if (empty($recaptchaResponse)) {
-    header("Location: {$dest}?captcha=0"); exit;
-}
+// Only verify reCAPTCHA if secret key is set
+if ($recaptcha_secret) {
+    if (empty($recaptchaResponse)) {
+        header("Location: {$dest}?captcha=0"); exit;
+    }
 
-$verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="
-          . urlencode($recaptchaSecret) . "&response=" . urlencode($recaptchaResponse));
-$captchaSuccess = json_decode($verify, true);
+    $verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="
+              . urlencode($recaptcha_secret) . "&response=" . urlencode($recaptchaResponse));
+    $captchaSuccess = json_decode($verify, true);
 
-if (empty($captchaSuccess['success']) || $captchaSuccess['success'] !== true) {
-    header("Location: {$dest}?captcha=0"); exit;
+    if (empty($captchaSuccess['success']) || $captchaSuccess['success'] !== true) {
+        header("Location: {$dest}?captcha=0"); exit;
+    }
 }
 
 /* ---------- tiny helper ---------- */

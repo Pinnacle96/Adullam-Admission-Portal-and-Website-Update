@@ -7,18 +7,25 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['superadmin', 
     die("Unauthorized access.");
 }
 
-// 🔄 Fetch sender info from settings
-$getSetting = fn($key) => $pdo->query("SELECT value FROM settings WHERE `key` = '$key'")->fetchColumn();
+// 🔄 Fetch sender info from settings using prepared statements
+$getSetting = function ($key) use ($pdo) {
+    $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = ?");
+    $stmt->execute([$key]);
+    return $stmt->fetchColumn();
+};
 $senderName = $getSetting('sender_name') ?? 'Adullam Seminary';
-$senderEmail = $getSetting('sender_email') ?? 'support@adullam.ng';
+$senderEmail = $getSetting('sender_email') ?? 'adullamadmissions@gmail.com';
 
 // Fetch cohorts
-$currentCohort = trim($pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026');
+$currentCohort = trim($getSetting('current_cohort') ?: 'January 2026');
 $cohorts = $pdo->query("SELECT DISTINCT cohort FROM applications WHERE cohort IS NOT NULL AND cohort != ''")->fetchAll(PDO::FETCH_COLUMN);
 if (!in_array($currentCohort, $cohorts)) {
     array_unshift($cohorts, $currentCohort);
 }
 rsort($cohorts);
+
+// Fetch mode_of_study options
+$mode_of_study_options = $pdo->query("SELECT DISTINCT mode_of_study FROM application_details WHERE mode_of_study IS NOT NULL AND mode_of_study != ''")->fetchAll(PDO::FETCH_COLUMN);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = trim($_POST['subject']);
@@ -29,48 +36,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Please fill all fields.";
     } else {
         $cohort = trim($_POST['cohort'] ?? '');
+        $mode_of_study = trim($_POST['mode_of_study'] ?? '');
 
-        // Build base query
-        $query = "SELECT first_name, last_name, email FROM users WHERE role = 'student'";
+        // Build base query and params
+        $params = [];
+        $where = ["u.role = 'student'"];
+        $joins = [];
         
         switch ($target) {
             case 'admitted':
-                $query .= " AND id IN (SELECT user_id FROM applications WHERE status = 'admitted'";
-                if ($cohort) {
-                    $query .= " AND cohort = '$cohort'";
-                }
-                $query .= ")";
+                $joins[] = "INNER JOIN applications a ON u.id = a.user_id";
+                $where[] = "a.status = 'admitted'";
                 break;
             case 'submitted':
-                $query .= " AND id IN (SELECT user_id FROM applications WHERE submitted = 1 AND (status IS NULL OR status != 'admitted')";
-                 if ($cohort) {
-                    $query .= " AND cohort = '$cohort'";
-                }
-                $query .= ")";
+                $joins[] = "INNER JOIN applications a ON u.id = a.user_id";
+                $where[] = "a.submitted = 1 AND (a.status IS NULL OR a.status != 'admitted')";
                 break;
             case 'rejected':
-                $query .= " AND id IN (SELECT user_id FROM applications WHERE status = 'rejected'";
-                 if ($cohort) {
-                    $query .= " AND cohort = '$cohort'";
-                }
-                $query .= ")";
+                $joins[] = "INNER JOIN applications a ON u.id = a.user_id";
+                $where[] = "a.status = 'rejected'";
                 break;
             case 'draft':
-                $query .= " AND id IN (SELECT user_id FROM applications WHERE submitted = 0";
-                 if ($cohort) {
-                    $query .= " AND cohort = '$cohort'";
-                }
-                $query .= ")";
+                $joins[] = "INNER JOIN applications a ON u.id = a.user_id";
+                $where[] = "a.submitted = 0";
                 break;
             case 'unstarted':
-                $query .= " AND id NOT IN (SELECT user_id FROM applications)";
+                $where[] = "u.id NOT IN (SELECT user_id FROM applications)";
+                break;
+            case 'all':
+            default:
                 break;
         }
 
-        $stmt = $pdo->query($query);
-        $recipients = $stmt->fetchAll();
+        if (!empty($cohort)) {
+            if (!in_array('INNER JOIN applications a ON u.id = a.user_id', $joins)) {
+                $joins[] = "INNER JOIN applications a ON u.id = a.user_id";
+            }
+            $where[] = "a.cohort = ?";
+            $params[] = $cohort;
+        }
+        
+        if (!empty($mode_of_study)) {
+            $joins[] = "INNER JOIN application_details ad ON u.id = ad.user_id";
+            $where[] = "ad.mode_of_study = ?";
+            $params[] = $mode_of_study;
+        }
 
-        $logo = 'https://adullam.ng/assets/img/logo1.png';
+        $query = "SELECT DISTINCT u.first_name, u.last_name, u.email FROM users u";
+        if (!empty($joins)) {
+            $query .= " " . implode(" ", array_unique($joins));
+        }
+        $query .= " WHERE " . implode(" AND ", $where);
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
+        $recipients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $logo = 'https://adullam.ng/assets/images/logo1.png';
         $wrappedBody = nl2br(htmlspecialchars($body));
 
         $formattedBody = "
@@ -97,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <p style='font-size:13px; color:#888; text-align:center;'>
     For questions, contact <a href='mailto:admissions@adullam.ng' style='color:#6B21A8;'>admissions@adullam.ng</a><br />
-    &copy; " . date('Y') . " Adullam Seminary � All rights reserved.
+    &copy; " . date('Y') . " Adullam Seminary – All rights reserved.
   </p>
 </div>
 ";
@@ -123,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Swal.fire({
                     icon: 'success',
                     title: 'Emails Queued!',
-                    text: 'Successfully queued $queued emails. They�ll be sent in the background shortly.',
+                    text: 'Successfully queued $queued emails. They’ll be sent in the background shortly.',
                     timer: 4000,
                     showConfirmButton: false
                 });
@@ -177,6 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="">All Cohorts</option>
                         <?php foreach ($cohorts as $c): ?>
                             <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Mode of Study Filter -->
+                <div>
+                    <label class="block mb-1 font-semibold">Filter by Mode of Study (Optional)</label>
+                    <select name="mode_of_study" class="w-full p-2 border rounded">
+                        <option value="">All Modes</option>
+                        <?php foreach ($mode_of_study_options as $m): ?>
+                            <option value="<?= htmlspecialchars($m) ?>"><?= htmlspecialchars($m) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

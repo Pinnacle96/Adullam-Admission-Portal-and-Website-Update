@@ -9,6 +9,15 @@ require 'db.php';
 require 'dashboard_logic.php';
 require 'functions.php';
 
+// Fetch reCAPTCHA site key from settings
+$recaptcha_site_key = '';
+$stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = 'recaptcha_site_key'");
+$stmt->execute();
+$result = $stmt->fetchColumn();
+if ($result) {
+    $recaptcha_site_key = $result;
+}
+
 /* ── protect page ──────────────────────────────────────────── */
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
     header('Location: index');
@@ -368,8 +377,10 @@ function calculateAge() {
           </div>
         </fieldset>
 
-        <!-- reCAPTCHA -->
-        <div class="g-recaptcha" data-sitekey="6LckELErAAAAANEf-LaHkGtz9IWywEb9ZZnqWXNR"></div>
+        <?php if ($recaptcha_site_key): ?>
+            <!-- reCAPTCHA -->
+            <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($recaptcha_site_key) ?>"></div>
+        <?php endif; ?>
 
         <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-4 rounded">
           Submit Registration
@@ -569,8 +580,10 @@ function calculateAge() {
           </div>
         </fieldset>
 
-        <!-- reCAPTCHA -->
-        <div class="g-recaptcha" data-sitekey="6LckELErAAAAANEf-LaHkGtz9IWywEb9ZZnqWXNR"></div>
+        <?php if ($recaptcha_site_key): ?>
+            <!-- reCAPTCHA -->
+            <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($recaptcha_site_key) ?>"></div>
+        <?php endif; ?>
 
         <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-4 rounded">
           Submit Registration

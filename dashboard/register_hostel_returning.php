@@ -5,6 +5,15 @@
 require 'db.php'; // $pdo
 require 'functions.php'; // hostelIsFull() + remainingBeds()
 
+// Fetch reCAPTCHA site key from settings
+$recaptcha_site_key = '';
+$stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = 'recaptcha_site_key'");
+$stmt->execute();
+$result = $stmt->fetchColumn();
+if ($result) {
+    $recaptcha_site_key = $result;
+}
+
 /* ---------- helper: beds still free (per semester & gender) ------ */
 function remainingBeds(PDO $pdo, string $semester, string $gender): int
 {
@@ -340,10 +349,12 @@ $hostelRegistrationOpen = isHostelRegistrationOpen($pdo, 'returning');
                 </div>
             </fieldset>
 
+            <?php if ($recaptcha_site_key): ?>
             <!-- reCAPTCHA v2 widget -->
             <div class="flex justify-center my-4">
-                <div class="g-recaptcha" data-sitekey="6LckELErAAAAADrZZKiebgqyQdqS00Ui0r34jjii"></div>
+                <div class="g-recaptcha" data-sitekey="<?=htmlspecialchars($recaptcha_site_key)?>"></div>
             </div>
+            <?php endif; ?>
 
             <input type="hidden" name="student_type" value="returning" />
 
