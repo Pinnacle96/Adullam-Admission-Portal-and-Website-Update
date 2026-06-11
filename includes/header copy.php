@@ -312,7 +312,7 @@ $logo_url = $base_url . "/assets/img/favicon.png"; // Use logo1.png for OG image
                         <svg id="mobile-portal-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div id="mobile-portal-menu" class="hidden pl-6 space-y-1 mt-1 border-l-2 border-purple-100 ml-3">
-                        <a href="requirements" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Login / Apply</a>
+                        <a href="dashboard/applicant_login" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Login / Apply</a>
                         <a href="admission_status" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Check Admission Status</a>
                         <?php if ($hostelRegistrationOpenReturning): ?>
                         <a href="dashboard/register_hostel_returning" target="_blank" class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-purple-700">Hostel Registration</a>
