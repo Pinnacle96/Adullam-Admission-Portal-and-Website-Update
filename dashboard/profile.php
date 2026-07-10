@@ -388,46 +388,57 @@ $feedbackJson = $feedback ? json_encode($feedback, JSON_HEX_TAG | JSON_HEX_APOS 
     </div>
 
     <script>
-        const toggleSidebar = document.getElementById('toggleSidebar');
-        const sidebar = document.getElementById('sidebar');
-        toggleSidebar?.addEventListener('click', () => sidebar?.classList.toggle('open'));
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && sidebar?.classList.contains('open')) {
-                if (!sidebar.contains(e.target) && !toggleSidebar?.contains(e.target)) {
-                    sidebar.classList.remove('open');
-                }
+        (function () {
+            var profileToggleSidebar = document.getElementById('toggleSidebar');
+            var profileSidebar = document.getElementById('sidebar');
+
+            if (profileToggleSidebar && profileSidebar) {
+                profileToggleSidebar.addEventListener('click', function () {
+                    profileSidebar.classList.toggle('open');
+                });
             }
-        });
 
-        document.querySelectorAll('.js-toggle-password').forEach((button) => {
-            button.addEventListener('click', () => {
-                const input = document.getElementById(button.dataset.target);
-                if (!input || input.disabled) return;
-
-                const isPassword = input.type === 'password';
-                input.type = isPassword ? 'text' : 'password';
-                button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
-                button.querySelector('.icon-eye')?.classList.toggle('hidden', isPassword);
-                button.querySelector('.icon-eye-off')?.classList.toggle('hidden', !isPassword);
-            });
-        });
-
-        const profileFeedback = <?= $feedbackJson ?>;
-        if (profileFeedback) {
-            window.addEventListener('load', () => {
-                const icon = profileFeedback.type === 'success' ? 'success' : 'error';
-                if (window.Swal) {
-                    Swal.fire({
-                        icon,
-                        title: icon === 'success' ? 'Success' : 'Error',
-                        text: profileFeedback.message,
-                        confirmButtonColor: '#6B21A8'
-                    });
-                } else {
-                    alert(profileFeedback.message);
+            document.addEventListener('click', function (e) {
+                if (window.innerWidth < 1024 && profileSidebar && profileSidebar.classList.contains('open')) {
+                    if (!profileSidebar.contains(e.target) && profileToggleSidebar && !profileToggleSidebar.contains(e.target)) {
+                        profileSidebar.classList.remove('open');
+                    }
                 }
             });
-        }
+
+            document.querySelectorAll('.js-toggle-password').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var input = document.getElementById(button.getAttribute('data-target'));
+                    if (!input || input.disabled) return;
+
+                    var isPassword = input.type === 'password';
+                    input.type = isPassword ? 'text' : 'password';
+                    button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+
+                    var eyeIcon = button.querySelector('.icon-eye');
+                    var eyeOffIcon = button.querySelector('.icon-eye-off');
+                    if (eyeIcon) eyeIcon.classList.toggle('hidden', isPassword);
+                    if (eyeOffIcon) eyeOffIcon.classList.toggle('hidden', !isPassword);
+                });
+            });
+
+            var profileFeedback = <?= $feedbackJson ?>;
+            if (profileFeedback) {
+                window.addEventListener('load', function () {
+                    var icon = profileFeedback.type === 'success' ? 'success' : 'error';
+                    if (window.Swal) {
+                        Swal.fire({
+                            icon: icon,
+                            title: icon === 'success' ? 'Success' : 'Error',
+                            text: profileFeedback.message,
+                            confirmButtonColor: '#6B21A8'
+                        });
+                    } else {
+                        alert(profileFeedback.message);
+                    }
+                });
+            }
+        })();
     </script>
 </body>
 </html>
