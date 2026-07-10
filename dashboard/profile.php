@@ -120,14 +120,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $safeName = htmlspecialchars($user['first_name'] ?: 'there');
                 $subject = 'Password Change OTP - Adullam Seminary';
                 $body = "
-                    <div style='font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:auto;padding:20px;background:#f9fafb;border:1px solid #eee;border-radius:8px;'>
-                        <h2 style='color:#6B21A8;margin-top:0;'>Password Change Confirmation</h2>
-                        <p>Hello <strong>{$safeName}</strong>,</p>
-                        <p>Use this OTP to confirm your dashboard password change. It expires in 15 minutes.</p>
-                        <div style='text-align:center;margin:24px 0;'>
-                            <span style='display:inline-block;background:#6B21A8;color:#fff;font-size:26px;letter-spacing:4px;padding:12px 22px;border-radius:8px;font-weight:bold;'>{$otp}</span>
+                    <div style='margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111827;'>
+                        <div style='max-width:620px;margin:0 auto;padding:28px 16px;'>
+                            <div style='background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;'>
+                                <div style='padding:28px 28px 18px;text-align:center;background:#ffffff;'>
+                                    <img src='https://adullam.ng/assets/img/logo1.png' alt='Adullam Seminary' style='height:64px;width:auto;margin-bottom:14px;' />
+                                    <h2 style='margin:0;color:#4c1d95;font-size:22px;font-weight:700;'>Password Change Confirmation</h2>
+                                </div>
+                                <div style='padding:0 32px 28px;'>
+                                    <p style='font-size:16px;line-height:1.65;margin:0 0 14px;'>Hello <strong>{$safeName}</strong>,</p>
+                                    <p style='font-size:15px;line-height:1.65;margin:0;color:#374151;'>
+                                        We received a request to change your dashboard password. Use the OTP below to confirm this action.
+                                    </p>
+                                    <div style='text-align:center;margin:28px 0;'>
+                                        <span style='display:inline-block;background:#6B21A8;color:#ffffff;font-size:30px;letter-spacing:6px;padding:14px 28px;border-radius:10px;font-weight:700;'>{$otp}</span>
+                                    </div>
+                                    <p style='font-size:14px;line-height:1.6;margin:0;color:#4b5563;'>This code expires in 15 minutes. If you did not request this change, keep your current password and contact an administrator.</p>
+                                </div>
+                                <div style='border-top:1px solid #e5e7eb;background:#fafafa;padding:18px 28px;text-align:center;font-size:13px;color:#6b7280;'>
+                                    <p style='margin:0 0 6px;'>RCN Theological Seminary - Adullam</p>
+                                    <p style='margin:0;'>
+                                        <a href='mailto:adullamadmissions@gmail.com' style='color:#6B21A8;text-decoration:none;'>adullamadmissions@gmail.com</a>
+                                        &nbsp;|&nbsp;
+                                        <a href='https://adullam.ng' style='color:#6B21A8;text-decoration:none;'>adullam.ng</a>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <p style='font-size:13px;color:#555;'>If you did not request this, keep your current password and contact an administrator.</p>
                     </div>";
 
                 $sent = sendMail($user['email'], trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')), $subject, $body);
@@ -185,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['middle_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
 $initials = trim(substr($user['first_name'] ?? 'U', 0, 1) . substr($user['last_name'] ?? '', 0, 1));
 $otpPending = ($_SESSION['profile_password_otp_user_id'] ?? null) === $user_id;
+$feedbackJson = $feedback ? json_encode($feedback, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) : 'null';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -273,7 +293,18 @@ $otpPending = ($_SESSION['profile_password_otp_user_id'] ?? null) === $user_id;
                             <input type="hidden" name="action" value="request_password_otp">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                                <input type="password" name="current_password" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <div class="relative">
+                                    <input type="password" name="current_password" id="currentPassword" required class="js-password-field w-full px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <button type="button" class="js-toggle-password absolute inset-y-0 right-0 px-3 text-gray-500 hover:text-purple-700" data-target="currentPassword" aria-label="Show current password">
+                                        <svg class="h-5 w-5 icon-eye" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <svg class="h-5 w-5 icon-eye-off hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58M9.88 5.63A9.86 9.86 0 0112 5.4c6 0 9.75 6.6 9.75 6.6a18.7 18.7 0 01-3.15 3.99M6.1 6.7C3.68 8.54 2.25 12 2.25 12s3.75 6.6 9.75 6.6c1.25 0 2.41-.28 3.45-.75" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <button type="submit" class="w-full bg-blue-700 text-white px-4 py-2.5 rounded-lg hover:bg-blue-800 font-medium">Send Email OTP</button>
                         </form>
@@ -287,11 +318,33 @@ $otpPending = ($_SESSION['profile_password_otp_user_id'] ?? null) === $user_id;
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                <input type="password" name="new_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                <div class="relative">
+                                    <input type="password" name="new_password" id="newPassword" <?= $otpPending ? '' : 'disabled' ?> class="js-password-field w-full px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                    <button type="button" class="js-toggle-password absolute inset-y-0 right-0 px-3 text-gray-500 hover:text-purple-700 disabled:text-gray-300" data-target="newPassword" <?= $otpPending ? '' : 'disabled' ?> aria-label="Show new password">
+                                        <svg class="h-5 w-5 icon-eye" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <svg class="h-5 w-5 icon-eye-off hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58M9.88 5.63A9.86 9.86 0 0112 5.4c6 0 9.75 6.6 9.75 6.6a18.7 18.7 0 01-3.15 3.99M6.1 6.7C3.68 8.54 2.25 12 2.25 12s3.75 6.6 9.75 6.6c1.25 0 2.41-.28 3.45-.75" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                                <input type="password" name="confirm_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                <div class="relative">
+                                    <input type="password" name="confirm_password" id="confirmPassword" <?= $otpPending ? '' : 'disabled' ?> class="js-password-field w-full px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                    <button type="button" class="js-toggle-password absolute inset-y-0 right-0 px-3 text-gray-500 hover:text-purple-700 disabled:text-gray-300" data-target="confirmPassword" <?= $otpPending ? '' : 'disabled' ?> aria-label="Show confirmed password">
+                                        <svg class="h-5 w-5 icon-eye" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <svg class="h-5 w-5 icon-eye-off hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58M9.88 5.63A9.86 9.86 0 0112 5.4c6 0 9.75 6.6 9.75 6.6a18.7 18.7 0 01-3.15 3.99M6.1 6.7C3.68 8.54 2.25 12 2.25 12s3.75 6.6 9.75 6.6c1.25 0 2.41-.28 3.45-.75" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <p class="text-xs text-gray-500">Use at least 8 characters with uppercase, lowercase, number, and symbol.</p>
                             <button type="submit" <?= $otpPending ? '' : 'disabled' ?> class="w-full bg-purple-700 text-white px-4 py-2.5 rounded-lg hover:bg-purple-800 disabled:bg-gray-400 font-medium">Change Password</button>
@@ -346,14 +399,35 @@ $otpPending = ($_SESSION['profile_password_otp_user_id'] ?? null) === $user_id;
             }
         });
 
-        <?php if ($feedback): ?>
-            Swal.fire({
-                icon: '<?= $feedback['type'] === 'success' ? 'success' : 'error' ?>',
-                title: '<?= $feedback['type'] === 'success' ? 'Success' : 'Error' ?>',
-                text: '<?= addslashes($feedback['message']) ?>',
-                confirmButtonColor: '#6B21A8'
+        document.querySelectorAll('.js-toggle-password').forEach((button) => {
+            button.addEventListener('click', () => {
+                const input = document.getElementById(button.dataset.target);
+                if (!input || input.disabled) return;
+
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+                button.querySelector('.icon-eye')?.classList.toggle('hidden', isPassword);
+                button.querySelector('.icon-eye-off')?.classList.toggle('hidden', !isPassword);
             });
-        <?php endif; ?>
+        });
+
+        const profileFeedback = <?= $feedbackJson ?>;
+        if (profileFeedback) {
+            window.addEventListener('load', () => {
+                const icon = profileFeedback.type === 'success' ? 'success' : 'error';
+                if (window.Swal) {
+                    Swal.fire({
+                        icon,
+                        title: icon === 'success' ? 'Success' : 'Error',
+                        text: profileFeedback.message,
+                        confirmButtonColor: '#6B21A8'
+                    });
+                } else {
+                    alert(profileFeedback.message);
+                }
+            });
+        }
     </script>
 </body>
 </html>
