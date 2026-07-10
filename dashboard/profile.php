@@ -206,80 +206,106 @@ $otpPending = ($_SESSION['profile_password_otp_user_id'] ?? null) === $user_id;
     <?php endif; ?>
 
         <main class="flex-1 p-4 sm:p-6 w-full max-w-7xl mx-auto">
-            <div class="flex flex-col gap-2 mb-6">
-                <h1 class="text-xl sm:text-2xl font-bold text-purple-800">My Profile</h1>
-                <p class="text-sm text-gray-600">Manage your contact details and secure your account password.</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <section class="bg-white rounded-xl shadow border border-gray-100 p-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-20 h-20 rounded-full overflow-hidden border bg-purple-100 text-purple-800 flex items-center justify-center text-xl font-bold">
+            <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-purple-900 via-purple-800 to-indigo-800 px-6 py-8 text-white">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-2xl overflow-hidden border border-white/30 bg-white/10 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
                             <?php if ($role === 'student' && !empty($docs['passport'])): ?>
                                 <img src="<?= htmlspecialchars($docs['passport']) ?>" alt="Profile Photo" class="object-cover w-full h-full">
                             <?php else: ?>
                                 <?= htmlspecialchars(strtoupper($initials ?: 'U')) ?>
                             <?php endif; ?>
+                            </div>
+                            <div>
+                                <p class="text-sm text-purple-100"><?= htmlspecialchars(ucfirst($role)) ?> Account</p>
+                                <h1 class="text-2xl sm:text-3xl font-bold"><?= htmlspecialchars($fullName ?: $user['first_name'] ?: 'User') ?></h1>
+                                <p class="text-sm text-purple-100 mt-1"><?= htmlspecialchars($user['email'] ?? '') ?></p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900"><?= htmlspecialchars($fullName ?: $user['first_name'] ?: 'User') ?></h2>
-                            <p class="text-sm text-gray-500"><?= htmlspecialchars(ucfirst($role)) ?></p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div class="bg-white/10 border border-white/20 rounded-xl px-4 py-3">
+                                <p class="text-purple-100">Phone</p>
+                                <p class="font-semibold"><?= htmlspecialchars($user['phone'] ?: 'Not set') ?></p>
+                            </div>
                             <?php if ($role === 'student'): ?>
-                                <p class="text-sm text-gray-500">Admission No: <strong><?= htmlspecialchars($appDetails['admission_no'] ?? 'N/A') ?></strong></p>
+                                <div class="bg-white/10 border border-white/20 rounded-xl px-4 py-3">
+                                    <p class="text-purple-100">Admission No</p>
+                                    <p class="font-semibold"><?= htmlspecialchars($appDetails['admission_no'] ?? 'N/A') ?></p>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
+                </div>
+            </section>
 
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-1">
+                    <div class="mb-5">
+                        <h2 class="text-lg font-semibold text-gray-900">Contact Details</h2>
+                        <p class="text-sm text-gray-500 mt-1">Keep your reachable email and phone number current.</p>
+                    </div>
                     <form method="POST" class="space-y-4 mt-6">
                         <input type="hidden" name="action" value="save_profile">
                         <div>
-                            <label class="block text-sm text-gray-700 mb-1">Email</label>
-                            <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-700 mb-1">Phone</label>
-                            <input type="text" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="text" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
-                        <button type="submit" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">Save Changes</button>
+                        <button type="submit" class="w-full bg-purple-700 text-white px-4 py-2.5 rounded-lg hover:bg-purple-800 font-medium">Save Changes</button>
                     </form>
                 </section>
 
-                <section class="bg-white rounded-xl shadow border border-gray-100 p-6 lg:col-span-2">
-                    <h3 class="text-lg font-semibold text-purple-800 mb-4">Change Password</h3>
+                <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-2">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900">Security</h2>
+                            <p class="text-sm text-gray-500 mt-1">Password changes are protected with email OTP confirmation.</p>
+                        </div>
+                        <span class="inline-flex w-fit px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium border border-green-100">OTP protected</span>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <form method="POST" class="space-y-4">
+                        <form method="POST" class="space-y-4 bg-gray-50 border border-gray-100 rounded-xl p-4">
+                            <h3 class="font-semibold text-gray-800">1. Verify Current Password</h3>
                             <input type="hidden" name="action" value="request_password_otp">
                             <div>
-                                <label class="block text-sm text-gray-700 mb-1">Current Password</label>
-                                <input type="password" name="current_password" required class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                <input type="password" name="current_password" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                             </div>
-                            <button type="submit" class="w-full sm:w-auto bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">Send Email OTP</button>
+                            <button type="submit" class="w-full bg-blue-700 text-white px-4 py-2.5 rounded-lg hover:bg-blue-800 font-medium">Send Email OTP</button>
                         </form>
 
-                        <form method="POST" class="space-y-4">
+                        <form method="POST" class="space-y-4 bg-gray-50 border border-gray-100 rounded-xl p-4">
+                            <h3 class="font-semibold text-gray-800">2. Confirm New Password</h3>
                             <input type="hidden" name="action" value="change_password">
                             <div>
-                                <label class="block text-sm text-gray-700 mb-1">Email OTP</label>
-                                <input type="text" name="otp" maxlength="6" pattern="\d{6}" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2 border rounded text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email OTP</label>
+                                <input type="text" name="otp" maxlength="6" pattern="\d{6}" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
                             </div>
                             <div>
-                                <label class="block text-sm text-gray-700 mb-1">New Password</label>
-                                <input type="password" name="new_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                <input type="password" name="new_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
                             </div>
                             <div>
-                                <label class="block text-sm text-gray-700 mb-1">Confirm New Password</label>
-                                <input type="password" name="confirm_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                <input type="password" name="confirm_password" <?= $otpPending ? '' : 'disabled' ?> class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100">
                             </div>
                             <p class="text-xs text-gray-500">Use at least 8 characters with uppercase, lowercase, number, and symbol.</p>
-                            <button type="submit" <?= $otpPending ? '' : 'disabled' ?> class="w-full sm:w-auto bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 disabled:bg-gray-400">Change Password</button>
+                            <button type="submit" <?= $otpPending ? '' : 'disabled' ?> class="w-full bg-purple-700 text-white px-4 py-2.5 rounded-lg hover:bg-purple-800 disabled:bg-gray-400 font-medium">Change Password</button>
                         </form>
                     </div>
                 </section>
 
                 <?php if ($role === 'student'): ?>
-                <section class="bg-white rounded-xl shadow border border-gray-100 p-6 lg:col-span-3">
-                    <h3 class="text-lg font-semibold text-purple-800 mb-4">Academic Info</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-3">
+                    <div class="mb-5">
+                        <h2 class="text-lg font-semibold text-gray-900">Academic Profile</h2>
+                        <p class="text-sm text-gray-500 mt-1">Your submitted academic and application information.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
                         <p><strong>Program:</strong> <?= htmlspecialchars($appDetails['program'] ?? 'N/A') ?></p>
                         <?php if (($appDetails['program'] ?? '') === 'MA'): ?>
                             <p><strong>MA Focus:</strong> <?= htmlspecialchars($appDetails['ma_focus'] ?? 'N/A') ?></p>

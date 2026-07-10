@@ -1,12 +1,9 @@
 <?php
-// Define variables if not already set by parent page
 if (!isset($status)) $status = 'incomplete';
 if (!isset($mode)) $mode = 'online';
 if (!isset($isSubmitted)) $isSubmitted = false;
 
-// Get hostel registration status (for conditional link display)
 if (!isset($hostelRegistrationOpen)) {
-    // If not passed from parent, check database
     if (!isset($pdo)) {
         require_once 'db.php';
     }
@@ -14,20 +11,18 @@ if (!isset($hostelRegistrationOpen)) {
         require_once 'functions.php';
     }
 
-    // Check both new and returning hostel registration statuses
-    // This allows both newly admitted and returning students to see the link
     $hostelRegistrationOpenNew = isHostelRegistrationOpen($pdo, 'new');
     $hostelRegistrationOpenReturning = isHostelRegistrationOpen($pdo, 'returning');
     $hostelRegistrationOpen = $hostelRegistrationOpenNew || $hostelRegistrationOpenReturning;
 }
+
+$studentInitial = htmlspecialchars(strtoupper(substr($_SESSION['name'] ?? 'U', 0, 1)));
 ?>
 <style>
-/* Smooth transition for sidebar */
 #sidebar {
     transition: transform 0.3s ease-in-out;
 }
 
-/* Hide sidebar on mobile by default */
 @media (max-width: 1023px) {
     #sidebar {
         transform: translateX(-100%);
@@ -41,23 +36,28 @@ if (!isset($hostelRegistrationOpen)) {
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <!-- Mobile Toggle Button -->
-    <div class="bg-purple-900 text-white p-4 lg:hidden flex justify-between items-center">
-        <span class="text-lg font-semibold">📚 Adullam</span>
-        <button id="toggleSidebar" class="text-white text-2xl focus:outline-none">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
-        </button>
+    <div class="bg-white border-b border-gray-200 text-gray-800 p-4 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+        <div>
+            <p class="text-xs text-gray-500 uppercase tracking-wide">Student Portal</p>
+            <span class="text-lg font-semibold text-purple-900">Adullam Dashboard</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="/dashboard/profile" class="w-9 h-9 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-sm font-bold">
+                <?= $studentInitial ?>
+            </a>
+            <button id="toggleSidebar" class="text-purple-900 text-2xl focus:outline-none lg:hidden" aria-label="Open menu">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
     </div>
 
-    <!-- Main Container for Sidebar and Content -->
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
         <aside id="sidebar"
             class="fixed lg:sticky top-0 w-64 flex flex-col bg-purple-900 text-white h-screen overflow-y-auto p-6 space-y-4 z-50">
-            <h2 class="text-xl font-bold lg:block hidden flex items-center">
+            <h2 class="text-xl font-bold lg:flex hidden items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,8 +85,7 @@ if (!isset($hostelRegistrationOpen)) {
                 </a>
                 <?php endif; ?>
                 <?php if (isset($status) && $status === 'admitted' && $hostelRegistrationOpen): ?>
-                <a href="/dashboard/register_hostel_unified"
-                    class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
+                <a href="/dashboard/register_hostel_unified" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -103,14 +102,6 @@ if (!isset($hostelRegistrationOpen)) {
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <?= (isset($isSubmitted) && $isSubmitted) ? 'View Application' : 'Continue Application' ?>
-                </a>
-                <a href="/dashboard/profile" class="flex items-center px-4 py-2 rounded hover:bg-purple-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Profile
                 </a>
                 <a href="/dashboard/logout"
                     class="flex items-center px-4 py-2 text-red-300 hover:text-white hover:bg-purple-800">

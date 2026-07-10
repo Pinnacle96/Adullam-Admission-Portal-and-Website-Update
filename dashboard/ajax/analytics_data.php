@@ -1,88 +1,81 @@
 <?php
 require '../db.php';
 
-// 📅 Trend: last 6 months
-$trend = $pdo->query("
-  SELECT DATE_FORMAT(submitted_at, '%Y-%m') AS month, COUNT(*) AS count
-  FROM applications WHERE submitted = 1
-  GROUP BY month ORDER BY month DESC LIMIT 6
-")->fetchAll(PDO::FETCH_ASSOC);
+header('Content-Type: application/json');
 
-$data['trend'] = [
-    'labels' => array_reverse(array_column($trend, 'month')),
-    'data' => array_reverse(array_column($trend, 'count'))
-];
+$cohort = trim($_GET['cohort'] ?? '');
+if ($cohort === '') {
+    $cohort = $pdo->query("SELECT value FROM settings WHERE `key` = 'current_cohort'")->fetchColumn() ?: 'January 2026';
+}
 
-// ✅ Date Filters
-$startDate = $_GET['start_date'] ?? date('Y-01-01');
-$endDate   = $_GET['end_date'] ?? date('Y-12-31');
+$startDate = trim($_GET['start_date'] ?? '');
+$endDate = trim($_GET['end_date'] ?? '');
 
-// � Trend: last 6 months (affected by filter? Usually trend shows recent activity, maybe keep as is or filter)
-// Let's keep trend as "Recent Activity" but filter the Status/Program breakdowns by the window.
+$dateClause = '';
+$joinedDateClause = '';
+$dateParams = [];
+if ($startDate !== '' && $endDate !== '') {
+    $dateClause = " AND ((submitted_at BETWEEN ? AND ?) OR (submitted_at IS NULL AND created_at BETWEEN ? AND ?))";
+    $joinedDateClause = " AND ((a.submitted_at BETWEEN ? AND ?) OR (a.submitted_at IS NULL AND a.created_at BETWEEN ? AND ?))";
+    $dateParams = [$startDate, $endDate, $startDate, $endDate];
+}
 
-// �📌 Status breakdown
-$statusStmt = $pdo->prepare("
-  SELECT status, COUNT(*) AS count 
-  FROM applications 
-  WHERE (submitted_at BETWEEN ? AND ? OR submitted_at IS NULL)
-  GROUP BY status
+$trendStmt = $pdo->prepare("
+    SELECT DATE_FORMAT(submitted_at, '%Y-%m') AS month, COUNT(*) AS count
+    FROM applications
+    WHERE submitted = 1 AND cohort = ?
+    GROUP BY month
+    ORDER BY month DESC
+    LIMIT 6
 ");
-// Note: Incomplete apps (draft) have NULL submitted_at. 
-// If we filter by date, we might lose 'draft' counts if we only look at submitted_at.
-// However, 'clean metrics' usually refers to the Admitted/Submitted counts for a specific batch.
-// If I want to see "Drafts from this window", I'd need to check created_at.
-// Let's refine the query logic.
-
-// If filtering by a window (e.g., Jan-June), we likely want:
-// 1. Submitted applications within that range.
-// 2. Draft applications created within that range (optional, but good for conversion rates).
+$trendStmt->execute([$cohort]);
+$trend = $trendStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $statusStmt = $pdo->prepare("
-  SELECT status, COUNT(*) AS count 
-  FROM applications 
-  WHERE (submitted_at BETWEEN ? AND ?) 
-     OR (status = 'draft' AND created_at BETWEEN ? AND ?)
-  GROUP BY status
+    SELECT COALESCE(NULLIF(status, ''), 'submitted') AS status, COUNT(*) AS count
+    FROM applications
+    WHERE cohort = ? $dateClause
+    GROUP BY COALESCE(NULLIF(status, ''), 'submitted')
 ");
-$statusStmt->execute([$startDate, $endDate, $startDate, $endDate]);
+$statusStmt->execute(array_merge([$cohort], $dateParams));
 $status = $statusStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$data['status'] = [
-    'labels' => array_keys($status),
-    'data' => array_values($status)
-];
-
-// 🚻 Gender breakdown (Join with applications to filter by date)
 $genderStmt = $pdo->prepare("
-  SELECT ad.gender, COUNT(*) AS count 
-  FROM application_details ad
-  JOIN applications a ON ad.user_id = a.user_id
-  WHERE a.submitted_at BETWEEN ? AND ?
-  GROUP BY ad.gender
+    SELECT COALESCE(NULLIF(ad.gender, ''), 'Unknown') AS gender, COUNT(*) AS count
+    FROM application_details ad
+    JOIN applications a ON ad.user_id = a.user_id
+    WHERE a.cohort = ? $joinedDateClause
+    GROUP BY COALESCE(NULLIF(ad.gender, ''), 'Unknown')
 ");
-$genderStmt->execute([$startDate, $endDate]);
+$genderStmt->execute(array_merge([$cohort], $dateParams));
 $gender = $genderStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$data['gender'] = [
-    'labels' => array_keys($gender),
-    'data' => array_values($gender)
-];
-
-// 🎓 Programs
-$progStmt = $pdo->prepare("
-  SELECT ad.program, COUNT(*) AS count 
-  FROM application_details ad
-  JOIN applications a ON ad.user_id = a.user_id
-  WHERE a.submitted_at BETWEEN ? AND ?
-  GROUP BY ad.program
+$programStmt = $pdo->prepare("
+    SELECT COALESCE(NULLIF(ad.program, ''), 'Unknown') AS program, COUNT(*) AS count
+    FROM application_details ad
+    JOIN applications a ON ad.user_id = a.user_id
+    WHERE a.cohort = ? $joinedDateClause
+    GROUP BY COALESCE(NULLIF(ad.program, ''), 'Unknown')
 ");
-$progStmt->execute([$startDate, $endDate]);
-$programs = $progStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+$programStmt->execute(array_merge([$cohort], $dateParams));
+$programs = $programStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$data['program'] = [
-    'labels' => array_keys($programs),
-    'data' => array_values($programs)
-];
-
-header('Content-Type: application/json');
-echo json_encode($data);
+echo json_encode([
+    'cohort' => $cohort,
+    'trend' => [
+        'labels' => array_reverse(array_column($trend, 'month')),
+        'data' => array_reverse(array_column($trend, 'count')),
+    ],
+    'status' => [
+        'labels' => array_keys($status),
+        'data' => array_values($status),
+    ],
+    'gender' => [
+        'labels' => array_keys($gender),
+        'data' => array_values($gender),
+    ],
+    'program' => [
+        'labels' => array_keys($programs),
+        'data' => array_values($programs),
+    ],
+]);
