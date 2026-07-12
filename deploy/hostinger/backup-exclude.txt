@@ -3,6 +3,7 @@
 ./deploy
 ./node_modules
 ./vendor/bin
+./logs
 ./uploads
 ./dashboard/uploads
 ./dashboard/logs

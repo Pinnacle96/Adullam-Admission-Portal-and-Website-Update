@@ -13,3 +13,8 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 
 # Rewrite the request to the .php file
 RewriteRule ^(.*)$ $1.php [L]
+
+# Check if the request + .html exists as a file
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]

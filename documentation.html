@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adullam Technical Documentation</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <script>
+        (function () {
+            var savedTheme = localStorage.getItem('adullam-doc-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #080b12;
+            --body-bg:
+                radial-gradient(circle at top left, rgba(124, 58, 237, 0.22), transparent 34rem),
+                radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 30rem),
+                var(--bg);
+            --panel: #0f172a;
+            --panel-2: #111827;
+            --panel-3: #151f33;
+            --surface: rgba(15, 23, 42, 0.84);
+            --surface-strong: rgba(15, 23, 42, 0.86);
+            --surface-card: linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(15, 23, 42, 0.95));
+            --topbar-bg: rgba(8, 11, 18, 0.76);
+            --table-head: rgba(17, 24, 39, 0.94);
+            --code-bg: rgba(15, 23, 42, 0.95);
+            --pre-bg: #050816;
+            --line: rgba(148, 163, 184, 0.18);
+            --line-strong: rgba(167, 139, 250, 0.35);
+            --text: #e5e7eb;
+            --heading: #ffffff;
+            --copy: #cbd5e1;
+            --code-text: #ddd6fe;
+            --muted: #94a3b8;
+            --faint: #64748b;
+            --purple: #a78bfa;
+            --purple-strong: #7c3aed;
+            --blue: #60a5fa;
+            --green: #34d399;
+            --amber: #fbbf24;
+            --danger: #f87171;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f8fafc;
+            --body-bg:
+                radial-gradient(circle at top left, rgba(124, 58, 237, 0.12), transparent 32rem),
+                radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 30rem),
+                var(--bg);
+            --panel: #ffffff;
+            --panel-2: #f8fafc;
+            --panel-3: #eef2ff;
+            --surface: rgba(255, 255, 255, 0.92);
+            --surface-strong: rgba(255, 255, 255, 0.94);
+            --surface-card: linear-gradient(180deg, #ffffff, #f8fafc);
+            --topbar-bg: rgba(255, 255, 255, 0.82);
+            --table-head: #f1f5f9;
+            --code-bg: #f1f5f9;
+            --pre-bg: #111827;
+            --line: rgba(15, 23, 42, 0.12);
+            --line-strong: rgba(124, 58, 237, 0.28);
+            --text: #111827;
+            --heading: #0f172a;
+            --copy: #334155;
+            --code-text: #5b21b6;
+            --muted: #64748b;
+            --faint: #94a3b8;
+            --purple: #6d28d9;
+            --purple-strong: #5b21b6;
+            --blue: #2563eb;
+            --green: #059669;
+            --amber: #b45309;
+            --danger: #dc2626;
+            --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background: var(--body-bg);
+            line-height: 1.7;
+        }
+
+        a {
+            color: var(--purple);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #c4b5fd;
+            text-decoration: underline;
+        }
+
+        code {
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            color: var(--code-text);
+            padding: 2px 7px;
+            font-size: 0.92em;
+        }
+
+        pre {
+            margin: 14px 0;
+            background: var(--pre-bg);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow-x: auto;
+            padding: 18px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        pre code {
+            background: transparent;
+            border: 0;
+            padding: 0;
+            color: #cbd5e1;
+        }
+
+        .shell {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 22px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(18px);
+            background: var(--topbar-bg);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .topbar-inner {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .brand img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 11px;
+            background: white;
+            padding: 5px;
+        }
+
+        .brand strong,
+        .brand span {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand strong {
+            font-size: 0.98rem;
+        }
+
+        .brand span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .status {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font: inherit;
+            font-size: 0.86rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--line-strong);
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.1);
+        }
+
+        .hero {
+            padding: 64px 0 34px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .eyebrow {
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin: 0 0 16px;
+        }
+
+        h1 {
+            max-width: 920px;
+            margin: 0;
+            font-size: clamp(2.4rem, 5vw, 5.1rem);
+            line-height: 0.98;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-copy {
+            max-width: 790px;
+            color: var(--copy);
+            font-size: 1.08rem;
+            margin: 22px 0 0;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .meta-card {
+            background: var(--surface-strong);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 15px;
+        }
+
+        .meta-card span {
+            display: block;
+            color: var(--faint);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .meta-card strong {
+            display: block;
+            margin-top: 5px;
+            color: var(--text);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 300px minmax(0, 1fr);
+            gap: 24px;
+            padding: 26px 0 48px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 86px;
+            align-self: start;
+            background: var(--surface-strong);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 12px;
+            color: var(--faint);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+        }
+
+        .sidebar a {
+            display: block;
+            color: var(--copy);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 0.93rem;
+        }
+
+        .sidebar a:hover {
+            background: rgba(167, 139, 250, 0.1);
+            text-decoration: none;
+            color: var(--heading);
+        }
+
+        .content {
+            display: grid;
+            gap: 20px;
+        }
+
+        section {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 26px;
+            scroll-margin-top: 92px;
+        }
+
+        h2 {
+            color: var(--heading);
+            margin: 0 0 12px;
+            font-size: 1.55rem;
+            letter-spacing: -0.02em;
+        }
+
+        h3 {
+            color: var(--heading);
+            margin: 24px 0 8px;
+            font-size: 1.04rem;
+        }
+
+        p {
+            margin: 0 0 13px;
+            color: var(--copy);
+        }
+
+        ul,
+        ol {
+            color: var(--copy);
+            margin: 8px 0 0;
+            padding-left: 22px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid.two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid.three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .card {
+            background: var(--surface-card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .card strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--heading);
+        }
+
+        .card p,
+        .card span {
+            color: var(--copy);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            text-align: left;
+            vertical-align: top;
+            padding: 12px 13px;
+            border-bottom: 1px solid var(--line);
+            color: var(--copy);
+        }
+
+        th {
+            background: var(--table-head);
+            color: var(--heading);
+            font-size: 0.86rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .callout {
+            border: 1px solid var(--line-strong);
+            border-left: 4px solid var(--purple);
+            background: rgba(91, 33, 182, 0.14);
+            border-radius: 14px;
+            padding: 15px 16px;
+            margin: 15px 0;
+            color: #ddd6fe;
+        }
+
+        .warning {
+            border-color: rgba(251, 191, 36, 0.28);
+            border-left-color: var(--amber);
+            background: rgba(251, 191, 36, 0.09);
+            color: #fde68a;
+        }
+
+        .success {
+            border-color: rgba(52, 211, 153, 0.26);
+            border-left-color: var(--green);
+            background: rgba(52, 211, 153, 0.09);
+            color: #bbf7d0;
+        }
+
+        .roadmap {
+            border-color: rgba(96, 165, 250, 0.28);
+            border-left-color: var(--blue);
+            background: rgba(37, 99, 235, 0.12);
+            color: #bfdbfe;
+        }
+
+        :root[data-theme="light"] .callout {
+            background: #f5f3ff;
+            border-color: #ddd6fe;
+            border-left-color: #6d28d9;
+            color: #312e81;
+        }
+
+        :root[data-theme="light"] .callout strong {
+            color: #1e1b4b;
+        }
+
+        :root[data-theme="light"] .success {
+            background: #ecfdf5;
+            border-color: #bbf7d0;
+            border-left-color: #059669;
+            color: #064e3b;
+        }
+
+        :root[data-theme="light"] .roadmap {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            border-left-color: #2563eb;
+            color: #1e3a8a;
+        }
+
+        :root[data-theme="light"] .warning {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: #d97706;
+            color: #78350f;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--purple);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: var(--muted);
+            padding: 30px 18px 46px;
+        }
+
+        .footer p {
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 980px) {
+            .layout,
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .grid.two,
+            .grid.three {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .top-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <img src="assets/img/logo1.png" alt="Adullam logo">
+                <div>
+                    <strong>Adullam Technical Documentation</strong>
+                    <span>Project transition and maintenance reference</span>
+                </div>
+            </div>
+            <div class="top-actions">
+                <div class="status">
+                    <span class="status-dot"></span>
+                    <span>Clean URL: /documentation</span>
+                </div>
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch documentation theme">
+                    <span id="themeIcon">Dark</span>
+                    <span id="themeLabel">Theme</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="shell">
+            <p class="eyebrow">RCN Theological Seminary - Adullam</p>
+            <h1>Admission Portal and Website Technical Documentation</h1>
+            <p class="hero-copy">A formal engineering reference for maintaining, deploying, extending, and transitioning the Adullam public website, admission portal, student dashboard, and administrative dashboard.</p>
+            <div class="meta-grid">
+                <div class="meta-card"><span>Runtime</span><strong>Native PHP / Apache</strong></div>
+                <div class="meta-card"><span>Database</span><strong>MySQL / MariaDB</strong></div>
+                <div class="meta-card"><span>Primary module</span><strong>dashboard/</strong></div>
+                <div class="meta-card"><span>Deployment</span><strong>GitHub Actions to Hostinger</strong></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="shell">
+        <div class="layout">
+            <aside class="sidebar">
+                <h2>Documentation</h2>
+                <a href="#overview">System Overview</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#setup">Local Setup</a>
+                <a href="#database">Database</a>
+                <a href="#workflows">Core Workflows</a>
+                <a href="#routes">Route Reference</a>
+                <a href="#deployment">Deployment</a>
+                <a href="#future-payments">Future Payment Gateway</a>
+                <a href="#monitoring">Site Watch</a>
+                <a href="#security">Security</a>
+                <a href="#maintenance">Maintenance</a>
+                <a href="#transition">Project Transition</a>
+            </aside>
+
+            <main class="content">
+                <section id="overview">
+                    <span class="section-label">01 / System Overview</span>
+                    <h2>Operational Scope</h2>
+                    <p>The Adullam project includes the public institutional website, the admission application portal, the student dashboard, and the administrative dashboard. The active business workflows are concentrated in <code>dashboard/</code>. Root-level files serve public website pages, while <code>admin/</code> and <code>user/</code> contain legacy interfaces that should be preserved until formally retired.</p>
+                    <div class="grid three">
+                        <div class="card"><strong>Public website</strong><span>Program pages, admissions information, requirements, contact page, modal content, and public assets.</span></div>
+                        <div class="card"><strong>Student portal</strong><span>Registration, verification, application form, document upload, tuition proof, hostel registration, and profile security.</span></div>
+                        <div class="card"><strong>Administrative portal</strong><span>Applicant review, admission decisions, payment verification, hostels, analytics, reporting, settings, and user management.</span></div>
+                    </div>
+                </section>
+
+                <section id="architecture">
+                    <span class="section-label">02 / Architecture</span>
+                    <h2>Codebase Structure</h2>
+                    <p>The application is mostly procedural PHP with page-level controllers. Modern dashboard database access uses PDO through <code>dashboard/db.php</code>. Some older modules use mysqli via legacy include files.</p>
+                    <table>
+                        <thead>
+                            <tr><th>Path</th><th>Responsibility</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>dashboard/</code></td><td>Main admission portal, student dashboard, and admin dashboard.</td></tr>
+                            <tr><td><code>dashboard/ajax/</code></td><td>JSON endpoints for applicants, analytics, payments, hostels, and chart data.</td></tr>
+                            <tr><td><code>dashboard/components/</code></td><td>Reusable dashboard navigation components.</td></tr>
+                            <tr><td><code>dashboard/utils/</code></td><td>Admission email and letter-generation helpers.</td></tr>
+                            <tr><td><code>site_watch.php</code></td><td>Application error and suspicious-request watcher with email alerts.</td></tr>
+                            <tr><td><code>assets/</code></td><td>Public website images, icons, CSS, fonts, and static media.</td></tr>
+                            <tr><td><code>fees/</code></td><td>Program fee documents linked in the application process.</td></tr>
+                            <tr><td><code>db/</code></td><td>SQL dumps and schema snapshots.</td></tr>
+                            <tr><td><code>deploy/hostinger/</code></td><td>Deployment include/exclude files and Hostinger deployment notes.</td></tr>
+                            <tr><td><code>.github/workflows/</code></td><td>Production deployment and rollback workflows.</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="callout">
+                        <strong>Routing:</strong> Root <code>.htaccess</code> supports clean URLs by resolving extensionless requests to matching <code>.php</code> and <code>.html</code> files. This page is available as <code>/documentation</code>.
+                    </div>
+                </section>
+
+                <section id="setup">
+                    <span class="section-label">03 / Local Setup</span>
+                    <h2>Developer Environment</h2>
+                    <ol>
+                        <li>Install PHP 7.4 or newer, Apache, MySQL/MariaDB, and Composer.</li>
+                        <li>Place the repository in the web root, for example <code>C:\wamp64\www\adullam</code>.</li>
+                        <li>Install PHP dependencies from the project root.</li>
+                    </ol>
+                    <pre><code>composer install</code></pre>
+                    <ol start="4">
+                        <li>Create the database and import a trusted SQL dump from <code>db/</code>.</li>
+                        <li>Update database credentials in <code>db.php</code>, <code>dashboard/db.php</code>, and <code>includes/dbconnection.php</code>.</li>
+                        <li>Enable Apache <code>mod_rewrite</code> and allow <code>.htaccess</code> overrides.</li>
+                        <li>Open <code>http://localhost/adullam</code>.</li>
+                    </ol>
+                    <h3>Writable Directories</h3>
+                    <ul>
+                        <li><code>uploads/</code></li>
+                        <li><code>dashboard/uploads/</code></li>
+                        <li><code>dashboard/logs/</code></li>
+                        <li><code>dashboard/letters/admission_letters/</code></li>
+                        <li><code>user/uploads/</code></li>
+                        <li><code>user/userimages/</code></li>
+                    </ul>
+                </section>
+
+                <section id="database">
+                    <span class="section-label">04 / Database</span>
+                    <h2>Data Model Reference</h2>
+                    <p>The main tracked dump is <code>db/u499616432_adullamn_cams.sql</code>. Database exports may contain live applicant information and must be handled as confidential material.</p>
+                    <div class="grid two">
+                        <div class="card"><strong>Identity and access</strong><span><code>users</code>, <code>password_resets</code>, <code>email_verification_otp</code>, <code>email_verification_tokens</code></span></div>
+                        <div class="card"><strong>Applications</strong><span><code>applications</code>, <code>application_details</code>, <code>application_documents</code>, <code>application_recommendations</code></span></div>
+                        <div class="card"><strong>Payments</strong><span><code>tuition_payment</code></span></div>
+                        <div class="card"><strong>Hostel</strong><span><code>hostel_rooms</code>, <code>hostel_registrations</code>, <code>hostel_allocations</code>, <code>hostel_settings</code></span></div>
+                        <div class="card"><strong>Configuration</strong><span><code>settings</code>, <code>programs</code>, <code>ma_focus_areas</code></span></div>
+                        <div class="card"><strong>Audit and logs</strong><span><code>audit_logs</code>, <code>admin_logs</code>, <code>reviews_audit</code></span></div>
+                    </div>
+                </section>
+
+                <section id="workflows">
+                    <span class="section-label">05 / Workflows</span>
+                    <h2>Core Operational Workflows</h2>
+                    <h3>Applicant Lifecycle</h3>
+                    <ol>
+                        <li>Applicant registers and verifies email.</li>
+                        <li>Applicant sets password and logs in.</li>
+                        <li>Applicant completes the multi-step application form.</li>
+                        <li>System requests recommendations where applicable.</li>
+                        <li>Admin reviews submitted application and documents.</li>
+                        <li>Admin admits or rejects the applicant.</li>
+                        <li>Admitted applicant downloads admission letter and uploads tuition proof.</li>
+                        <li>Admin verifies tuition payment and onboards eligible online students.</li>
+                        <li>Eligible onsite or returning students register for hostel when the window is open.</li>
+                    </ol>
+                    <h3>Administrative Operations</h3>
+                    <ul>
+                        <li>Use cohort filters consistently across dashboards, applicant lists, analytics, and exports.</li>
+                        <li>Use <code>system_settings</code> for registration windows and active cohort configuration.</li>
+                        <li>Use <code>manage_programs</code> and focus-area pages for program structure.</li>
+                        <li>Use <code>broadcast_email</code> and <code>broadcast_cron.php</code> for email campaigns.</li>
+                    </ul>
+                </section>
+
+                <section id="routes">
+                    <span class="section-label">06 / Routes</span>
+                    <h2>Route Reference</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Route</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>/dashboard/applicant_login</code></td><td>Applicant and student login page.</td></tr>
+                            <tr><td><code>/dashboard/register</code></td><td>Applicant registration.</td></tr>
+                            <tr><td><code>/dashboard/application_form</code></td><td>Multi-step application form shell.</td></tr>
+                            <tr><td><code>/dashboard/profile</code></td><td>Shared profile page and OTP-protected password update.</td></tr>
+                            <tr><td><code>/dashboard/administrator</code></td><td>Admin login page.</td></tr>
+                            <tr><td><code>/dashboard/applicants_list</code></td><td>Admin applicant list and filters.</td></tr>
+                            <tr><td><code>/dashboard/manage_tuition_payments</code></td><td>Tuition payment verification and onboarding.</td></tr>
+                            <tr><td><code>/dashboard/manage_hostel</code></td><td>Hostel registration management.</td></tr>
+                            <tr><td><code>/dashboard/analytics</code></td><td>Cohort-based analytics.</td></tr>
+                            <tr><td><code>/dashboard/system_settings</code></td><td>Superadmin system settings.</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="deployment">
+                    <span class="section-label">07 / Deployment</span>
+                    <h2>Production Deployment</h2>
+                    <p>Deployment is configured for Hostinger shared hosting through GitHub Actions. The workflow runs on pushes to <code>master</code> and can be executed manually.</p>
+                    <h3>GitHub Environment</h3>
+                    <p><code>adullam secret</code></p>
+                    <h3>Required Secrets</h3>
+                    <ul>
+                        <li><code>HOSTINGER_HOST</code></li>
+                        <li><code>HOSTINGER_USER</code></li>
+                        <li><code>HOSTINGER_PORT</code></li>
+                        <li><code>HOSTINGER_SSH_PRIVATE_KEY</code></li>
+                        <li><code>HOSTINGER_PUBLIC_PATH</code></li>
+                        <li><code>HOSTINGER_DEPLOY_PATH</code></li>
+                    </ul>
+                    <div class="callout success">
+                        Deployment preserves production configuration files and writable directories such as uploads, logs, and generated admission letters.
+                    </div>
+                </section>
+
+                <section id="future-payments">
+                    <span class="section-label">08 / Future Implementation</span>
+                    <h2>Online Payment Gateway With Flutterwave</h2>
+                    <p>A recommended future enhancement is to replace manual payment-proof-only workflows with Flutterwave-powered online payments for application fees and tuition payments. Manual uploads may remain available as an administrative fallback.</p>
+                    <div class="callout roadmap">
+                        <strong>Objective:</strong> provide secure card, transfer, USSD, bank, and mobile-money payment options while automatically reconciling payment status inside the portal.
+                    </div>
+                    <h3>Application Fee Payment</h3>
+                    <ul>
+                        <li>Add a payment step before final application submission or immediately after account verification.</li>
+                        <li>Create an <code>application_payments</code> table with <code>user_id</code>, <code>application_id</code>, <code>amount</code>, <code>currency</code>, <code>flutterwave_tx_ref</code>, <code>flutterwave_transaction_id</code>, <code>status</code>, <code>paid_at</code>, and raw webhook response fields.</li>
+                        <li>Generate a unique transaction reference per applicant and cohort.</li>
+                        <li>Redirect the applicant to Flutterwave Checkout or embed the Flutterwave inline payment flow.</li>
+                        <li>Verify payment server-side using Flutterwave transaction verification before marking the application fee as paid.</li>
+                        <li>Prevent final application submission unless the fee is paid or an admin grants an exception.</li>
+                    </ul>
+                    <h3>Tuition Payment</h3>
+                    <ul>
+                        <li>Extend or replace the current <code>tuition_payment</code> proof workflow with online payment records.</li>
+                        <li>Support full tuition and installment payments if the institution approves a payment plan.</li>
+                        <li>Store each transaction separately and compute outstanding balance from verified transactions.</li>
+                        <li>Automatically update tuition status to <code>approved</code> after successful Flutterwave verification.</li>
+                        <li>Keep manual proof upload as a fallback for offline bank transfers or exceptional cases.</li>
+                    </ul>
+                    <h3>Webhook and Reconciliation Requirements</h3>
+                    <ul>
+                        <li>Create a secure webhook endpoint such as <code>/dashboard/webhooks/flutterwave</code>.</li>
+                        <li>Validate Flutterwave webhook signatures before processing events.</li>
+                        <li>Always verify transactions against Flutterwave's API before trusting webhook data.</li>
+                        <li>Make webhook processing idempotent so duplicate events do not double-credit payments.</li>
+                        <li>Add admin reconciliation screens for successful, pending, failed, reversed, and disputed payments.</li>
+                        <li>Log all payment events for auditability.</li>
+                    </ul>
+                    <h3>Configuration and Security</h3>
+                    <ul>
+                        <li>Store Flutterwave public key, secret key, encryption key, and webhook secret outside tracked code.</li>
+                        <li>Use test keys in development and live keys only in production.</li>
+                        <li>Restrict payment verification endpoints to server-side calls.</li>
+                        <li>Never expose Flutterwave secret keys to JavaScript or public HTML.</li>
+                    </ul>
+                    <h3>Suggested Implementation Sequence</h3>
+                    <ol>
+                        <li>Define approved fee rules by program, mode, nationality, and cohort.</li>
+                        <li>Add payment tables and migration scripts.</li>
+                        <li>Build application fee payment initiation and verification.</li>
+                        <li>Add Flutterwave webhook endpoint and event logs.</li>
+                        <li>Add tuition payment initiation and installment support if required.</li>
+                        <li>Add admin reconciliation and export reports.</li>
+                        <li>Run end-to-end tests in Flutterwave sandbox before enabling live keys.</li>
+                    </ol>
+                </section>
+
+                <section id="monitoring">
+                    <span class="section-label">09 / Monitoring</span>
+                    <h2>Site Watch Alerts</h2>
+                    <p><code>site_watch.php</code> provides application-level monitoring for PHP warnings, fatal errors, uncaught exceptions, and suspicious request patterns. It is loaded from both root <code>db.php</code> and <code>dashboard/db.php</code>, which covers most dynamic public and dashboard requests.</p>
+                    <div class="grid two">
+                        <div class="card"><strong>Alert recipients</strong><span><code>noahabayomi14@gmail.com</code> and <code>ngbedebarnabas@gmail.com</code></span></div>
+                        <div class="card"><strong>Log files</strong><span><code>logs/site_watch.log</code> for events and <code>logs/site_watch_alerts.json</code> for email rate limiting.</span></div>
+                    </div>
+                    <h3>What It Detects</h3>
+                    <ul>
+                        <li>PHP runtime warnings, recoverable errors, fatal shutdown errors, and uncaught exceptions.</li>
+                        <li>Common SQL injection, cross-site scripting, path traversal, sensitive-file probe, remote-code-execution probe, and scanner-user-agent patterns.</li>
+                        <li>Request context such as URL, method, IP address, user agent, referrer, session role, and sanitized GET/POST values.</li>
+                    </ul>
+                    <div class="callout warning">
+                        Site Watch is not a complete security platform. Keep using Hostinger server logs, malware scanning, backups, HTTPS, secret rotation, GitHub secret scanning, and WAF/CDN protection where available.
+                    </div>
+                    <p>By default, suspicious traffic is reported but not blocked because false positives can interrupt real applicants. Blocking can be enabled by setting <code>SITE_WATCH_BLOCK_THREATS</code> to <code>true</code> after testing.</p>
+                </section>
+
+                <section id="security">
+                    <span class="section-label">10 / Security</span>
+                    <h2>Security and Access Control</h2>
+                    <div class="callout warning">
+                        Rotate any database, SMTP, Google, Flutterwave, or SSH credentials that have been committed or shared. Store secrets outside tracked source code where possible.
+                    </div>
+                    <ul>
+                        <li>Change seeded admin and superadmin passwords after database import.</li>
+                        <li>Protect SQL dumps and production backups.</li>
+                        <li>Verify uploaded files cannot execute PHP.</li>
+                        <li>Use HTTPS in production.</li>
+                        <li>Keep Composer dependencies patched within PHP version constraints.</li>
+                        <li>Review role checks before adding or exposing admin pages.</li>
+                    </ul>
+                </section>
+
+                <section id="maintenance">
+                    <span class="section-label">11 / Maintenance</span>
+                    <h2>Maintenance Reference</h2>
+                    <h3>Email</h3>
+                    <p>Dashboard email uses <code>dashboard/mailer.php</code>. Test registration, password reset, profile OTP, recommendation, admission, and payment-related emails after mailer changes.</p>
+                    <h3>Monitoring</h3>
+                    <p>Review <code>logs/site_watch.log</code> when an alert arrives. Repeated identical email alerts are rate-limited for 15 minutes through <code>logs/site_watch_alerts.json</code>.</p>
+                    <h3>Scheduled or Cron-style Scripts</h3>
+                    <ul>
+                        <li><code>dashboard/onboarding_cron.php</code></li>
+                        <li><code>dashboard/broadcast_cron.php</code></li>
+                        <li><code>backup_generate.php</code>, <code>backup_to_drive.php</code>, and <code>backup_upload.php</code></li>
+                    </ul>
+                    <h3>Known Technical Debt</h3>
+                    <ul>
+                        <li>Multiple application generations exist in one repository.</li>
+                        <li>There are multiple database connection files.</li>
+                        <li>Some legacy pages contain old encoding artifacts.</li>
+                        <li>Some dependencies are duplicated in legacy folders.</li>
+                        <li>Deployment asset exclusions should be reviewed before changing public images.</li>
+                    </ul>
+                </section>
+
+                <section id="transition">
+                    <span class="section-label">11 / Transition</span>
+                    <h2>Project Transition Protocol</h2>
+                    <p>This section defines the recommended transfer process for a developer assuming responsibility for maintenance or further development.</p>
+                    <h3>Repository Access</h3>
+                    <ol>
+                        <li>Add the developer as a GitHub collaborator using the minimum access level required.</li>
+                        <li>Use <strong>Write</strong> access for normal development work.</li>
+                        <li>Grant environment secret or deployment access only if deployment responsibility is included in the engagement.</li>
+                    </ol>
+                    <h3>Required Transfer Materials</h3>
+                    <ul>
+                        <li>Current database export delivered through a secure channel.</li>
+                        <li>Production database credentials, or a rotated credential set.</li>
+                        <li>SMTP credentials, or a newly generated mail account/app password.</li>
+                        <li>Hosting control panel and SSH deployment context if production deployment is part of the role.</li>
+                        <li>Google API credentials if backups or Google integrations are in scope.</li>
+                    </ul>
+                    <h3>Acceptance Checks</h3>
+                    <ol>
+                        <li>Run the project locally and confirm clean URLs work.</li>
+                        <li>Log in as student, admin, and superadmin.</li>
+                        <li>Test registration, email verification, password reset, profile OTP, application submission, admin review, admission decision, tuition workflow, and hostel registration.</li>
+                        <li>Confirm GitHub Actions deployment and rollback procedures with a non-critical release where possible.</li>
+                        <li>Review the future Flutterwave implementation plan before beginning online payment work.</li>
+                    </ol>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>RCN Theological Seminary - Adullam</p>
+        <p><a href="mailto:adullamadmissions@gmail.com">adullamadmissions@gmail.com</a> | <a href="https://adullam.ng">adullam.ng</a></p>
+    </footer>
+    <script>
+        (function () {
+            var toggle = document.getElementById('themeToggle');
+            var icon = document.getElementById('themeIcon');
+            var label = document.getElementById('themeLabel');
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('adullam-doc-theme', theme);
+                if (icon) icon.textContent = theme === 'dark' ? 'Dark' : 'Light';
+                if (label) label.textContent = theme === 'dark' ? 'Switch to light' : 'Switch to dark';
+            }
+
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            setTheme(current);
+
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    var active = document.documentElement.getAttribute('data-theme') || 'dark';
+                    setTheme(active === 'dark' ? 'light' : 'dark');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

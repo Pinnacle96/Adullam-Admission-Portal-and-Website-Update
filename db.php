@@ -1,5 +1,7 @@
 <?php
 // db.php
+require_once __DIR__ . '/site_watch.php';
+
 //live
 // $host = 'localhost';        // Change to your DB host
 // $db   = 'u499616432_adullamn_cams';       // Change to your DB name
