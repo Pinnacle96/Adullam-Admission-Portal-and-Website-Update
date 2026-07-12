@@ -139,15 +139,19 @@ jobs:
 
               if [ -f "$target_file" ] && ! grep -Fq "site_watch.php" "$target_file"; then
                 tmp_file="${target_file}.sitewatch.tmp"
-                awk -v insert="$require_line" '
-                  NR == 1 && $0 ~ /^<\?php/ {
-                    print
-                    print insert
-                    next
-                  }
-                  { print }
-                ' "$target_file" > "$tmp_file"
-                mv "$tmp_file" "$target_file"
+                first_line="$(head -n 1 "$target_file")"
+
+                if printf '%s\n' "$first_line" | grep -Eq '^<\?php'; then
+                  {
+                    printf '%s\n' "$first_line"
+                    printf '%s\n' "$require_line"
+                    tail -n +2 "$target_file"
+                  } > "$tmp_file"
+                  mv "$tmp_file" "$target_file"
+                else
+                  echo "Site Watch bootstrap skipped for $target_file because it does not start with <?php."
+                  rm -f "$tmp_file"
+                fi
               fi
             }
 
