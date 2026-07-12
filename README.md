@@ -570,9 +570,11 @@ If the developer will deploy, also grant access to the GitHub Actions environmen
 
 ## Support Notes
 
-Project contact details used in email templates:
+Development and technical support:
 
-- Email: `adullamadmissions@gmail.com`
-- Website: `https://adullam.ng`
+- Developer: Noah Abayomi
+- Role: CEO, Pinnacle Tech Hub
+- Email: `noahabayomi14@gmail.com`
+- Company website: `https://pinnacletechhub.com.ng`
 
-Update these in templates if the institution changes sender or domain.
+Pinnacle Tech Hub developed this project and should be treated as the technical support/vendor contact for handoff, maintenance, and future implementation work.
