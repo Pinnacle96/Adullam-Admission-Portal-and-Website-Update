@@ -12,6 +12,8 @@
 Thumbs.db
 /dashboard/letters/admission_letters/*.pdf
 /dashboard/logs
+!/dashboard/logs/
+!/dashboard/logs/.htaccess
 /june2025/dashboard/uploads
 /june2025/dashboard/logs
 /june2025/dashboard/letters/admission_letters/*.pdf

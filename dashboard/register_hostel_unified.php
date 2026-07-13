@@ -3,11 +3,13 @@
    register_hostel_unified.php  –  UNIFIED Hostel Registration
    Serves both NEW and RETURNING students based on cohort status
    ───────────────────────────────────────────────────────────── */
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
-require 'db.php';
-require 'dashboard_logic.php';
-require 'functions.php';
+require_once 'db.php';
+require_once 'dashboard_logic.php';
+require_once 'functions.php';
 
 // Fetch reCAPTCHA site key from settings
 $recaptcha_site_key = '';
