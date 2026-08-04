@@ -58,6 +58,8 @@ if (isset($_POST['sub'])) {
                     <li><a href="about" class="hover:text-purple-400 transition-colors" aria-label="About page">About</a></li>
                     <li><a href="contact" class="hover:text-purple-400 transition-colors" aria-label="Contact page">Contact</a></li>
                     <li><a href="index#programs" class="hover:text-purple-400 transition-colors" aria-label="Programs section">Programs</a></li>
+                    <li><a href="privacy-policy" class="hover:text-purple-400 transition-colors" aria-label="Privacy Policy">Privacy Policy</a></li>
+                    <li><a href="delete-account" class="hover:text-purple-400 transition-colors" aria-label="Delete Account">Delete Account</a></li>
                     <li><a href="dashboard/administrator" class="hover:text-purple-400 transition-colors" aria-label="Admin login page">Admin Login</a></li>
                 </ul>
             </div>

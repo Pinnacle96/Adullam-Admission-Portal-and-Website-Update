@@ -5,6 +5,13 @@ php_value max_input_time 300
 Options -MultiViews
 RewriteEngine On
 
+# --- Block WordPress / sensitive-file probes (bot noise) ---
+# This is not a WordPress site. Reject these outright so they never reach PHP
+# or the database, and stop the alert flood they generate.
+RewriteRule (^|/)wp-(login|admin|content|includes|json) - [F,L,NC]
+RewriteRule (^|/)xmlrpc\.php - [F,L,NC]
+RewriteRule (^|/)(\.env|\.git)(/|$) - [F,L,NC]
+
 # Handle the case where the request is for a directory
 RewriteCond %{REQUEST_FILENAME} !-d
 
